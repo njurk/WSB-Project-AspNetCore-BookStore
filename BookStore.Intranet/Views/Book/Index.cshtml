@@ -1,0 +1,98 @@
+﻿@model IEnumerable<BookStore.Data.Data.Entities.Book>
+
+@{
+   ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+   <a class="btn btn-primary" asp-action="Create"> <i class="fa fa-plus" aria-hidden="true"></i> Add New</a>
+</p>
+<table class="table">
+   <thead>
+       <tr>
+           <th>
+               @Html.DisplayNameFor(model => model.Title)
+           </th>
+           <th>
+               @Html.DisplayNameFor(model => model.ISBN)
+           </th>
+           <th>
+               @Html.DisplayNameFor(model => model.Description)
+           </th>
+           <th>
+               @Html.DisplayNameFor(model => model.PublishedYear)
+           </th>
+           <th>
+               @Html.DisplayNameFor(model => model.NumberOfPages)
+           </th>
+           <th>
+               @Html.DisplayNameFor(model => model.Price)
+           </th>
+           <th>
+               @Html.DisplayNameFor(model => model.ImageUrl)
+           </th>
+           <th>
+               @Html.DisplayNameFor(model => model.Author)
+           </th>
+           <th></th>
+       </tr>
+   </thead>
+   <tbody>
+@foreach (var item in Model) {
+       <tr>
+           <td>
+               @Html.DisplayFor(modelItem => item.Title)
+           </td>
+           <td>
+               @Html.DisplayFor(modelItem => item.ISBN)
+           </td>
+           <td>
+               @Html.DisplayFor(modelItem => item.Description)
+           </td>
+           <td>
+               @Html.DisplayFor(modelItem => item.PublishedYear)
+           </td>
+           <td>
+               @Html.DisplayFor(modelItem => item.NumberOfPages)
+           </td>
+           <td>
+               @Html.DisplayFor(modelItem => item.Price)
+           </td>
+           <td>
+               @Html.DisplayFor(modelItem => item.ImageUrl)
+           </td>
+           <td>
+               @Html.DisplayFor(modelItem => item.Author.Name)
+           </td>
+           <td>
+               @await Html.PartialAsync("_IndexButtonsPartial", item.BookID)
+           </td>
+       </tr>
+}
+   </tbody>
+</table>
+
+@section Scripts {
+   <script>
+       $(function () {
+           $('.deleteBtn').click(function (e) {
+               swal({
+                   title: "Are you sure?",
+                   text: "Are you sure you want to delete this record?",
+                   icon: "warning",
+                   buttons: true,
+                   dangerMode: true,
+               }).then((confirm) => {
+                   if (confirm) {
+                       var btn = $(this);
+                       var id = btn.data("id");
+                       $('#itemid').val(id);
+                       $('#deleteForm').submit();
+                   }
+               });
+           });
+       });
+   </script>
+}
