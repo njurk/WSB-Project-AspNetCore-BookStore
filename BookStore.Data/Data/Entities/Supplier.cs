@@ -15,12 +15,12 @@ namespace BookStore.Data.Data.Entities
         [Required(ErrorMessage = "Name is required.")]
         public required string Name { get; set; }
 
+        [Required(ErrorMessage = "Email is required.")]
+        public required string Email { get; set; }
+
         [DisplayName("Phone number")]
         [Required(ErrorMessage = "Phone number is required.")]
         public required string PhoneNumber { get; set; }
-
-        [Required(ErrorMessage = "Email is required.")]
-        public required string Email { get; set; }
 
         [Required(ErrorMessage = "Street is required.")]
         public required string Street { get; set; }

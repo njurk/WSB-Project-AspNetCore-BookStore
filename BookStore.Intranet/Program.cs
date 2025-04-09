@@ -1,4 +1,5 @@
 ﻿using BookStore.Data.Data;
+using BookStore.Intranet.Services;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 
@@ -12,6 +13,7 @@ builder.Services.AddDbContext<BookStoreContext>(options =>
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddScoped<OrderService>();
 
 var app = builder.Build();
 

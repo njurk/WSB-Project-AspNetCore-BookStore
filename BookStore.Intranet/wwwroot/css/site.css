@@ -17,14 +17,28 @@ html {
   min-height: 100%;
 }
 
-body {
-  margin-bottom: 60px;
-}
-
-.navbar-custom {
-    background: linear-gradient(180deg, #2D294A, #5E5597);
-}
-
 .nav-link {
     color: white !important;
 }
+
+.sidebar {
+    min-height: 800px;
+    height:100vh;
+    top: 0;
+    left: 0;
+    background-color: #f8f9fa;
+}
+
+.sidebar-header {
+    text-align: center;
+    margin-block: 30px;
+}
+
+.sidebar .nav-link {
+    font-size: 18px;
+    padding: 15px 15px;
+}
+
+    .sidebar .nav-link:hover {
+        background-color: #33383a;
+    }
