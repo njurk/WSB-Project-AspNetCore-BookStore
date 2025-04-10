@@ -53,12 +53,10 @@
             </nav>
 
             <div class="col-md-9 col-lg-10 p-0">
-                <nav class="navbar navbar-expand-md navbar-light bg-dark p-0" style="--bs-bg-opacity: .9;">
-                    <div class="container-fluid m-0">
-                        @{
-                            await Html.RenderPartialAsync("_SearchBarPartial");
-                        }
-                        <a class="navbar-brand ms-2" href="#">
+                <nav class="navbar navbar-expand-md navbar-light bg-dark p-0" style="--bs-bg-opacity: .9; height: 50px; justify-content: end;">
+                    <div class="d-flex align-items-center">
+                        <span class="text-white me-4">Hello, Admin!</span>
+                        <a class="navbar-brand p-2" href="#">
                             <img src="~/profile.png" alt="Profile" class="rounded-circle" style="height: 30px;">
                         </a>
 
@@ -67,6 +65,7 @@
                         </button>
                     </div>
                 </nav>
+
 
                 <div class="container p-0">
                     <main role="main" class="pb-3">
