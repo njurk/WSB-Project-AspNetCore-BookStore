@@ -12,10 +12,10 @@
 <body class="m-0">
     <div class="container-fluid p-0">
         <div class="row m-0">
-            <nav class="col-md-3 col-lg-2 p-0 bg-dark sidebar collapse d-md-block" id="sidebar">
-                <div class="sidebar-header">
+            <nav class="col-md-3 col-lg-2 p-0 sidebar collapse d-md-block" id="sidebar">
+                <div class="sidebar-header mt-3">
                     <a>
-                        <img src="~/logo-alpha.png" alt="BookStore" style="height: 50px;">
+                        <img src="~/logo-alpha.png" alt="BookStore" style="height: 45px;">
                     </a>
                 </div>
                 <ul class="nav flex-column">
@@ -23,16 +23,19 @@
                         <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Dashboard</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" asp-area="" asp-controller="Book" asp-action="Index">Inventory</a>
+                        <a class="nav-link" asp-area="" asp-controller="Book" asp-action="Index">Books</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-area="" asp-controller="BookGenre" asp-action="Index">Book Genres</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" asp-area="" asp-controller="Order" asp-action="Index">Orders</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" asp-area="" asp-controller="OrderItem" asp-action="Index">Order items</a>
+                        <a class="nav-link" asp-area="" asp-controller="OrderItem" asp-action="Index">Order Items</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" asp-area="" asp-controller="Customer" asp-action="Index">Customers</a>
+                        <a class="nav-link" asp-area="" asp-controller="User" asp-action="Index">Users</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" asp-area="" asp-controller="Supplier" asp-action="Index">Suppliers</a>
@@ -41,7 +44,10 @@
                         <a class="nav-link" asp-area="" asp-controller="Delivery" asp-action="Index">Deliveries</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" asp-area="" asp-controller="DeliveryItem" asp-action="Index">Delivery items</a>
+                        <a class="nav-link" asp-area="" asp-controller="DeliveryItem" asp-action="Index">Delivery Items</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-area="" asp-controller="Review" asp-action="Index">Reviews</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" asp-area="" asp-controller="Genre" asp-action="Index">Genres</a>
@@ -50,22 +56,28 @@
                         <a class="nav-link" asp-area="" asp-controller="Author" asp-action="Index">Authors</a>
                     </li>
                 </ul>
+                <div class="sidebar-help text-center">
+                    <a href="#" class="text-muted d-flex justify-content-center align-items-center">
+                        <i class="fas fa-circle-question me-2"></i>
+                        <span>Help</span>
+                    </a>
+                </div>
             </nav>
 
             <div class="col-md-9 col-lg-10 p-0">
-                <nav class="navbar navbar-expand-md navbar-light bg-dark p-0" style="--bs-bg-opacity: .9; height: 50px; justify-content: end;">
-                    <div class="d-flex align-items-center">
-                        <span class="text-white me-4">Hello, Admin!</span>
-                        <a class="navbar-brand p-2" href="#">
-                            <img src="~/profile.png" alt="Profile" class="rounded-circle" style="height: 30px;">
+                <nav class="navbar navbar-expand-md navbar-light bg-white px-3" style="height: 50px;">
+                    <div class="ms-auto d-flex align-items-center">
+                        <span class="text-dark me-3">Hello, Admin!</span>
+                        <a href="#" class="nav-link text-dark d-flex align-items-center me-3">
+                            <i class="fa fa-sign-out-alt me-2"></i> Logout
                         </a>
-
-                        <button class="navbar-toggler bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar" aria-controls="sidebar" aria-expanded="false" aria-label="Toggle sidebar">
+                        <button class="navbar-toggler bg-light" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#sidebar" aria-controls="sidebar" aria-expanded="false"
+                                aria-label="Toggle sidebar">
                             <span class="navbar-toggler-icon"></span>
                         </button>
                     </div>
                 </nav>
-
 
                 <div class="container p-0">
                     <main role="main" class="pb-3">

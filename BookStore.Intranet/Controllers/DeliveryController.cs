@@ -22,7 +22,7 @@ namespace BookStore.Intranet.Controllers
         // GET: Delivery
         public async Task<IActionResult> Index()
         {
-            var bookStoreContext = _context.Delivery.Include(d => d.Supplier);
+            var bookStoreContext = _context.Deliveries.Include(d => d.Supplier);
             return View(await bookStoreContext.ToListAsync());
         }
 
@@ -34,9 +34,9 @@ namespace BookStore.Intranet.Controllers
                 return NotFound();
             }
 
-            var delivery = await _context.Delivery
+            var delivery = await _context.Deliveries
                 .Include(d => d.Supplier)
-                .FirstOrDefaultAsync(m => m.DeliveryID == id);
+                .FirstOrDefaultAsync(m => m.IdDelivery == id);
             if (delivery == null)
             {
                 return NotFound();
@@ -48,7 +48,7 @@ namespace BookStore.Intranet.Controllers
         // GET: Delivery/Create
         public IActionResult Create()
         {
-            ViewData["SupplierID"] = new SelectList(_context.Supplier, "SupplierID", "City");
+            ViewData["IdSupplier"] = new SelectList(_context.Suppliers, "IdSupplier", "Email");
             return View();
         }
 
@@ -57,7 +57,7 @@ namespace BookStore.Intranet.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("DeliveryID,DeliveryDate,SupplierID")] Delivery delivery)
+        public async Task<IActionResult> Create([Bind("IdDelivery,IdSupplier,DeliveryDate")] Delivery delivery)
         {
             if (ModelState.IsValid)
             {
@@ -65,7 +65,7 @@ namespace BookStore.Intranet.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["SupplierID"] = new SelectList(_context.Supplier, "SupplierID", "City", delivery.SupplierID);
+            ViewData["IdSupplier"] = new SelectList(_context.Suppliers, "IdSupplier", "Email", delivery.IdSupplier);
             return View(delivery);
         }
 
@@ -77,12 +77,12 @@ namespace BookStore.Intranet.Controllers
                 return NotFound();
             }
 
-            var delivery = await _context.Delivery.FindAsync(id);
+            var delivery = await _context.Deliveries.FindAsync(id);
             if (delivery == null)
             {
                 return NotFound();
             }
-            ViewData["SupplierID"] = new SelectList(_context.Supplier, "SupplierID", "City", delivery.SupplierID);
+            ViewData["IdSupplier"] = new SelectList(_context.Suppliers, "IdSupplier", "Email", delivery.IdSupplier);
             return View(delivery);
         }
 
@@ -91,9 +91,9 @@ namespace BookStore.Intranet.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("DeliveryID,DeliveryDate,SupplierID")] Delivery delivery)
+        public async Task<IActionResult> Edit(int id, [Bind("IdDelivery,IdSupplier,DeliveryDate")] Delivery delivery)
         {
-            if (id != delivery.DeliveryID)
+            if (id != delivery.IdDelivery)
             {
                 return NotFound();
             }
@@ -107,7 +107,7 @@ namespace BookStore.Intranet.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!DeliveryExists(delivery.DeliveryID))
+                    if (!DeliveryExists(delivery.IdDelivery))
                     {
                         return NotFound();
                     }
@@ -118,7 +118,7 @@ namespace BookStore.Intranet.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["SupplierID"] = new SelectList(_context.Supplier, "SupplierID", "City", delivery.SupplierID);
+            ViewData["IdSupplier"] = new SelectList(_context.Suppliers, "IdSupplier", "Email", delivery.IdSupplier);
             return View(delivery);
         }
 
@@ -130,9 +130,9 @@ namespace BookStore.Intranet.Controllers
                 return NotFound();
             }
 
-            var delivery = await _context.Delivery
+            var delivery = await _context.Deliveries
                 .Include(d => d.Supplier)
-                .FirstOrDefaultAsync(m => m.DeliveryID == id);
+                .FirstOrDefaultAsync(m => m.IdDelivery == id);
             if (delivery == null)
             {
                 return NotFound();
@@ -146,10 +146,10 @@ namespace BookStore.Intranet.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var delivery = await _context.Delivery.FindAsync(id);
+            var delivery = await _context.Deliveries.FindAsync(id);
             if (delivery != null)
             {
-                _context.Delivery.Remove(delivery);
+                _context.Deliveries.Remove(delivery);
             }
 
             await _context.SaveChangesAsync();
@@ -158,7 +158,7 @@ namespace BookStore.Intranet.Controllers
 
         private bool DeliveryExists(int id)
         {
-            return _context.Delivery.Any(e => e.DeliveryID == id);
+            return _context.Deliveries.Any(e => e.IdDelivery == id);
         }
     }
 }

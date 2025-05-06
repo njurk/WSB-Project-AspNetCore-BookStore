@@ -22,7 +22,7 @@ namespace BookStore.Intranet.Controllers
         // GET: Author
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Author.ToListAsync());
+            return View(await _context.Authors.ToListAsync());
         }
 
         // GET: Author/Details/5
@@ -33,8 +33,8 @@ namespace BookStore.Intranet.Controllers
                 return NotFound();
             }
 
-            var author = await _context.Author
-                .FirstOrDefaultAsync(m => m.AuthorID == id);
+            var author = await _context.Authors
+                .FirstOrDefaultAsync(m => m.IdAuthor == id);
             if (author == null)
             {
                 return NotFound();
@@ -54,7 +54,7 @@ namespace BookStore.Intranet.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("AuthorID,Name,Surname")] Author author)
+        public async Task<IActionResult> Create([Bind("IdAuthor,FirstName,LastName")] Author author)
         {
             if (ModelState.IsValid)
             {
@@ -73,7 +73,7 @@ namespace BookStore.Intranet.Controllers
                 return NotFound();
             }
 
-            var author = await _context.Author.FindAsync(id);
+            var author = await _context.Authors.FindAsync(id);
             if (author == null)
             {
                 return NotFound();
@@ -86,9 +86,9 @@ namespace BookStore.Intranet.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("AuthorID,Name,Surname")] Author author)
+        public async Task<IActionResult> Edit(int id, [Bind("IdAuthor,FirstName,LastName")] Author author)
         {
-            if (id != author.AuthorID)
+            if (id != author.IdAuthor)
             {
                 return NotFound();
             }
@@ -102,7 +102,7 @@ namespace BookStore.Intranet.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!AuthorExists(author.AuthorID))
+                    if (!AuthorExists(author.IdAuthor))
                     {
                         return NotFound();
                     }
@@ -124,8 +124,8 @@ namespace BookStore.Intranet.Controllers
                 return NotFound();
             }
 
-            var author = await _context.Author
-                .FirstOrDefaultAsync(m => m.AuthorID == id);
+            var author = await _context.Authors
+                .FirstOrDefaultAsync(m => m.IdAuthor == id);
             if (author == null)
             {
                 return NotFound();
@@ -139,10 +139,10 @@ namespace BookStore.Intranet.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var author = await _context.Author.FindAsync(id);
+            var author = await _context.Authors.FindAsync(id);
             if (author != null)
             {
-                _context.Author.Remove(author);
+                _context.Authors.Remove(author);
             }
 
             await _context.SaveChangesAsync();
@@ -151,7 +151,7 @@ namespace BookStore.Intranet.Controllers
 
         private bool AuthorExists(int id)
         {
-            return _context.Author.Any(e => e.AuthorID == id);
+            return _context.Authors.Any(e => e.IdAuthor == id);
         }
     }
 }

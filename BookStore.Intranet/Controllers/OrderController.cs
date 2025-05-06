@@ -22,7 +22,7 @@ namespace BookStore.Intranet.Controllers
         // GET: Order
         public async Task<IActionResult> Index()
         {
-            var bookStoreContext = _context.Order.Include(o => o.Customer);
+            var bookStoreContext = _context.Orders.Include(o => o.OrderStatus).Include(o => o.User);
             return View(await bookStoreContext.ToListAsync());
         }
 
@@ -34,9 +34,10 @@ namespace BookStore.Intranet.Controllers
                 return NotFound();
             }
 
-            var order = await _context.Order
-                .Include(o => o.Customer)
-                .FirstOrDefaultAsync(m => m.OrderID == id);
+            var order = await _context.Orders
+                .Include(o => o.OrderStatus)
+                .Include(o => o.User)
+                .FirstOrDefaultAsync(m => m.IdOrder == id);
             if (order == null)
             {
                 return NotFound();
@@ -48,7 +49,8 @@ namespace BookStore.Intranet.Controllers
         // GET: Order/Create
         public IActionResult Create()
         {
-            ViewData["CustomerID"] = new SelectList(_context.Customer, "CustomerID", "City");
+            ViewData["IdOrderStatus"] = new SelectList(_context.OrderStatuses, "Id", "Name");
+            ViewData["IdUser"] = new SelectList(_context.Users, "IdUser", "Email");
             return View();
         }
 
@@ -57,7 +59,7 @@ namespace BookStore.Intranet.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("OrderID,CustomerID,OrderDate")] Order order)
+        public async Task<IActionResult> Create([Bind("IdOrder,IdUser,OrderDate,IdOrderStatus")] Order order)
         {
             if (ModelState.IsValid)
             {
@@ -65,7 +67,8 @@ namespace BookStore.Intranet.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CustomerID"] = new SelectList(_context.Customer, "CustomerID", "City", order.CustomerID);
+            ViewData["IdOrderStatus"] = new SelectList(_context.OrderStatuses, "Id", "Name", order.IdOrderStatus);
+            ViewData["IdUser"] = new SelectList(_context.Users, "IdUser", "Email", order.IdUser);
             return View(order);
         }
 
@@ -77,12 +80,13 @@ namespace BookStore.Intranet.Controllers
                 return NotFound();
             }
 
-            var order = await _context.Order.FindAsync(id);
+            var order = await _context.Orders.FindAsync(id);
             if (order == null)
             {
                 return NotFound();
             }
-            ViewData["CustomerID"] = new SelectList(_context.Customer, "CustomerID", "City", order.CustomerID);
+            ViewData["IdOrderStatus"] = new SelectList(_context.OrderStatuses, "Id", "Name", order.IdOrderStatus);
+            ViewData["IdUser"] = new SelectList(_context.Users, "IdUser", "Email", order.IdUser);
             return View(order);
         }
 
@@ -91,9 +95,9 @@ namespace BookStore.Intranet.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("OrderID,CustomerID,OrderDate")] Order order)
+        public async Task<IActionResult> Edit(int id, [Bind("IdOrder,IdUser,OrderDate,IdOrderStatus")] Order order)
         {
-            if (id != order.OrderID)
+            if (id != order.IdOrder)
             {
                 return NotFound();
             }
@@ -107,7 +111,7 @@ namespace BookStore.Intranet.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!OrderExists(order.OrderID))
+                    if (!OrderExists(order.IdOrder))
                     {
                         return NotFound();
                     }
@@ -118,7 +122,8 @@ namespace BookStore.Intranet.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CustomerID"] = new SelectList(_context.Customer, "CustomerID", "City", order.CustomerID);
+            ViewData["IdOrderStatus"] = new SelectList(_context.OrderStatuses, "Id", "Name", order.IdOrderStatus);
+            ViewData["IdUser"] = new SelectList(_context.Users, "IdUser", "Email", order.IdUser);
             return View(order);
         }
 
@@ -130,9 +135,10 @@ namespace BookStore.Intranet.Controllers
                 return NotFound();
             }
 
-            var order = await _context.Order
-                .Include(o => o.Customer)
-                .FirstOrDefaultAsync(m => m.OrderID == id);
+            var order = await _context.Orders
+                .Include(o => o.OrderStatus)
+                .Include(o => o.User)
+                .FirstOrDefaultAsync(m => m.IdOrder == id);
             if (order == null)
             {
                 return NotFound();
@@ -146,10 +152,10 @@ namespace BookStore.Intranet.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var order = await _context.Order.FindAsync(id);
+            var order = await _context.Orders.FindAsync(id);
             if (order != null)
             {
-                _context.Order.Remove(order);
+                _context.Orders.Remove(order);
             }
 
             await _context.SaveChangesAsync();
@@ -158,7 +164,7 @@ namespace BookStore.Intranet.Controllers
 
         private bool OrderExists(int id)
         {
-            return _context.Order.Any(e => e.OrderID == id);
+            return _context.Orders.Any(e => e.IdOrder == id);
         }
     }
 }

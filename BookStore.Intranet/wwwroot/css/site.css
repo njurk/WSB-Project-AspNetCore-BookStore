@@ -1,32 +1,27 @@
 html {
-  font-size: 14px;
+    font-size: 14px;
+    position: relative;
+    min-height: 100%;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
-}
-
-.nav-link {
-    color: white !important;
+.btn:focus, .btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus, .form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
 .sidebar {
-    min-height: 800px;
-    height:100vh;
+    height: 100vh;
     top: 0;
     left: 0;
     background-color: #f8f9fa;
+    border-right: 1px solid #dee2e6;
 }
 
 .sidebar-header {
@@ -35,10 +30,49 @@ html {
 }
 
 .sidebar .nav-link {
-    font-size: 18px;
-    padding: 15px 15px;
+    font-size: 16px;
+    padding: 12px 20px;
+    color: #495057;
 }
 
     .sidebar .nav-link:hover {
-        background-color: #33383a;
+        background-color: #e9ecef;
+        border-radius: 4px;
+        color: #212529 !important;
     }
+
+.sidebar-help {
+    position: absolute;
+    bottom: 0;
+    width: inherit;
+    font-size: 15px;
+}
+
+    .sidebar-help a {
+        display: block;
+        padding: 10px;
+        text-decoration: none;
+        color: #6c757d;
+        transition: background-color 0.2s ease;
+    }
+
+        .sidebar-help a:hover {
+            background-color: #e9ecef;
+            color: #343a40;
+        }
+
+.navbar {
+    border-bottom: 1px solid #dee2e6;
+}
+
+    .navbar .navbar-brand img {
+        height: 30px;
+    }
+
+    .navbar .text-dark {
+        font-weight: 500;
+    }
+
+.nav-link {
+    color: #343a40 !important;
+}

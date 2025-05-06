@@ -1,17 +1,22 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace BookStore.Data.Data.Entities
 {
     public class Author
     {
         [Key]
-        public int AuthorID { get; set; }
+        public int IdAuthor { get; set; }
 
-        [Required(ErrorMessage = "Author's name is required.")]
-        public required string Name { get; set; }
+        [Required(ErrorMessage = "First name is required.")]
+        [StringLength(50, ErrorMessage = "First name cannot be longer than 50 characters.")]
+        [DisplayName("First Name")]
+        public required string FirstName { get; set; }
 
-        [Required(ErrorMessage = "Author's surname is required.")]
-        public required string Surname { get; set; }
+        [Required(ErrorMessage = "Last name is required.")]
+        [StringLength(50, ErrorMessage = "Last name cannot be longer than 50 characters.")]
+        [DisplayName("Last Name")]
+        public required string LastName { get; set; }
 
         public ICollection<Book> Books { get; set; } = new List<Book>();
     }

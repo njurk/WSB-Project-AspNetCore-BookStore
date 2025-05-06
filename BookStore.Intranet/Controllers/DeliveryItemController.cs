@@ -22,7 +22,7 @@ namespace BookStore.Intranet.Controllers
         // GET: DeliveryItem
         public async Task<IActionResult> Index()
         {
-            var bookStoreContext = _context.DeliveryItem.Include(d => d.Book).Include(d => d.Delivery);
+            var bookStoreContext = _context.DeliveryItems.Include(d => d.Book).Include(d => d.Delivery);
             return View(await bookStoreContext.ToListAsync());
         }
 
@@ -34,10 +34,10 @@ namespace BookStore.Intranet.Controllers
                 return NotFound();
             }
 
-            var deliveryItem = await _context.DeliveryItem
+            var deliveryItem = await _context.DeliveryItems
                 .Include(d => d.Book)
                 .Include(d => d.Delivery)
-                .FirstOrDefaultAsync(m => m.DeliveryItemID == id);
+                .FirstOrDefaultAsync(m => m.IdDeliveryItem == id);
             if (deliveryItem == null)
             {
                 return NotFound();
@@ -49,8 +49,8 @@ namespace BookStore.Intranet.Controllers
         // GET: DeliveryItem/Create
         public IActionResult Create()
         {
-            ViewData["BookID"] = new SelectList(_context.Book, "BookID", "Description");
-            ViewData["DeliveryID"] = new SelectList(_context.Delivery, "DeliveryID", "DeliveryID");
+            ViewData["IdBook"] = new SelectList(_context.Books, "IdBook", "Description");
+            ViewData["IdDelivery"] = new SelectList(_context.Deliveries, "IdDelivery", "IdDelivery");
             return View();
         }
 
@@ -59,7 +59,7 @@ namespace BookStore.Intranet.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("DeliveryItemID,DeliveryID,BookID,Quantity")] DeliveryItem deliveryItem)
+        public async Task<IActionResult> Create([Bind("IdDeliveryItem,IdDelivery,IdBook,Quantity")] DeliveryItem deliveryItem)
         {
             if (ModelState.IsValid)
             {
@@ -67,8 +67,8 @@ namespace BookStore.Intranet.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["BookID"] = new SelectList(_context.Book, "BookID", "Description", deliveryItem.BookID);
-            ViewData["DeliveryID"] = new SelectList(_context.Delivery, "DeliveryID", "DeliveryID", deliveryItem.DeliveryID);
+            ViewData["IdBook"] = new SelectList(_context.Books, "IdBook", "Description", deliveryItem.IdBook);
+            ViewData["IdDelivery"] = new SelectList(_context.Deliveries, "IdDelivery", "IdDelivery", deliveryItem.IdDelivery);
             return View(deliveryItem);
         }
 
@@ -80,13 +80,13 @@ namespace BookStore.Intranet.Controllers
                 return NotFound();
             }
 
-            var deliveryItem = await _context.DeliveryItem.FindAsync(id);
+            var deliveryItem = await _context.DeliveryItems.FindAsync(id);
             if (deliveryItem == null)
             {
                 return NotFound();
             }
-            ViewData["BookID"] = new SelectList(_context.Book, "BookID", "Description", deliveryItem.BookID);
-            ViewData["DeliveryID"] = new SelectList(_context.Delivery, "DeliveryID", "DeliveryID", deliveryItem.DeliveryID);
+            ViewData["IdBook"] = new SelectList(_context.Books, "IdBook", "Description", deliveryItem.IdBook);
+            ViewData["IdDelivery"] = new SelectList(_context.Deliveries, "IdDelivery", "IdDelivery", deliveryItem.IdDelivery);
             return View(deliveryItem);
         }
 
@@ -95,9 +95,9 @@ namespace BookStore.Intranet.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("DeliveryItemID,DeliveryID,BookID,Quantity")] DeliveryItem deliveryItem)
+        public async Task<IActionResult> Edit(int id, [Bind("IdDeliveryItem,IdDelivery,IdBook,Quantity")] DeliveryItem deliveryItem)
         {
-            if (id != deliveryItem.DeliveryItemID)
+            if (id != deliveryItem.IdDeliveryItem)
             {
                 return NotFound();
             }
@@ -111,7 +111,7 @@ namespace BookStore.Intranet.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!DeliveryItemExists(deliveryItem.DeliveryItemID))
+                    if (!DeliveryItemExists(deliveryItem.IdDeliveryItem))
                     {
                         return NotFound();
                     }
@@ -122,8 +122,8 @@ namespace BookStore.Intranet.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["BookID"] = new SelectList(_context.Book, "BookID", "Description", deliveryItem.BookID);
-            ViewData["DeliveryID"] = new SelectList(_context.Delivery, "DeliveryID", "DeliveryID", deliveryItem.DeliveryID);
+            ViewData["IdBook"] = new SelectList(_context.Books, "IdBook", "Description", deliveryItem.IdBook);
+            ViewData["IdDelivery"] = new SelectList(_context.Deliveries, "IdDelivery", "IdDelivery", deliveryItem.IdDelivery);
             return View(deliveryItem);
         }
 
@@ -135,10 +135,10 @@ namespace BookStore.Intranet.Controllers
                 return NotFound();
             }
 
-            var deliveryItem = await _context.DeliveryItem
+            var deliveryItem = await _context.DeliveryItems
                 .Include(d => d.Book)
                 .Include(d => d.Delivery)
-                .FirstOrDefaultAsync(m => m.DeliveryItemID == id);
+                .FirstOrDefaultAsync(m => m.IdDeliveryItem == id);
             if (deliveryItem == null)
             {
                 return NotFound();
@@ -152,10 +152,10 @@ namespace BookStore.Intranet.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var deliveryItem = await _context.DeliveryItem.FindAsync(id);
+            var deliveryItem = await _context.DeliveryItems.FindAsync(id);
             if (deliveryItem != null)
             {
-                _context.DeliveryItem.Remove(deliveryItem);
+                _context.DeliveryItems.Remove(deliveryItem);
             }
 
             await _context.SaveChangesAsync();
@@ -164,7 +164,7 @@ namespace BookStore.Intranet.Controllers
 
         private bool DeliveryItemExists(int id)
         {
-            return _context.DeliveryItem.Any(e => e.DeliveryItemID == id);
+            return _context.DeliveryItems.Any(e => e.IdDeliveryItem == id);
         }
     }
 }

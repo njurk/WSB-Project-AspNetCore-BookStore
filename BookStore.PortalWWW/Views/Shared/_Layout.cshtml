@@ -3,49 +3,134 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - bookstore</title>
+    <title>BookStore - @ViewData["Title"]</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/lib/font-awesome/css/all.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/BookStore.PortalWWW.styles.css" asp-append-version="true" />
 </head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-md navbar-toggleable-md navbar-light border-bottom box-shadow mb-3 navbar-custom">
-            <div class="container-fluid">
-                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">
-                    <img src="~/logo-alpha.png" alt="BookStore" style="height: 40px;">
-                </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-md-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Books" asp-action="Index">Books</a>
-                        </li>
-                    </ul>
-                    <a class="nav-link">
-                        <img src="~/profile.png" alt="Profile" style="height: 30px;">
+
+<body class="m-0">
+    <div class="col-12 p-0">
+        <nav class="navbar navbar-expand bg-tertiary text-white" style="height: 28px;">
+            <div class="container">
+                <span class="navbar-text text-white">
+                    <i class="fa fa-phone-alt"></i> +12 3456 7890
+                </span>
+                <div class="ms-auto d-flex">
+                    <a href="#" class="nav-link text-white d-flex align-items-center">
+                        <i class="fa fa-sign-in-alt me-2"></i> Login
+                    </a>
+                    <a href="#" class="nav-link text-white d-flex align-items-center">
+                        <i class="fa fa-user-plus me-2"></i> Register
                     </a>
                 </div>
             </div>
         </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
+        
+        <nav class="navbar navbar-expand-md navbar-light bg-white pt-2">
+            <div class="container">
+                <a asp-controller="Home" asp-action="Index" class="navbar-brand ps-2">
+                    <img src="~/logo-alpha.png" alt="BookStore" style="height: 50px;">
+                </a>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - BookStore.PortalWWW - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                <div class="d-md-none ms-auto d-flex align-items-center">
+                    <a asp-controller="Home" asp-action="Cart" class="me-3">
+                        <i class="fa-solid fa-cart-shopping fa-2xl text-tertiary"></i>
+                    </a>
+                    <button class="navbar-toggler bg-light me-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                </div>
+
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto ms-3">
+                        <li class="nav-item">
+                            <a class="nav-link text-black" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-black" asp-area="" asp-controller="Home" asp-action="Books">Books</a>
+                        </li>
+                    </ul>
+
+                    <div class="d-none d-md-flex align-items-center ms-auto me-2">
+                        <a asp-controller="Home" asp-action="Cart" class="me-3">
+                            <i class="fa-solid fa-cart-shopping fa-2xl text-tertiary"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <div class="main-content">
+            <div class="container p-0">
+                <div class="row">
+                    <div class="col-md-3 py-3">
+                        <div class="px-3 py-4">
+                            <h2>Genres</h2>
+                            <br/>
+                            <ul class="list-unstyled">
+                                <li class="genre-item"><a href="#">Fantasy <span>›</span></a></li>
+                                <li class="genre-item"><a href="#">Romance <span>›</span></a></li>
+                                <li class="genre-item"><a href="#">Thriller <span>›</span></a></li>
+                                <li class="genre-item"><a href="#">Crime <span>›</span></a></li>
+                                <li class="genre-item"><a href="#">Science Fiction <span>›</span></a></li>
+                                <li class="genre-item"><a href="#">Non-fiction <span>›</span></a></li>
+                                <li class="genre-item"><a href="#">Biography <span>›</span></a></li>
+                                <li class="genre-item"><a href="#">Children's <span>›</span></a></li>
+                                <li class="genre-item"><a href="#">History <span>›</span></a></li>
+                                <li class="genre-item"><a href="#">Adventure <span>›</span></a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="col-md-9">
+                        <main role="main" class="pb-3">
+                            @RenderBody()
+                        </main>
+                    </div>
+                </div>
+            </div>
         </div>
-    </footer>
+
+        <div class="container-fluid bg-dark ps-0 mt-5">
+            <footer class="p-4 bg-dark mt-4">
+                <ul class="nav justify-content-center border-bottom pb-3 mb-3">
+                    <li class="nav-item">
+                        <a class="nav-link px-2 text-white" asp-controller="Home" asp-action="Index">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link px-2 text-white" asp-controller="Home" asp-action="Books">Books</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link px-2 text-white" asp-controller="Home" asp-action="Contact">Contact</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link px-2 text-white" asp-controller="Home" asp-action="FAQs">FAQ</a>
+                    </li>
+                </ul>
+
+                <p class="text-center text-white">&copy; 2025 BookStore. All rights reserved.</p>
+
+                <div class="d-flex justify-content-center gap-4">
+                    <a href="#" aria-label="Instagram" class="text-white">
+                        <i class="fab fa-instagram" style="font-size: 24px;"></i>
+                    </a>
+                    <a href="#" aria-label="Facebook" class="text-white">
+                        <i class="fab fa-facebook" style="font-size: 24px;"></i>
+                    </a>
+                    <a href="#" aria-label="YouTube" class="text-white">
+                        <i class="fab fa-youtube" style="font-size: 24px;"></i>
+                    </a>
+                </div>
+            </footer>
+        </div>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
+
 </html>

@@ -22,7 +22,7 @@ namespace BookStore.Intranet.Controllers
         // GET: Genre
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Genre.ToListAsync());
+            return View(await _context.Genres.ToListAsync());
         }
 
         // GET: Genre/Details/5
@@ -33,8 +33,8 @@ namespace BookStore.Intranet.Controllers
                 return NotFound();
             }
 
-            var genre = await _context.Genre
-                .FirstOrDefaultAsync(m => m.GenreID == id);
+            var genre = await _context.Genres
+                .FirstOrDefaultAsync(m => m.IdGenre == id);
             if (genre == null)
             {
                 return NotFound();
@@ -54,7 +54,7 @@ namespace BookStore.Intranet.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("GenreID,Name")] Genre genre)
+        public async Task<IActionResult> Create([Bind("IdGenre,Name")] Genre genre)
         {
             if (ModelState.IsValid)
             {
@@ -73,7 +73,7 @@ namespace BookStore.Intranet.Controllers
                 return NotFound();
             }
 
-            var genre = await _context.Genre.FindAsync(id);
+            var genre = await _context.Genres.FindAsync(id);
             if (genre == null)
             {
                 return NotFound();
@@ -86,9 +86,9 @@ namespace BookStore.Intranet.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("GenreID,Name")] Genre genre)
+        public async Task<IActionResult> Edit(int id, [Bind("IdGenre,Name")] Genre genre)
         {
-            if (id != genre.GenreID)
+            if (id != genre.IdGenre)
             {
                 return NotFound();
             }
@@ -102,7 +102,7 @@ namespace BookStore.Intranet.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!GenreExists(genre.GenreID))
+                    if (!GenreExists(genre.IdGenre))
                     {
                         return NotFound();
                     }
@@ -124,8 +124,8 @@ namespace BookStore.Intranet.Controllers
                 return NotFound();
             }
 
-            var genre = await _context.Genre
-                .FirstOrDefaultAsync(m => m.GenreID == id);
+            var genre = await _context.Genres
+                .FirstOrDefaultAsync(m => m.IdGenre == id);
             if (genre == null)
             {
                 return NotFound();
@@ -139,10 +139,10 @@ namespace BookStore.Intranet.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var genre = await _context.Genre.FindAsync(id);
+            var genre = await _context.Genres.FindAsync(id);
             if (genre != null)
             {
-                _context.Genre.Remove(genre);
+                _context.Genres.Remove(genre);
             }
 
             await _context.SaveChangesAsync();
@@ -151,7 +151,7 @@ namespace BookStore.Intranet.Controllers
 
         private bool GenreExists(int id)
         {
-            return _context.Genre.Any(e => e.GenreID == id);
+            return _context.Genres.Any(e => e.IdGenre == id);
         }
     }
 }

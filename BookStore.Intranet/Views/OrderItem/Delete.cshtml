@@ -15,7 +15,7 @@
             @Html.DisplayNameFor(model => model.Order)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Order.OrderID)
+            @Html.DisplayFor(model => model.Order.OrderStatus)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Book)
@@ -29,10 +29,16 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Quantity)
         </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.UnitPrice)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.UnitPrice)
+        </dd>
     </dl>
     
     <form asp-action="Delete">
-        <input type="hidden" asp-for="OrderItemID" />
+        <input type="hidden" asp-for="IdOrderItem" />
         <input type="submit" value="Delete" class="btn btn-danger" /> |
         <a asp-action="Index">Back to List</a>
     </form>

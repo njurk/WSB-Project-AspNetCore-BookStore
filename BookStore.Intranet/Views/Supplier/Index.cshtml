@@ -19,19 +19,7 @@
                 @Html.DisplayNameFor(model => model.Email)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.PhoneNumber)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Street)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.City)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PostalCode)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Country)
+                @Html.DisplayNameFor(model => model.Phone)
             </th>
             <th></th>
         </tr>
@@ -43,27 +31,15 @@
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.PhoneNumber)
-            </td>
-            <td>
                 @Html.DisplayFor(modelItem => item.Email)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Street)
+                @Html.DisplayFor(modelItem => item.Phone)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.City)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PostalCode)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Country)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.SupplierID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.SupplierID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.SupplierID">Delete</a>
+                <a asp-action="Edit" asp-route-id="@item.IdSupplier">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.IdSupplier">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.IdSupplier">Delete</a>
             </td>
         </tr>
 }

@@ -17,6 +17,20 @@ namespace BookStore.PortalWWW.Controllers
         {
             return View();
         }
+        public IActionResult Books()
+        {
+            return View();
+        }
+
+        public IActionResult BookDetails()
+        {
+            return View();
+        }
+
+        public IActionResult Cart()
+        {
+            return View();
+        }
 
         public IActionResult Privacy()
         {

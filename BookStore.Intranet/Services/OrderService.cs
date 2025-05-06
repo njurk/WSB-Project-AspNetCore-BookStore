@@ -15,11 +15,12 @@ namespace BookStore.Intranet.Services
 
         public async Task<List<OrderViewModel>> GetOrdersWithTotalPriceAsync()
         {
-            return await _context.Order
+            return await _context.Orders
                 .Select(order => new OrderViewModel
                 {
-                    OrderID = order.OrderID,
+                    OrderID = order.IdOrder,
                     OrderDate = order.OrderDate,
+                    OrderStatus = order.OrderStatus.Name,
                     TotalPrice = order.OrderItems.Sum(item => item.Quantity * (item.Book != null ? item.Book.Price : 0))
                 })
                 .ToListAsync();

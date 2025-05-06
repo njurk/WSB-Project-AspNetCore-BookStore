@@ -32,9 +32,9 @@ namespace BookStore.Intranet.Controllers
 
             var model = new DashboardViewModel
             {
-                TotalBooks = await _context.Book.CountAsync(),
-                TotalOrders = await _context.Order.CountAsync(),
-                TotalDeliveries = await _context.Delivery.CountAsync(),
+                TotalBooks = await _context.Books.CountAsync(),
+                TotalOrders = await _context.Orders.CountAsync(),
+                TotalDeliveries = await _context.Deliveries.CountAsync(),
                 RecentOrders = recentOrders
             };
 

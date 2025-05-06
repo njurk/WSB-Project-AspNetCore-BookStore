@@ -1,28 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BookStore.Data.Data.Entities
 {
     public class DeliveryItem
     {
         [Key]
-        public int DeliveryItemID { get; set; }
+        public int IdDeliveryItem { get; set; }
 
-        public required int DeliveryID { get; set; }
+        [Required(ErrorMessage = "Delivery is required.")]
+        [Display(Name = "Delivery")]
+        [ForeignKey("Delivery")]
+        public int IdDelivery { get; set; }
 
-        [ForeignKey("DeliveryID")]
         public Delivery? Delivery { get; set; }
 
-        public required int BookID { get; set; }
+        [Required(ErrorMessage = "Book is required.")]
+        [DisplayName("Book")]
+        [ForeignKey("Book")]
+        public required int IdBook { get; set; }
 
-        [ForeignKey("BookID")]
         public Book? Book { get; set; }
 
-        public required int Quantity { get; set; }
+        [Required(ErrorMessage = "Quantity is required.")]
+        [Range(1, int.MaxValue)]
+        public int Quantity { get; set; }
     }
 }

@@ -22,7 +22,7 @@ namespace BookStore.Intranet.Controllers
         // GET: Supplier
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Supplier.ToListAsync());
+            return View(await _context.Suppliers.ToListAsync());
         }
 
         // GET: Supplier/Details/5
@@ -33,8 +33,8 @@ namespace BookStore.Intranet.Controllers
                 return NotFound();
             }
 
-            var supplier = await _context.Supplier
-                .FirstOrDefaultAsync(m => m.SupplierID == id);
+            var supplier = await _context.Suppliers
+                .FirstOrDefaultAsync(m => m.IdSupplier == id);
             if (supplier == null)
             {
                 return NotFound();
@@ -54,7 +54,7 @@ namespace BookStore.Intranet.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("SupplierID,Name,PhoneNumber,Email,Street,City,PostalCode,Country")] Supplier supplier)
+        public async Task<IActionResult> Create([Bind("IdSupplier,Name,Email,Phone")] Supplier supplier)
         {
             if (ModelState.IsValid)
             {
@@ -73,7 +73,7 @@ namespace BookStore.Intranet.Controllers
                 return NotFound();
             }
 
-            var supplier = await _context.Supplier.FindAsync(id);
+            var supplier = await _context.Suppliers.FindAsync(id);
             if (supplier == null)
             {
                 return NotFound();
@@ -86,9 +86,9 @@ namespace BookStore.Intranet.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("SupplierID,Name,PhoneNumber,Email,Street,City,PostalCode,Country")] Supplier supplier)
+        public async Task<IActionResult> Edit(int id, [Bind("IdSupplier,Name,Email,Phone")] Supplier supplier)
         {
-            if (id != supplier.SupplierID)
+            if (id != supplier.IdSupplier)
             {
                 return NotFound();
             }
@@ -102,7 +102,7 @@ namespace BookStore.Intranet.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!SupplierExists(supplier.SupplierID))
+                    if (!SupplierExists(supplier.IdSupplier))
                     {
                         return NotFound();
                     }
@@ -124,8 +124,8 @@ namespace BookStore.Intranet.Controllers
                 return NotFound();
             }
 
-            var supplier = await _context.Supplier
-                .FirstOrDefaultAsync(m => m.SupplierID == id);
+            var supplier = await _context.Suppliers
+                .FirstOrDefaultAsync(m => m.IdSupplier == id);
             if (supplier == null)
             {
                 return NotFound();
@@ -139,10 +139,10 @@ namespace BookStore.Intranet.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var supplier = await _context.Supplier.FindAsync(id);
+            var supplier = await _context.Suppliers.FindAsync(id);
             if (supplier != null)
             {
-                _context.Supplier.Remove(supplier);
+                _context.Suppliers.Remove(supplier);
             }
 
             await _context.SaveChangesAsync();
@@ -151,7 +151,7 @@ namespace BookStore.Intranet.Controllers
 
         private bool SupplierExists(int id)
         {
-            return _context.Supplier.Any(e => e.SupplierID == id);
+            return _context.Suppliers.Any(e => e.IdSupplier == id);
         }
     }
 }
