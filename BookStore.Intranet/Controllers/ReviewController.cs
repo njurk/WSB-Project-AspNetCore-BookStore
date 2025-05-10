@@ -49,8 +49,8 @@ namespace BookStore.Intranet.Controllers
         // GET: Review/Create
         public IActionResult Create()
         {
-            ViewData["IdBook"] = new SelectList(_context.Books, "IdBook", "Description");
-            ViewData["IdUser"] = new SelectList(_context.Users, "IdUser", "Email");
+            ViewData["IdBook"] = new SelectList(_context.Books, "IdBook", "Title");
+            ViewData["IdUser"] = new SelectList(_context.Users, "IdUser", "Username");
             return View();
         }
 
@@ -67,8 +67,8 @@ namespace BookStore.Intranet.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdBook"] = new SelectList(_context.Books, "IdBook", "Description", review.IdBook);
-            ViewData["IdUser"] = new SelectList(_context.Users, "IdUser", "Email", review.IdUser);
+            ViewData["IdBook"] = new SelectList(_context.Books, "IdBook", "Title", review.IdBook);
+            ViewData["IdUser"] = new SelectList(_context.Users, "IdUser", "Username", review.IdUser);
             return View(review);
         }
 
@@ -85,8 +85,8 @@ namespace BookStore.Intranet.Controllers
             {
                 return NotFound();
             }
-            ViewData["IdBook"] = new SelectList(_context.Books, "IdBook", "Description", review.IdBook);
-            ViewData["IdUser"] = new SelectList(_context.Users, "IdUser", "Email", review.IdUser);
+            ViewData["IdBook"] = new SelectList(_context.Books, "IdBook", "Title", review.IdBook);
+            ViewData["IdUser"] = new SelectList(_context.Users, "IdUser", "Username", review.IdUser);
             return View(review);
         }
 
@@ -123,7 +123,7 @@ namespace BookStore.Intranet.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["IdBook"] = new SelectList(_context.Books, "IdBook", "Description", review.IdBook);
-            ViewData["IdUser"] = new SelectList(_context.Users, "IdUser", "Email", review.IdUser);
+            ViewData["IdUser"] = new SelectList(_context.Users, "IdUser", "City", review.IdUser);
             return View(review);
         }
 

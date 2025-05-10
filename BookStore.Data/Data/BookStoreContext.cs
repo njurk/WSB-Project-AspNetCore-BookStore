@@ -21,9 +21,7 @@ namespace BookStore.Data.Data
         public DbSet<Delivery> Deliveries { get; set; } = default!;
         public DbSet<DeliveryItem> DeliveryItems { get; set; } = default!;
         public DbSet<Review> Reviews { get; set; } = default!;
-        public DbSet<Role> Roles { get; set; } = default!;
         public DbSet<OrderStatus> OrderStatuses { get; set; } = default!;
-        public DbSet<Collection> Collections { get; set; } = default!;
     }
 }
 

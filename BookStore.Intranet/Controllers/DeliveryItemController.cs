@@ -49,7 +49,7 @@ namespace BookStore.Intranet.Controllers
         // GET: DeliveryItem/Create
         public IActionResult Create()
         {
-            ViewData["IdBook"] = new SelectList(_context.Books, "IdBook", "Description");
+            ViewData["IdBook"] = new SelectList(_context.Books, "IdBook", "Title");
             ViewData["IdDelivery"] = new SelectList(_context.Deliveries, "IdDelivery", "IdDelivery");
             return View();
         }
@@ -67,7 +67,7 @@ namespace BookStore.Intranet.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdBook"] = new SelectList(_context.Books, "IdBook", "Description", deliveryItem.IdBook);
+            ViewData["IdBook"] = new SelectList(_context.Books, "IdBook", "Title", deliveryItem.IdBook);
             ViewData["IdDelivery"] = new SelectList(_context.Deliveries, "IdDelivery", "IdDelivery", deliveryItem.IdDelivery);
             return View(deliveryItem);
         }
@@ -85,7 +85,7 @@ namespace BookStore.Intranet.Controllers
             {
                 return NotFound();
             }
-            ViewData["IdBook"] = new SelectList(_context.Books, "IdBook", "Description", deliveryItem.IdBook);
+            ViewData["IdBook"] = new SelectList(_context.Books, "IdBook", "Title", deliveryItem.IdBook);
             ViewData["IdDelivery"] = new SelectList(_context.Deliveries, "IdDelivery", "IdDelivery", deliveryItem.IdDelivery);
             return View(deliveryItem);
         }

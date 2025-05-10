@@ -48,7 +48,15 @@ namespace BookStore.Intranet.Controllers
         // GET: Book/Create
         public IActionResult Create()
         {
-            ViewData["IdAuthor"] = new SelectList(_context.Authors, "IdAuthor", "FirstName");
+            var authors = _context.Authors
+                .Select(a => new
+                {
+                    Id = a.IdAuthor,
+                    FullName = a.FirstName + " " + a.LastName
+                })
+                .ToList();
+
+            ViewBag.IdAuthor = new SelectList(authors, "Id", "FullName");
             return View();
         }
 
@@ -70,21 +78,27 @@ namespace BookStore.Intranet.Controllers
         }
 
         // GET: Book/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public IActionResult Edit(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            var book = _context.Books.Include(b => b.Author).FirstOrDefault(b => b.IdBook == id);
 
-            var book = await _context.Books.FindAsync(id);
             if (book == null)
             {
                 return NotFound();
             }
-            ViewData["IdAuthor"] = new SelectList(_context.Authors, "IdAuthor", "FirstName", book.IdAuthor);
+
+            var authors = _context.Authors
+                .Select(a => new
+                {
+                    Id = a.IdAuthor,
+                    FullName = a.FirstName + " " + a.LastName
+                })
+                .ToList();
+
+            ViewBag.IdAuthor = new SelectList(authors, "Id", "FullName", book.IdAuthor);
             return View(book);
         }
+
 
         // POST: Book/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -133,10 +147,14 @@ namespace BookStore.Intranet.Controllers
             var book = await _context.Books
                 .Include(b => b.Author)
                 .FirstOrDefaultAsync(m => m.IdBook == id);
+
             if (book == null)
             {
                 return NotFound();
             }
+
+            var authorFullName = book.Author != null ? book.Author.FirstName + " " + book.Author.LastName : "Unknown Author";
+            ViewBag.AuthorFullName = authorFullName;
 
             return View(book);
         }

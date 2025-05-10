@@ -4,44 +4,44 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<div class="container mt-4">
+    <h1 class="text-center mb-4">Suppliers</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Email)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Phone)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Phone)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.IdSupplier">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.IdSupplier">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.IdSupplier">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <a asp-action="Create" class="btn btn-success">
+            <i class="fa fa-plus"></i> Create New
+        </a>
+    </div>
+
+    <table class="table table-striped table-bordered table-hover">
+        <thead class="table-light">
+            <tr>
+                <th>@Html.DisplayNameFor(model => model.Name)</th>
+                <th>@Html.DisplayNameFor(model => model.Email)</th>
+                <th>@Html.DisplayNameFor(model => model.Phone)</th>
+                <th class="text-center" style="width: 120px">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Email)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Phone)</td>
+                    <td class="text-center">
+                        <a asp-action="Edit" asp-route-id="@item.IdSupplier" class="btn btn-sm btn-outline-primary">
+                            <i class="fa fa-pencil-square"></i>
+                        </a>
+                        <a asp-action="Details" asp-route-id="@item.IdSupplier" class="btn btn-sm btn-outline-info">
+                            <i class="fa fa-info-circle"></i>
+                        </a>
+                        <a asp-action="Delete" asp-route-id="@item.IdSupplier" class="btn btn-sm btn-outline-danger">
+                            <i class="fa fa-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

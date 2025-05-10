@@ -49,10 +49,20 @@ namespace BookStore.Intranet.Controllers
         // GET: BookGenre/Create
         public IActionResult Create()
         {
-            ViewData["IdBook"] = new SelectList(_context.Books, "IdBook", "Description");
-            ViewData["IdGenre"] = new SelectList(_context.Genres, "IdGenre", "Name");
+            var books = _context.Books
+                .Select(b => new
+                {
+                    IdBook = b.IdBook,
+                    Title = b.Title
+                })
+                .ToList();
+
+            ViewBag.IdBook = new SelectList(books, "IdBook", "Title");
+            ViewBag.IdGenre = new SelectList(_context.Genres, "IdGenre", "Name");
+
             return View();
         }
+
 
         // POST: BookGenre/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -73,21 +83,20 @@ namespace BookStore.Intranet.Controllers
         }
 
         // GET: BookGenre/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public IActionResult Edit(int id)
         {
-            if (id == null)
+            var bookGenres = _context.BookGenres
+                .FirstOrDefault(bg => bg.IdBookGenre == id);
+
+            if (bookGenres == null)
             {
                 return NotFound();
             }
 
-            var bookGenre = await _context.BookGenres.FindAsync(id);
-            if (bookGenre == null)
-            {
-                return NotFound();
-            }
-            ViewData["IdBook"] = new SelectList(_context.Books, "IdBook", "Description", bookGenre.IdBook);
-            ViewData["IdGenre"] = new SelectList(_context.Genres, "IdGenre", "Name", bookGenre.IdGenre);
-            return View(bookGenre);
+            ViewBag.IdBook = new SelectList(_context.Books, "IdBook", "Title", bookGenres.IdBook);
+            ViewBag.IdGenre = new SelectList(_context.Genres, "IdGenre", "Name", bookGenres.IdGenre);
+
+            return View(bookGenres);
         }
 
         // POST: BookGenre/Edit/5

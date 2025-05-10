@@ -50,7 +50,7 @@ namespace BookStore.Intranet.Controllers
         public IActionResult Create()
         {
             ViewData["IdOrderStatus"] = new SelectList(_context.OrderStatuses, "Id", "Name");
-            ViewData["IdUser"] = new SelectList(_context.Users, "IdUser", "Email");
+            ViewData["IdUser"] = new SelectList(_context.Users, "IdUser", "Username");
             return View();
         }
 
@@ -68,7 +68,7 @@ namespace BookStore.Intranet.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["IdOrderStatus"] = new SelectList(_context.OrderStatuses, "Id", "Name", order.IdOrderStatus);
-            ViewData["IdUser"] = new SelectList(_context.Users, "IdUser", "Email", order.IdUser);
+            ViewData["IdUser"] = new SelectList(_context.Users, "IdUser", "City", order.IdUser);
             return View(order);
         }
 
@@ -86,7 +86,7 @@ namespace BookStore.Intranet.Controllers
                 return NotFound();
             }
             ViewData["IdOrderStatus"] = new SelectList(_context.OrderStatuses, "Id", "Name", order.IdOrderStatus);
-            ViewData["IdUser"] = new SelectList(_context.Users, "IdUser", "Email", order.IdUser);
+            ViewData["IdUser"] = new SelectList(_context.Users, "IdUser", "Username", order.IdUser);
             return View(order);
         }
 
@@ -123,7 +123,7 @@ namespace BookStore.Intranet.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["IdOrderStatus"] = new SelectList(_context.OrderStatuses, "Id", "Name", order.IdOrderStatus);
-            ViewData["IdUser"] = new SelectList(_context.Users, "IdUser", "Email", order.IdUser);
+            ViewData["IdUser"] = new SelectList(_context.Users, "IdUser", "City", order.IdUser);
             return View(order);
         }
 

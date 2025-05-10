@@ -1,34 +1,39 @@
 ﻿@model BookStore.Data.Data.Entities.Delivery
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Add";
 }
 
-<h1>Create</h1>
+<h1 class="mb-4 text-center">Add Delivery</h1>
 
-<h4>Delivery</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
+<div class="d-flex justify-content-center">
+    <div class="col-md-6 col-lg-4">
         <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="IdSupplier" class="control-label"></label>
-                <select asp-for="IdSupplier" class ="form-control" asp-items="ViewBag.IdSupplier"></select>
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="mb-3">
+                <label asp-for="IdSupplier" class="form-label"></label>
+                <select asp-for="IdSupplier" class="form-control" asp-items="ViewBag.IdSupplier"></select>
+                <span asp-validation-for="IdSupplier" class="text-danger small"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="DeliveryDate" class="control-label"></label>
+
+            <div class="mb-3">
+                <label asp-for="DeliveryDate" class="form-label"></label>
                 <input asp-for="DeliveryDate" class="form-control" />
-                <span asp-validation-for="DeliveryDate" class="text-danger"></span>
+                <span asp-validation-for="DeliveryDate" class="text-danger small"></span>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
+
+            <button type="submit" class="btn btn-primary w-100">Add</button>
         </form>
+
+        <div class="mt-3 text-center">
+            <a asp-action="Index" class="text-decoration-none">← Back to List</a>
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

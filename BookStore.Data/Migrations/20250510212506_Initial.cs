@@ -39,6 +39,19 @@ namespace BookStore.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "OrderStatuses",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OrderStatuses", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Suppliers",
                 columns: table => new
                 {
@@ -61,8 +74,10 @@ namespace BookStore.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Username = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Role = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Street = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    City = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    PostalCode = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -104,15 +119,14 @@ namespace BookStore.Data.Migrations
                     IdDelivery = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     IdSupplier = table.Column<int>(type: "int", nullable: false),
-                    SupplierIdSupplier = table.Column<int>(type: "int", nullable: false),
                     DeliveryDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Deliveries", x => x.IdDelivery);
                     table.ForeignKey(
-                        name: "FK_Deliveries_Suppliers_SupplierIdSupplier",
-                        column: x => x.SupplierIdSupplier,
+                        name: "FK_Deliveries_Suppliers_IdSupplier",
+                        column: x => x.IdSupplier,
                         principalTable: "Suppliers",
                         principalColumn: "IdSupplier",
                         onDelete: ReferentialAction.Cascade);
@@ -125,16 +139,21 @@ namespace BookStore.Data.Migrations
                     IdOrder = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     IdUser = table.Column<int>(type: "int", nullable: false),
-                    UserIdUser = table.Column<int>(type: "int", nullable: false),
                     OrderDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    IdOrderStatus = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Orders", x => x.IdOrder);
                     table.ForeignKey(
-                        name: "FK_Orders_Users_UserIdUser",
-                        column: x => x.UserIdUser,
+                        name: "FK_Orders_OrderStatuses_IdOrderStatus",
+                        column: x => x.IdOrderStatus,
+                        principalTable: "OrderStatuses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Orders_Users_IdUser",
+                        column: x => x.IdUser,
                         principalTable: "Users",
                         principalColumn: "IdUser",
                         onDelete: ReferentialAction.Cascade);
@@ -147,22 +166,20 @@ namespace BookStore.Data.Migrations
                     IdBookGenre = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     IdBook = table.Column<int>(type: "int", nullable: false),
-                    BookIdBook = table.Column<int>(type: "int", nullable: false),
-                    IdGenre = table.Column<int>(type: "int", nullable: false),
-                    GenreIdGenre = table.Column<int>(type: "int", nullable: false)
+                    IdGenre = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_BookGenres", x => x.IdBookGenre);
                     table.ForeignKey(
-                        name: "FK_BookGenres_Books_BookIdBook",
-                        column: x => x.BookIdBook,
+                        name: "FK_BookGenres_Books_IdBook",
+                        column: x => x.IdBook,
                         principalTable: "Books",
                         principalColumn: "IdBook",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_BookGenres_Genres_GenreIdGenre",
-                        column: x => x.GenreIdGenre,
+                        name: "FK_BookGenres_Genres_IdGenre",
+                        column: x => x.IdGenre,
                         principalTable: "Genres",
                         principalColumn: "IdGenre",
                         onDelete: ReferentialAction.Cascade);
@@ -175,9 +192,7 @@ namespace BookStore.Data.Migrations
                     IdReview = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     IdUser = table.Column<int>(type: "int", nullable: false),
-                    UserIdUser = table.Column<int>(type: "int", nullable: false),
                     IdBook = table.Column<int>(type: "int", nullable: false),
-                    BookIdBook = table.Column<int>(type: "int", nullable: false),
                     Rating = table.Column<int>(type: "int", nullable: false),
                     Comment = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false)
                 },
@@ -185,14 +200,14 @@ namespace BookStore.Data.Migrations
                 {
                     table.PrimaryKey("PK_Reviews", x => x.IdReview);
                     table.ForeignKey(
-                        name: "FK_Reviews_Books_BookIdBook",
-                        column: x => x.BookIdBook,
+                        name: "FK_Reviews_Books_IdBook",
+                        column: x => x.IdBook,
                         principalTable: "Books",
                         principalColumn: "IdBook",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Reviews_Users_UserIdUser",
-                        column: x => x.UserIdUser,
+                        name: "FK_Reviews_Users_IdUser",
+                        column: x => x.IdUser,
                         principalTable: "Users",
                         principalColumn: "IdUser",
                         onDelete: ReferentialAction.Cascade);
@@ -205,23 +220,21 @@ namespace BookStore.Data.Migrations
                     IdDeliveryItem = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     IdDelivery = table.Column<int>(type: "int", nullable: false),
-                    DeliveryIdDelivery = table.Column<int>(type: "int", nullable: false),
                     IdBook = table.Column<int>(type: "int", nullable: false),
-                    BookIdBook = table.Column<int>(type: "int", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_DeliveryItems", x => x.IdDeliveryItem);
                     table.ForeignKey(
-                        name: "FK_DeliveryItems_Books_BookIdBook",
-                        column: x => x.BookIdBook,
+                        name: "FK_DeliveryItems_Books_IdBook",
+                        column: x => x.IdBook,
                         principalTable: "Books",
                         principalColumn: "IdBook",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_DeliveryItems_Deliveries_DeliveryIdDelivery",
-                        column: x => x.DeliveryIdDelivery,
+                        name: "FK_DeliveryItems_Deliveries_IdDelivery",
+                        column: x => x.IdDelivery,
                         principalTable: "Deliveries",
                         principalColumn: "IdDelivery",
                         onDelete: ReferentialAction.Cascade);
@@ -234,9 +247,7 @@ namespace BookStore.Data.Migrations
                     IdOrderItem = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     IdOrder = table.Column<int>(type: "int", nullable: false),
-                    OrderIdOrder = table.Column<int>(type: "int", nullable: false),
                     IdBook = table.Column<int>(type: "int", nullable: false),
-                    BookIdBook = table.Column<int>(type: "int", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
                     UnitPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
                 },
@@ -244,28 +255,28 @@ namespace BookStore.Data.Migrations
                 {
                     table.PrimaryKey("PK_OrderItems", x => x.IdOrderItem);
                     table.ForeignKey(
-                        name: "FK_OrderItems_Books_BookIdBook",
-                        column: x => x.BookIdBook,
+                        name: "FK_OrderItems_Books_IdBook",
+                        column: x => x.IdBook,
                         principalTable: "Books",
                         principalColumn: "IdBook",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_OrderItems_Orders_OrderIdOrder",
-                        column: x => x.OrderIdOrder,
+                        name: "FK_OrderItems_Orders_IdOrder",
+                        column: x => x.IdOrder,
                         principalTable: "Orders",
                         principalColumn: "IdOrder",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_BookGenres_BookIdBook",
+                name: "IX_BookGenres_IdBook",
                 table: "BookGenres",
-                column: "BookIdBook");
+                column: "IdBook");
 
             migrationBuilder.CreateIndex(
-                name: "IX_BookGenres_GenreIdGenre",
+                name: "IX_BookGenres_IdGenre",
                 table: "BookGenres",
-                column: "GenreIdGenre");
+                column: "IdGenre");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Books_IdAuthor",
@@ -273,44 +284,49 @@ namespace BookStore.Data.Migrations
                 column: "IdAuthor");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Deliveries_SupplierIdSupplier",
+                name: "IX_Deliveries_IdSupplier",
                 table: "Deliveries",
-                column: "SupplierIdSupplier");
+                column: "IdSupplier");
 
             migrationBuilder.CreateIndex(
-                name: "IX_DeliveryItems_BookIdBook",
+                name: "IX_DeliveryItems_IdBook",
                 table: "DeliveryItems",
-                column: "BookIdBook");
+                column: "IdBook");
 
             migrationBuilder.CreateIndex(
-                name: "IX_DeliveryItems_DeliveryIdDelivery",
+                name: "IX_DeliveryItems_IdDelivery",
                 table: "DeliveryItems",
-                column: "DeliveryIdDelivery");
+                column: "IdDelivery");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrderItems_BookIdBook",
+                name: "IX_OrderItems_IdBook",
                 table: "OrderItems",
-                column: "BookIdBook");
+                column: "IdBook");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrderItems_OrderIdOrder",
+                name: "IX_OrderItems_IdOrder",
                 table: "OrderItems",
-                column: "OrderIdOrder");
+                column: "IdOrder");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Orders_UserIdUser",
+                name: "IX_Orders_IdOrderStatus",
                 table: "Orders",
-                column: "UserIdUser");
+                column: "IdOrderStatus");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Reviews_BookIdBook",
-                table: "Reviews",
-                column: "BookIdBook");
+                name: "IX_Orders_IdUser",
+                table: "Orders",
+                column: "IdUser");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Reviews_UserIdUser",
+                name: "IX_Reviews_IdBook",
                 table: "Reviews",
-                column: "UserIdUser");
+                column: "IdBook");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Reviews_IdUser",
+                table: "Reviews",
+                column: "IdUser");
         }
 
         /// <inheritdoc />
@@ -342,6 +358,9 @@ namespace BookStore.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "Suppliers");
+
+            migrationBuilder.DropTable(
+                name: "OrderStatuses");
 
             migrationBuilder.DropTable(
                 name: "Users");

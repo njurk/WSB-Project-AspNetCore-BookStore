@@ -49,8 +49,8 @@ namespace BookStore.Intranet.Controllers
         // GET: OrderItem/Create
         public IActionResult Create()
         {
-            ViewData["IdBook"] = new SelectList(_context.Books, "IdBook", "Description");
-            ViewData["IdOrder"] = new SelectList(_context.Orders, "IdOrder", "Status");
+            ViewData["IdBook"] = new SelectList(_context.Books, "IdBook", "Title");
+            ViewData["IdOrder"] = new SelectList(_context.Orders, "IdOrder", "IdOrder");
             return View();
         }
 
@@ -68,7 +68,7 @@ namespace BookStore.Intranet.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["IdBook"] = new SelectList(_context.Books, "IdBook", "Description", orderItem.IdBook);
-            ViewData["IdOrder"] = new SelectList(_context.Orders, "IdOrder", "Status", orderItem.IdOrder);
+            ViewData["IdOrder"] = new SelectList(_context.Orders, "IdOrder", "IdOrder", orderItem.IdOrder);
             return View(orderItem);
         }
 
@@ -85,8 +85,8 @@ namespace BookStore.Intranet.Controllers
             {
                 return NotFound();
             }
-            ViewData["IdBook"] = new SelectList(_context.Books, "IdBook", "Description", orderItem.IdBook);
-            ViewData["IdOrder"] = new SelectList(_context.Orders, "IdOrder", "Status", orderItem.IdOrder);
+            ViewData["IdBook"] = new SelectList(_context.Books, "IdBook", "Title", orderItem.IdBook);
+            ViewData["IdOrder"] = new SelectList(_context.Orders, "IdOrder", "IdOrder", orderItem.IdOrder);
             return View(orderItem);
         }
 
@@ -123,7 +123,7 @@ namespace BookStore.Intranet.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["IdBook"] = new SelectList(_context.Books, "IdBook", "Description", orderItem.IdBook);
-            ViewData["IdOrder"] = new SelectList(_context.Orders, "IdOrder", "Status", orderItem.IdOrder);
+            ViewData["IdOrder"] = new SelectList(_context.Orders, "IdOrder", "IdOrder", orderItem.IdOrder);
             return View(orderItem);
         }
 

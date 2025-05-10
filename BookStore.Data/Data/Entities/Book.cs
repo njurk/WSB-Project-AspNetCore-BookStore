@@ -49,8 +49,6 @@ namespace BookStore.Data.Data.Entities
 
         [DisplayName("Image")]
         public string ImageUrl { get; set; } = string.Empty;
-
-        public ICollection<Collection> Collections { get; set; } = new List<Collection>();
         public ICollection<BookGenre> BookGenres { get; set; } = new List<BookGenre>();
         public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
         public ICollection<DeliveryItem> DeliveryItems { get; set; } = new List<DeliveryItem>();

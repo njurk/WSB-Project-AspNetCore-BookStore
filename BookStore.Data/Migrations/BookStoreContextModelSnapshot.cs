@@ -118,29 +118,6 @@ namespace BookStore.Data.Migrations
                     b.ToTable("BookGenres");
                 });
 
-            modelBuilder.Entity("BookStore.Data.Data.Entities.Collection", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("IdBook")
-                        .HasColumnType("int");
-
-                    b.Property<int>("IdUser")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("IdBook");
-
-                    b.HasIndex("IdUser");
-
-                    b.ToTable("Collections");
-                });
-
             modelBuilder.Entity("BookStore.Data.Data.Entities.Delivery", b =>
                 {
                     b.Property<int>("IdDelivery")
@@ -310,24 +287,6 @@ namespace BookStore.Data.Migrations
                     b.ToTable("Reviews");
                 });
 
-            modelBuilder.Entity("BookStore.Data.Data.Entities.Role", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Roles");
-                });
-
             modelBuilder.Entity("BookStore.Data.Data.Entities.Supplier", b =>
                 {
                     b.Property<int>("IdSupplier")
@@ -362,16 +321,27 @@ namespace BookStore.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdUser"));
 
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("IdRole")
-                        .HasColumnType("int");
-
-                    b.Property<string>("PasswordHash")
+                    b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PostalCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Street")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Username")
                         .IsRequired()
@@ -379,8 +349,6 @@ namespace BookStore.Data.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.HasKey("IdUser");
-
-                    b.HasIndex("IdRole");
 
                     b.ToTable("Users");
                 });
@@ -413,25 +381,6 @@ namespace BookStore.Data.Migrations
                     b.Navigation("Book");
 
                     b.Navigation("Genre");
-                });
-
-            modelBuilder.Entity("BookStore.Data.Data.Entities.Collection", b =>
-                {
-                    b.HasOne("BookStore.Data.Data.Entities.Book", "Book")
-                        .WithMany("Collections")
-                        .HasForeignKey("IdBook")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BookStore.Data.Data.Entities.User", "User")
-                        .WithMany("Collections")
-                        .HasForeignKey("IdUser")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Book");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("BookStore.Data.Data.Entities.Delivery", b =>
@@ -521,17 +470,6 @@ namespace BookStore.Data.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("BookStore.Data.Data.Entities.User", b =>
-                {
-                    b.HasOne("BookStore.Data.Data.Entities.Role", "Role")
-                        .WithMany("Users")
-                        .HasForeignKey("IdRole")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Role");
-                });
-
             modelBuilder.Entity("BookStore.Data.Data.Entities.Author", b =>
                 {
                     b.Navigation("Books");
@@ -540,8 +478,6 @@ namespace BookStore.Data.Migrations
             modelBuilder.Entity("BookStore.Data.Data.Entities.Book", b =>
                 {
                     b.Navigation("BookGenres");
-
-                    b.Navigation("Collections");
 
                     b.Navigation("DeliveryItems");
 
@@ -570,11 +506,6 @@ namespace BookStore.Data.Migrations
                     b.Navigation("Orders");
                 });
 
-            modelBuilder.Entity("BookStore.Data.Data.Entities.Role", b =>
-                {
-                    b.Navigation("Users");
-                });
-
             modelBuilder.Entity("BookStore.Data.Data.Entities.Supplier", b =>
                 {
                     b.Navigation("Deliveries");
@@ -582,8 +513,6 @@ namespace BookStore.Data.Migrations
 
             modelBuilder.Entity("BookStore.Data.Data.Entities.User", b =>
                 {
-                    b.Navigation("Collections");
-
                     b.Navigation("Orders");
 
                     b.Navigation("Reviews");

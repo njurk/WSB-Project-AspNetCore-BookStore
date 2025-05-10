@@ -48,7 +48,7 @@ namespace BookStore.Intranet.Controllers
         // GET: Delivery/Create
         public IActionResult Create()
         {
-            ViewData["IdSupplier"] = new SelectList(_context.Suppliers, "IdSupplier", "Email");
+            ViewData["IdSupplier"] = new SelectList(_context.Suppliers, "IdSupplier", "Name");
             return View();
         }
 
@@ -65,7 +65,7 @@ namespace BookStore.Intranet.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdSupplier"] = new SelectList(_context.Suppliers, "IdSupplier", "Email", delivery.IdSupplier);
+            ViewData["IdSupplier"] = new SelectList(_context.Suppliers, "IdSupplier", "Name", delivery.IdSupplier);
             return View(delivery);
         }
 
@@ -82,7 +82,7 @@ namespace BookStore.Intranet.Controllers
             {
                 return NotFound();
             }
-            ViewData["IdSupplier"] = new SelectList(_context.Suppliers, "IdSupplier", "Email", delivery.IdSupplier);
+            ViewData["IdSupplier"] = new SelectList(_context.Suppliers, "IdSupplier", "Name", delivery.IdSupplier);
             return View(delivery);
         }
 
@@ -118,7 +118,7 @@ namespace BookStore.Intranet.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdSupplier"] = new SelectList(_context.Suppliers, "IdSupplier", "Email", delivery.IdSupplier);
+            ViewData["IdSupplier"] = new SelectList(_context.Suppliers, "IdSupplier", "Name", delivery.IdSupplier);
             return View(delivery);
         }
 

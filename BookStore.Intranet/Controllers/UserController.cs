@@ -22,8 +22,7 @@ namespace BookStore.Intranet.Controllers
         // GET: User
         public async Task<IActionResult> Index()
         {
-            var bookStoreContext = _context.Users.Include(u => u.Role);
-            return View(await bookStoreContext.ToListAsync());
+            return View(await _context.Users.ToListAsync());
         }
 
         // GET: User/Details/5
@@ -35,7 +34,6 @@ namespace BookStore.Intranet.Controllers
             }
 
             var user = await _context.Users
-                .Include(u => u.Role)
                 .FirstOrDefaultAsync(m => m.IdUser == id);
             if (user == null)
             {
@@ -48,7 +46,6 @@ namespace BookStore.Intranet.Controllers
         // GET: User/Create
         public IActionResult Create()
         {
-            ViewData["IdRole"] = new SelectList(_context.Roles, "Id", "Name");
             return View();
         }
 
@@ -57,7 +54,7 @@ namespace BookStore.Intranet.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdUser,Username,Email,PasswordHash,IdRole")] User user)
+        public async Task<IActionResult> Create([Bind("IdUser,Username,Email,Password,Street,City,PostalCode")] User user)
         {
             if (ModelState.IsValid)
             {
@@ -65,7 +62,6 @@ namespace BookStore.Intranet.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdRole"] = new SelectList(_context.Roles, "Id", "Name", user.IdRole);
             return View(user);
         }
 
@@ -82,7 +78,6 @@ namespace BookStore.Intranet.Controllers
             {
                 return NotFound();
             }
-            ViewData["IdRole"] = new SelectList(_context.Roles, "Id", "Name", user.IdRole);
             return View(user);
         }
 
@@ -91,7 +86,7 @@ namespace BookStore.Intranet.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdUser,Username,Email,PasswordHash,IdRole")] User user)
+        public async Task<IActionResult> Edit(int id, [Bind("IdUser,Username,Email,Password,Street,City,PostalCode")] User user)
         {
             if (id != user.IdUser)
             {
@@ -118,7 +113,6 @@ namespace BookStore.Intranet.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdRole"] = new SelectList(_context.Roles, "Id", "Name", user.IdRole);
             return View(user);
         }
 
@@ -131,7 +125,6 @@ namespace BookStore.Intranet.Controllers
             }
 
             var user = await _context.Users
-                .Include(u => u.Role)
                 .FirstOrDefaultAsync(m => m.IdUser == id);
             if (user == null)
             {
