@@ -1,11 +1,16 @@
 ﻿using BookStore.Data.Data;
 using BookStore.Intranet.Services;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 
-var cultureInfo = new CultureInfo("pl-PL");
-CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
-CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
+var defaultCulture = new CultureInfo("en-US");
+var localizationOptions = new RequestLocalizationOptions
+{
+    DefaultRequestCulture = new RequestCulture(defaultCulture),
+    SupportedCultures = new List<CultureInfo> { defaultCulture },
+    SupportedUICultures = new List<CultureInfo> { defaultCulture }
+};
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<BookStoreContext>(options =>
@@ -16,6 +21,8 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<OrderService>();
 
 var app = builder.Build();
+
+app.UseRequestLocalization(localizationOptions);
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

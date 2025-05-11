@@ -26,22 +26,41 @@ namespace BookStore.Intranet.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var recentOrders = await _orderService.GetOrdersWithTotalPriceAsync();
+            var now = DateTime.Now;
+            var firstDayOfMonth = new DateTime(now.Year, now.Month, 1);
+
+            var recentOrders = _context.Orders
+                .Include(o => o.OrderStatus)
+                .Include(o => o.OrderItems)
+                .Where(o => o.OrderDate >= firstDayOfMonth)
+                .OrderByDescending(o => o.OrderDate)
+                .Take(5)
+                .Select(o => new OrderViewModel
+                {
+                    OrderID = o.IdOrder,
+                    OrderDate = o.OrderDate,
+                    OrderStatusName = o.OrderStatus.Name,
+                    TotalPrice = o.OrderItems.Sum(oi => oi.Quantity * oi.UnitPrice)
+                }).ToList();
+
+            var totalDeliveries = _context.Deliveries
+                .Where(d => d.DeliveryDate >= firstDayOfMonth)
+                .Count();
 
             var model = new DashboardViewModel
             {
-                TotalBooks = await _context.Books.CountAsync(),
-                TotalOrders = await _context.Orders.CountAsync(),
-                TotalDeliveries = await _context.Deliveries.CountAsync(),
+                TotalBooks = _context.Books.Sum(b => b.Quantity),
+                TotalOrders = _context.Orders.Count(o => o.OrderDate >= firstDayOfMonth),
+                TotalDeliveries = totalDeliveries,
                 RecentOrders = recentOrders
             };
 
             model.CalculateTotalRevenue();
 
             return View(model);
-        }
 
+        }
     }
 }
