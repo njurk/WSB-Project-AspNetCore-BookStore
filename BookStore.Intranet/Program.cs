@@ -1,5 +1,7 @@
 ﻿using BookStore.Data.Data;
 using BookStore.Intranet.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
@@ -13,12 +15,23 @@ var localizationOptions = new RequestLocalizationOptions
 };
 
 var builder = WebApplication.CreateBuilder(args);
+
 builder.Services.AddDbContext<BookStoreContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("BookStoreContext") ?? throw new InvalidOperationException("Connection string 'BookStoreContext' not found.")));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<OrderService>();
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+            .AddCookie(options =>
+            {
+                options.LoginPath = "/Account/Index";
+                options.LogoutPath = "/Account/Index";
+                options.AccessDeniedPath = "/Home/AccessDenied";
+            });
+
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
@@ -37,10 +50,11 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Account}/{action=Index}/{id?}");
 
 app.Run();

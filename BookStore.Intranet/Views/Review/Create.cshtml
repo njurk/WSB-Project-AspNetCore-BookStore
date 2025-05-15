@@ -33,6 +33,12 @@
                 <span asp-validation-for="Comment" class="text-danger small"></span>
             </div>
 
+            <div class="mb-3">
+                <label asp-for="DateAdded" class="form-label"></label>
+                <input asp-for="DateAdded" class="form-control" />
+                <span asp-validation-for="DateAdded" class="text-danger small"></span>
+            </div>
+
             <button type="submit" class="btn btn-primary w-100">Add</button>
         </form>
 

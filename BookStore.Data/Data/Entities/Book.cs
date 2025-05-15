@@ -53,5 +53,7 @@ namespace BookStore.Data.Data.Entities
         public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
         public ICollection<DeliveryItem> DeliveryItems { get; set; } = new List<DeliveryItem>();
         public ICollection<Review> Reviews { get; set; } = new List<Review>();
+        public ICollection<Collection> Collections { get; set; } = new List<Collection>();
+        public ICollection<Cart> Carts { get; set; } = new List<Cart>();
     }
 }

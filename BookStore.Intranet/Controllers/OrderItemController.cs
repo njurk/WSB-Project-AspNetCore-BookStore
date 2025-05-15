@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BookStore.Data.Data;
 using BookStore.Data.Data.Entities;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BookStore.Intranet.Controllers
 {
+    [Authorize]
     public class OrderItemController : Controller
     {
         private readonly BookStoreContext _context;

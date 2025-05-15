@@ -19,6 +19,10 @@ html, body {
     flex-direction: column;
 }
 
+.navbar-nav .nav-item .nav-link:hover {
+    background-color: rgba(100, 100, 100, 0.1) !important;
+}
+
 .main-content {
     flex-grow: 1;
 }
@@ -31,18 +35,10 @@ footer {
     text-align: center;
 }
 
-.navbar-custom {
-    background: linear-gradient(180deg, #2D294A, #5E5597);
-}
-
-.nav-link {
-    color: var(--color-tertiary);
-}
-
 :root {
-    --color-primary: #5A1E1E; /* deep muted oxblood */
-    --color-secondary: #e6c45f; /* gold */
-    --color-tertiary: #1F1F1F; /* charcoal */
+    --color-primary: #4c5c52; /* dark muddy green */
+    --color-secondary: #EFEFEF; /* very light gray */
+    --color-tertiary: #1a1a1a; /* dark grey */
 }
 
 /* background */
@@ -59,15 +55,15 @@ footer {
 }
 
 /* text */
-.text-primary {
+.color-primary {
     color: var(--color-primary) !important;
 }
 
-.text-secondary {
+.color-secondary {
     color: var(--color-secondary) !important;
 }
 
-.text-tertiary {
+.color-tertiary {
     color: var(--color-tertiary) !important;
 }
 
@@ -83,6 +79,15 @@ footer {
 .border-tertiary {
     border-color: var(--color-tertiary) !important;
 }
+
+.scale-hover {
+    transition: transform 0.1s ease-in-out;
+}
+
+    .scale-hover:hover {
+        transform: scale(0.95);
+    }
+
 
 .carousel-control-prev-icon,
 .carousel-control-next-icon {
@@ -101,13 +106,32 @@ footer {
     object-fit: cover;
 }
 
+.book-card {
+    width: 200px;
+    transition: transform 0.2s ease-in-out;
+}
+
+    .book-card:hover {
+        transform: scale(0.97);
+        cursor: pointer;
+    }
+
+.book-cover {
+    width: 200px;
+    height: 300px;
+    object-fit: cover;
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+}
+
 /* genres list */
 .genre-item {
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.2rem;
 }
 
     .genre-item a {
         text-decoration: none;
+        padding-block: 0.2rem;
         color: var(--color-tertiary) !important;
         display: flex;
         justify-content: space-between;
@@ -116,5 +140,4 @@ footer {
 
     .genre-item a:hover {
         background-color: rgba(100, 100, 100, 0.1);
-        border-radius: 0.25rem;
     }

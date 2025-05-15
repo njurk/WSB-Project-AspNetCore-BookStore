@@ -1,0 +1,15 @@
+﻿@model IEnumerable<BookStore.Data.Data.Entities.Genre>
+
+@if (Model?.Any() == true)
+{
+    <ul class="list-unstyled">
+        @foreach (var genre in Model)
+        {
+            <li class="genre-item"><a href="#">@genre.Name <span>›</span></a></li>
+        }
+    </ul>
+}
+else
+{
+    <p>No genres available.</p>
+}

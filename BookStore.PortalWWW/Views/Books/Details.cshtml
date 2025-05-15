@@ -1,0 +1,105 @@
+﻿@model BookStore.Data.Data.Entities.Book
+
+@{
+    ViewData["Title"] = @Model.Title;
+}
+
+<div class="main-content my-5">
+    <div class="row">
+        <div class="col-md-6">
+            <img src="~/images/@Model.ImageUrl" class="fixed-image-lg ms-5" alt="@Model.Title" />
+        </div>
+
+        <div class="col-md-6">
+            <h2>@Model.Title</h2>
+            <p><strong>Author:</strong> @Model.Author</p>
+            <p><strong>Description:</strong> @Model.Description</p>
+            <p><strong>Price:</strong> $@Model.Price</p>
+            <p><strong>Number of Pages:</strong> @Model.NumberOfPages</p>
+            <p>
+                <strong>Genres:</strong>
+                @(Model.BookGenres != null && Model.BookGenres.Any()
+                    ? string.Join(", ", Model.BookGenres.Select(bg => bg.Genre?.Name).Where(name => !string.IsNullOrEmpty(name)))
+                    : "Unknown")
+            </p>
+            <p><strong>Year Published:</strong> @Model.YearPublished</p>
+            <p><strong>Language:</strong> @Model.Language</p>
+
+            <div class="d-flex align-items-center mb-3">
+                <button class="btn btn-outline-secondary me-2">-</button>
+                <input type="number" value="1" class="form-control w-25 text-center" id="quantity" min="1" />
+                <button class="btn btn-outline-secondary ms-2">+</button>
+            </div>
+
+            <button class="btn btn-primary mb-5">
+                <i class="fas fa-cart-plus me-2"></i>Add to Cart
+            </button>
+
+            @if (Model.Reviews != null && Model.Reviews.Any())
+            {
+                var avgRating = Model.Reviews.Average(r => r.Rating);
+                var fullStars = (int)Math.Floor(avgRating);
+                var halfStar = avgRating - fullStars >= 0.5;
+                var emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
+                <div class="mb-3">
+                    <strong>Average Rating:</strong>
+                    <span class="text-warning">
+                        @for (int i = 0; i < fullStars; i++)
+                        {
+                            <i class="fas fa-star"></i>
+                        }
+                        @if (halfStar)
+                        {
+                            <i class="fas fa-star-half-alt"></i>
+                        }
+                        @for (int i = 0; i < emptyStars; i++)
+                        {
+                            <i class="far fa-star"></i>
+                        }
+                    </span>
+                    <span> (@avgRating.ToString("0.0") out of 5)</span>
+                </div>
+            }
+            else
+            {
+                <text>
+                    <div class="mb-3">
+                        <strong>Average Rating:</strong> <span>No ratings yet.</span>
+                    </div>
+                </text>
+            }
+
+            <div class="mb-3">
+                <strong>Comments:</strong>
+                <textarea class="form-control" rows="3" placeholder="Leave a comment..."></textarea>
+                <button class="btn btn-secondary mt-2">Submit Comment</button>
+            </div>
+
+            <div class="comments-section">
+                @if (Model.Reviews != null && Model.Reviews.Any())
+                {
+                    @foreach (var review in Model.Reviews.OrderByDescending(r => r.DateAdded))
+                    {
+                        <p>
+                            <strong>@review.User?.Username</strong>
+                            @for (int i = 0; i < review.Rating; i++)
+                            {
+                                <span class="fas fa-star"></span>
+                            }
+                            @for (int i = review.Rating; i < 5; i++)
+                            {
+                                <span class="far fa-star"></span>
+                            }
+                            <br />
+                            @review.Comment
+                        </p>
+                    }
+                }
+                else
+                {
+                    <p>No comments yet.</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>

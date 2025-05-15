@@ -118,6 +118,58 @@ namespace BookStore.Data.Migrations
                     b.ToTable("BookGenres");
                 });
 
+            modelBuilder.Entity("BookStore.Data.Data.Entities.Cart", b =>
+                {
+                    b.Property<int>("IdCart")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdCart"));
+
+                    b.Property<int>("IdBook")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdUser")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UnitPrice")
+                        .HasColumnType("int");
+
+                    b.HasKey("IdCart");
+
+                    b.HasIndex("IdBook");
+
+                    b.HasIndex("IdUser");
+
+                    b.ToTable("Carts");
+                });
+
+            modelBuilder.Entity("BookStore.Data.Data.Entities.Collection", b =>
+                {
+                    b.Property<int>("IdCollection")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdCollection"));
+
+                    b.Property<int>("IdBook")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdUser")
+                        .HasColumnType("int");
+
+                    b.HasKey("IdCollection");
+
+                    b.HasIndex("IdBook");
+
+                    b.HasIndex("IdUser");
+
+                    b.ToTable("Collections");
+                });
+
             modelBuilder.Entity("BookStore.Data.Data.Entities.Delivery", b =>
                 {
                     b.Property<int>("IdDelivery")
@@ -269,6 +321,9 @@ namespace BookStore.Data.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
 
+                    b.Property<DateTime>("DateAdded")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("IdBook")
                         .HasColumnType("int");
 
@@ -328,15 +383,32 @@ namespace BookStore.Data.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("PostalCode")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("Street")
                         .IsRequired()
@@ -381,6 +453,44 @@ namespace BookStore.Data.Migrations
                     b.Navigation("Book");
 
                     b.Navigation("Genre");
+                });
+
+            modelBuilder.Entity("BookStore.Data.Data.Entities.Cart", b =>
+                {
+                    b.HasOne("BookStore.Data.Data.Entities.Book", "Book")
+                        .WithMany("Carts")
+                        .HasForeignKey("IdBook")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BookStore.Data.Data.Entities.User", "User")
+                        .WithMany("Carts")
+                        .HasForeignKey("IdUser")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Book");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("BookStore.Data.Data.Entities.Collection", b =>
+                {
+                    b.HasOne("BookStore.Data.Data.Entities.Book", "Book")
+                        .WithMany("Collections")
+                        .HasForeignKey("IdBook")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BookStore.Data.Data.Entities.User", "User")
+                        .WithMany("Collections")
+                        .HasForeignKey("IdUser")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Book");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("BookStore.Data.Data.Entities.Delivery", b =>
@@ -479,6 +589,10 @@ namespace BookStore.Data.Migrations
                 {
                     b.Navigation("BookGenres");
 
+                    b.Navigation("Carts");
+
+                    b.Navigation("Collections");
+
                     b.Navigation("DeliveryItems");
 
                     b.Navigation("OrderItems");
@@ -513,6 +627,10 @@ namespace BookStore.Data.Migrations
 
             modelBuilder.Entity("BookStore.Data.Data.Entities.User", b =>
                 {
+                    b.Navigation("Carts");
+
+                    b.Navigation("Collections");
+
                     b.Navigation("Orders");
 
                     b.Navigation("Reviews");

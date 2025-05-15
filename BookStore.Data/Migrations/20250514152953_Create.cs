@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace BookStore.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class Create : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -73,8 +73,8 @@ namespace BookStore.Data.Migrations
                     IdUser = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Username = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Street = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     City = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     PostalCode = table.Column<string>(type: "nvarchar(max)", nullable: false)
@@ -186,6 +186,58 @@ namespace BookStore.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Carts",
+                columns: table => new
+                {
+                    IdCart = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    IdUser = table.Column<int>(type: "int", nullable: false),
+                    IdBook = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Carts", x => x.IdCart);
+                    table.ForeignKey(
+                        name: "FK_Carts_Books_IdBook",
+                        column: x => x.IdBook,
+                        principalTable: "Books",
+                        principalColumn: "IdBook",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Carts_Users_IdUser",
+                        column: x => x.IdUser,
+                        principalTable: "Users",
+                        principalColumn: "IdUser",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Collections",
+                columns: table => new
+                {
+                    IdCollection = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    IdUser = table.Column<int>(type: "int", nullable: false),
+                    IdBook = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Collections", x => x.IdCollection);
+                    table.ForeignKey(
+                        name: "FK_Collections_Books_IdBook",
+                        column: x => x.IdBook,
+                        principalTable: "Books",
+                        principalColumn: "IdBook",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Collections_Users_IdUser",
+                        column: x => x.IdUser,
+                        principalTable: "Users",
+                        principalColumn: "IdUser",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Reviews",
                 columns: table => new
                 {
@@ -284,6 +336,26 @@ namespace BookStore.Data.Migrations
                 column: "IdAuthor");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Carts_IdBook",
+                table: "Carts",
+                column: "IdBook");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Carts_IdUser",
+                table: "Carts",
+                column: "IdUser");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Collections_IdBook",
+                table: "Collections",
+                column: "IdBook");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Collections_IdUser",
+                table: "Collections",
+                column: "IdUser");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Deliveries_IdSupplier",
                 table: "Deliveries",
                 column: "IdSupplier");
@@ -334,6 +406,12 @@ namespace BookStore.Data.Migrations
         {
             migrationBuilder.DropTable(
                 name: "BookGenres");
+
+            migrationBuilder.DropTable(
+                name: "Carts");
+
+            migrationBuilder.DropTable(
+                name: "Collections");
 
             migrationBuilder.DropTable(
                 name: "DeliveryItems");

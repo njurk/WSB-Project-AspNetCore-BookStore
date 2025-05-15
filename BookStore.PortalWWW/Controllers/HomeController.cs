@@ -17,25 +17,6 @@ namespace BookStore.PortalWWW.Controllers
         {
             return View();
         }
-        public IActionResult Books()
-        {
-            return View();
-        }
-
-        public IActionResult BookDetails()
-        {
-            return View();
-        }
-
-        public IActionResult Cart()
-        {
-            return View();
-        }
-
-        public IActionResult Privacy()
-        {
-            return View();
-        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

@@ -40,6 +40,13 @@
                 <dd class="col-sm-8">
                     @Html.DisplayFor(model => model.Comment)
                 </dd>
+
+                <dt class="col-sm-4">
+                    @Html.DisplayNameFor(model => model.DateAdded)
+                </dt>
+                <dd class="col-sm-8">
+                    @Html.DisplayFor(model => model.DateAdded)
+                </dd>
             </dl>
 
             <form asp-action="Delete">

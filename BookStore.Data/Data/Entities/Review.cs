@@ -27,5 +27,10 @@ namespace BookStore.Data.Data.Entities
         [Required(ErrorMessage = "Comment is required.")]
         [StringLength(1000, ErrorMessage = "Comment cannot be longer than 1000 characters.")]
         public required string Comment { get; set; }
+
+        [Required(ErrorMessage = "Date is required.")]
+        [DataType(DataType.Date)]
+        [Display(Name = "Date added")]
+        public DateTime DateAdded { get; set; }
     }
 }

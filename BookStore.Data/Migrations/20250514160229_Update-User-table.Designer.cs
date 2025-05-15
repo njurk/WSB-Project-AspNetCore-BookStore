@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookStore.Data.Migrations
 {
     [DbContext(typeof(BookStoreContext))]
-    [Migration("20250510212506_Initial")]
-    partial class Initial
+    [Migration("20250514160229_Update-User-table")]
+    partial class UpdateUsertable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -119,6 +119,52 @@ namespace BookStore.Data.Migrations
                     b.HasIndex("IdGenre");
 
                     b.ToTable("BookGenres");
+                });
+
+            modelBuilder.Entity("BookStore.Data.Data.Entities.Cart", b =>
+                {
+                    b.Property<int>("IdCart")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdCart"));
+
+                    b.Property<int>("IdBook")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdUser")
+                        .HasColumnType("int");
+
+                    b.HasKey("IdCart");
+
+                    b.HasIndex("IdBook");
+
+                    b.HasIndex("IdUser");
+
+                    b.ToTable("Carts");
+                });
+
+            modelBuilder.Entity("BookStore.Data.Data.Entities.Collection", b =>
+                {
+                    b.Property<int>("IdCollection")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdCollection"));
+
+                    b.Property<int>("IdBook")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdUser")
+                        .HasColumnType("int");
+
+                    b.HasKey("IdCollection");
+
+                    b.HasIndex("IdBook");
+
+                    b.HasIndex("IdUser");
+
+                    b.ToTable("Collections");
                 });
 
             modelBuilder.Entity("BookStore.Data.Data.Entities.Delivery", b =>
@@ -331,11 +377,23 @@ namespace BookStore.Data.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("PostalCode")
                         .IsRequired()
@@ -384,6 +442,44 @@ namespace BookStore.Data.Migrations
                     b.Navigation("Book");
 
                     b.Navigation("Genre");
+                });
+
+            modelBuilder.Entity("BookStore.Data.Data.Entities.Cart", b =>
+                {
+                    b.HasOne("BookStore.Data.Data.Entities.Book", "Book")
+                        .WithMany()
+                        .HasForeignKey("IdBook")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BookStore.Data.Data.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("IdUser")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Book");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("BookStore.Data.Data.Entities.Collection", b =>
+                {
+                    b.HasOne("BookStore.Data.Data.Entities.Book", "Book")
+                        .WithMany()
+                        .HasForeignKey("IdBook")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BookStore.Data.Data.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("IdUser")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Book");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("BookStore.Data.Data.Entities.Delivery", b =>

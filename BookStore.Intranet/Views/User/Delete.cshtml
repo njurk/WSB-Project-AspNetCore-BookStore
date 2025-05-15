@@ -21,6 +21,20 @@
                 </dd>
 
                 <dt class="col-sm-4">
+                    @Html.DisplayNameFor(model => model.FirstName)
+                </dt>
+                <dd class="col-sm-8">
+                    @Html.DisplayFor(model => model.FirstName)
+                </dd>
+
+                <dt class="col-sm-4">
+                    @Html.DisplayNameFor(model => model.LastName)
+                </dt>
+                <dd class="col-sm-8">
+                    @Html.DisplayFor(model => model.LastName)
+                </dd>
+
+                <dt class="col-sm-4">
                     @Html.DisplayNameFor(model => model.Email)
                 </dt>
                 <dd class="col-sm-8">
@@ -28,7 +42,7 @@
                 </dd>
 
                 <dt class="col-sm-4">
-                    @Html.DisplayNameFor(model => model.Password)
+                    @Html.DisplayNameFor(model => model.Password) hash
                 </dt>
                 <dd class="col-sm-8">
                     @Html.DisplayFor(model => model.Password)

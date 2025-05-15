@@ -7,9 +7,13 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BookStore.Data.Data;
 using BookStore.Data.Data.Entities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
+
 
 namespace BookStore.Intranet.Controllers
 {
+    [Authorize]
     public class UserController : Controller
     {
         private readonly BookStoreContext _context;
@@ -22,7 +26,9 @@ namespace BookStore.Intranet.Controllers
         // GET: User
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Users.ToListAsync());
+            return View(await _context.Users
+                .Where(u => u.Role != "Admin")
+                .ToListAsync());
         }
 
         // GET: User/Details/5
@@ -54,10 +60,13 @@ namespace BookStore.Intranet.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdUser,Username,Email,Password,Street,City,PostalCode")] User user)
+        public async Task<IActionResult> Create([Bind("IdUser,Username,FirstName,LastName,Email,Password,Street,City,PostalCode,Role")] User user)
         {
             if (ModelState.IsValid)
             {
+                var passwordHasher = new PasswordHasher<User>();
+                user.Password = passwordHasher.HashPassword(user, user.Password);
+
                 _context.Add(user);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -86,7 +95,7 @@ namespace BookStore.Intranet.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdUser,Username,Email,Password,Street,City,PostalCode")] User user)
+        public async Task<IActionResult> Edit(int id, [Bind("IdUser,Username,FirstName,LastName,Email,Password,Street,City,PostalCode,Role")] User user)
         {
             if (id != user.IdUser)
             {

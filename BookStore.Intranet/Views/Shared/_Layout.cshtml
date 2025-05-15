@@ -78,6 +78,11 @@
 
             <li class="nav-item text-uppercase fw-bold fs-6 text-muted">Management</li>
             <li class="nav-item">
+                <a class="nav-link" asp-controller="Supplier" asp-action="Index">
+                    <i class="fas fa-warehouse me-2"></i> Suppliers
+                </a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link" asp-controller="Review" asp-action="Index">
                     <i class="fas fa-star me-2"></i> Reviews
                 </a>
@@ -88,8 +93,13 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" asp-controller="Supplier" asp-action="Index">
-                    <i class="fas fa-warehouse me-2"></i> Suppliers
+                <a class="nav-link" asp-controller="Cart" asp-action="Index">
+                    <i class="fas fa-cart-shopping me-2"></i> User carts
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" asp-controller="Collection" asp-action="Index">
+                    <i class="fas fa-bookmark me-2"></i> User collections
                 </a>
             </li>
         </ul>
@@ -97,10 +107,15 @@
 
     <nav class="navbar navbar-expand-md px-3">
         <div class="ms-auto d-flex align-items-center">
-            <span class="text-dark me-3">Hello, Admin!</span>
-            <a href="#" class="nav-link text-dark d-flex align-items-center me-3">
-                <i class="fa fa-sign-out-alt me-2"></i> Logout
-            </a>
+            @if (User.Identity.IsAuthenticated)
+            {
+                <span class="text-dark me-3">Hello, @User.Identity.Name!</span>
+            }
+            <form asp-action="Logout" asp-controller="Account" method="post" style="display:inline;">
+                <button type="submit" class="nav-link text-dark d-flex align-items-center me-3" style="background: none; border: none; padding: 0;">
+                    <i class="fa fa-sign-out-alt me-2"></i> Logout
+                </button>
+            </form>
             <button class="navbar-toggler bg-light" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
                     aria-label="Toggle sidebar">

@@ -4,9 +4,11 @@ using BookStore.Intranet.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BookStore.Intranet.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;

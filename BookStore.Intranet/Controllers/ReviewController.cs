@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BookStore.Data.Data;
 using BookStore.Data.Data.Entities;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BookStore.Intranet.Controllers
 {
+    [Authorize]
     public class ReviewController : Controller
     {
         private readonly BookStoreContext _context;
@@ -59,7 +61,7 @@ namespace BookStore.Intranet.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdReview,IdUser,IdBook,Rating,Comment")] Review review)
+        public async Task<IActionResult> Create([Bind("IdReview,IdUser,IdBook,Rating,Comment,DateAdded")] Review review)
         {
             if (ModelState.IsValid)
             {
@@ -95,7 +97,7 @@ namespace BookStore.Intranet.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdReview,IdUser,IdBook,Rating,Comment")] Review review)
+        public async Task<IActionResult> Edit(int id, [Bind("IdReview,IdUser,IdBook,Rating,Comment,DateAdded")] Review review)
         {
             if (id != review.IdReview)
             {
@@ -122,8 +124,8 @@ namespace BookStore.Intranet.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdBook"] = new SelectList(_context.Books, "IdBook", "Description", review.IdBook);
-            ViewData["IdUser"] = new SelectList(_context.Users, "IdUser", "City", review.IdUser);
+            ViewData["IdBook"] = new SelectList(_context.Books, "IdBook", "Title", review.IdBook);
+            ViewData["IdUser"] = new SelectList(_context.Users, "IdUser", "Username", review.IdUser);
             return View(review);
         }
 

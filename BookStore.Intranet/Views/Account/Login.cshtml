@@ -1,0 +1,48 @@
+﻿@model BookStore.Intranet.Models.LoginViewModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Login</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <style>
+        .custom-validation-summary ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+    </style>
+</head>
+<body class="bg-light d-flex align-items-center justify-content-center" style="height: 100vh">
+    <div class="card p-4 shadow" style="width: 100%; max-width: 400px;">
+        <h4 class="text-center mb-4">Log In</h4>
+
+        <form asp-action="Login" method="post">
+            <div class="mb-3">
+                <label asp-for="Username" class="form-label"></label>
+                <input asp-for="Username" class="form-control" />
+                <span asp-validation-for="Username" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Password" class="form-label"></label>
+                <input asp-for="Password" class="form-control" type="password" />
+                <span asp-validation-for="Password" class="text-danger small"></span>
+            </div>
+
+            <div asp-validation-summary="ModelOnly" class="text-danger custom-validation-summary mb-2"></div>
+
+            <button type="submit" class="btn btn-primary w-100">Log In</button>
+        </form>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+</body>
+</html>
