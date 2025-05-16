@@ -23,6 +23,32 @@ html, body {
     background-color: rgba(100, 100, 100, 0.1) !important;
 }
 
+
+.nav-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 1.5em;
+    width: 1.5em;
+    position: relative;
+}
+
+    .nav-icon i {
+        vertical-align: middle;
+        line-height: 1;
+    }
+
+    .nav-icon:hover .outline-icon {
+        display: none;
+    }
+
+    .nav-icon:hover .solid-icon {
+        display: inline-block !important;
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+
 .main-content {
     flex-grow: 1;
 }
@@ -37,11 +63,10 @@ footer {
 
 :root {
     --color-primary: #4c5c52; /* dark muddy green */
-    --color-secondary: #EFEFEF; /* very light gray */
+    --color-secondary: #944040; /* muted red */
     --color-tertiary: #1a1a1a; /* dark grey */
 }
 
-/* background */
 .bg-primary {
     background-color: var(--color-primary) !important;
 }
@@ -54,7 +79,6 @@ footer {
     background-color: var(--color-tertiary) !important;
 }
 
-/* text */
 .color-primary {
     color: var(--color-primary) !important;
 }
@@ -67,7 +91,6 @@ footer {
     color: var(--color-tertiary) !important;
 }
 
-/* border */
 .border-primary {
     border-color: var(--color-primary) !important;
 }
@@ -79,15 +102,6 @@ footer {
 .border-tertiary {
     border-color: var(--color-tertiary) !important;
 }
-
-.scale-hover {
-    transition: transform 0.1s ease-in-out;
-}
-
-    .scale-hover:hover {
-        transform: scale(0.95);
-    }
-
 
 .carousel-control-prev-icon,
 .carousel-control-next-icon {
@@ -113,7 +127,6 @@ footer {
 
     .book-card:hover {
         transform: scale(0.97);
-        cursor: pointer;
     }
 
 .book-cover {
@@ -124,7 +137,6 @@ footer {
     border-top-right-radius: 0.5rem;
 }
 
-/* genres list */
 .genre-item {
     margin-bottom: 0.2rem;
 }
@@ -141,3 +153,4 @@ footer {
     .genre-item a:hover {
         background-color: rgba(100, 100, 100, 0.1);
     }
+

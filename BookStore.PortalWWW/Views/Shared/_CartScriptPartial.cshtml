@@ -1,0 +1,67 @@
+﻿@inject Microsoft.AspNetCore.Mvc.Rendering.IHtmlHelper Html
+
+<script>
+        $(function () {
+        $(document).on('click', '.btn-increase-qty', function () {
+            var cartId = $(this).data('cart-id');
+            var row = $(this).closest('tr');
+            var qtyInput = row.find('.quantity-input');
+            var currentQty = parseInt(qtyInput.val());
+
+            updateQuantity(cartId, currentQty + 1, qtyInput);
+        });
+
+        $(document).on('click', '.btn-decrease-qty', function () {
+            var cartId = $(this).data('cart-id');
+            var row = $(this).closest('tr');
+            var qtyInput = row.find('.quantity-input');
+            var currentQty = parseInt(qtyInput.val());
+
+            if (currentQty > 1) {
+                updateQuantity(cartId, currentQty - 1, qtyInput);
+            }
+        });
+
+        function updateQuantity(cartId, newQty, qtyInput) {
+            $.ajax({
+                url: '@Url.Action("UpdateQuantity", "Cart")',
+                type: 'POST',
+                data: { cartId: cartId, quantity: newQty },
+                headers: {
+                    'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                },
+                success: function () {
+                    qtyInput.val(newQty);
+                    location.reload();
+                },
+                error: function () {
+                    alert('Failed to update quantity. Please try again.');
+                }
+            });
+        }
+
+        $(document).on('click', '.btn-delete-item', function () {
+        var cartId = $(this).data('cart-id');
+
+        if (!confirm('Are you sure you want to remove this item from your cart?')) {
+            return;
+        }
+
+        $.ajax({
+            url: '@Url.Action("Remove", "Cart")',
+            type: 'POST',
+            data: { cartId: cartId },
+            headers: {
+                'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+            },
+            success: function () {
+                location.reload();
+                showTemporaryMessage('Item removed from cart.');
+            },
+            error: function () {
+                alert('Failed to remove item. Please try again.');
+            }
+        });
+    });
+    });
+</script>

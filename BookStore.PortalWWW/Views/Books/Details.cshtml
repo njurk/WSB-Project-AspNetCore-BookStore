@@ -12,8 +12,7 @@
 
         <div class="col-md-6">
             <h2>@Model.Title</h2>
-            <p><strong>Author:</strong> @Model.Author</p>
-            <p><strong>Description:</strong> @Model.Description</p>
+            <p><strong>Author:</strong> @(Model.Author != null ? $"{Model.Author.FirstName} {Model.Author.LastName}" : "Unknown")</p>
             <p><strong>Price:</strong> $@Model.Price</p>
             <p><strong>Number of Pages:</strong> @Model.NumberOfPages</p>
             <p>
@@ -29,12 +28,21 @@
                 <button class="btn btn-outline-secondary me-2">-</button>
                 <input type="number" value="1" class="form-control w-25 text-center" id="quantity" min="1" />
                 <button class="btn btn-outline-secondary ms-2">+</button>
+                @Html.AntiForgeryToken()
+                @await Html.PartialAsync("_BookActionButtons", Model.IdBook)
             </div>
+        </div>
+    </div>
 
-            <button class="btn btn-primary mb-5">
-                <i class="fas fa-cart-plus me-2"></i>Add to Cart
-            </button>
+    <div class="row mt-5">
+        <div class="col-12">
+            <h4>Description</h4>
+            <p>@Model.Description</p>
+        </div>
+    </div>
 
+    <div class="row mt-5">
+        <div class="col-12">
             @if (Model.Reviews != null && Model.Reviews.Any())
             {
                 var avgRating = Model.Reviews.Average(r => r.Rating);
@@ -62,11 +70,9 @@
             }
             else
             {
-                <text>
-                    <div class="mb-3">
-                        <strong>Average Rating:</strong> <span>No ratings yet.</span>
-                    </div>
-                </text>
+                <div class="mb-3">
+                    <strong>Average Rating:</strong> <span>No ratings yet.</span>
+                </div>
             }
 
             <div class="mb-3">
@@ -84,11 +90,11 @@
                             <strong>@review.User?.Username</strong>
                             @for (int i = 0; i < review.Rating; i++)
                             {
-                                <span class="fas fa-star"></span>
+                                <span class="fas fa-star text-warning"></span>
                             }
                             @for (int i = review.Rating; i < 5; i++)
                             {
-                                <span class="far fa-star"></span>
+                                <span class="far fa-star text-warning"></span>
                             }
                             <br />
                             @review.Comment
@@ -103,3 +109,11 @@
         </div>
     </div>
 </div>
+
+<script>
+    var isAuthenticated = @User.Identity.IsAuthenticated.ToString().ToLower();
+</script>
+
+@section Scripts {
+    @await Html.PartialAsync("_BookCardScriptsPartial")
+}

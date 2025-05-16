@@ -1,0 +1,101 @@
+﻿<script>
+    $(function () {
+        var token = $('input[name="__RequestVerificationToken"]').val();
+
+        $.ajaxSetup({
+            beforeSend: function (xhr, settings) {
+                if (settings.type === 'POST') {
+                    xhr.setRequestHeader('RequestVerificationToken', token);
+                }
+            }
+        });
+
+        $(document).ajaxError(function (event, jqXHR) {
+            if (jqXHR.status === 401 || jqXHR.status === 403) {
+                alert('You must be logged in to do that.');
+            }
+        });
+
+        $(document).on('click', '.toggle-collection', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            if (!isAuthenticated) {
+                alert('You must be logged in to do that.');
+                return;
+            }
+
+            var button = $(this);
+            var bookId = button.data('book-id');
+
+            $.post('@Url.Action("Toggle", "Collection")', { bookId: bookId })
+                .done(function (response) {
+                    if (response.added) {
+                        button.find('i').removeClass('bi-heart').addClass('bi-heart-fill');
+                        button.removeClass('btn-outline-danger').addClass('btn-danger');
+                    } else {
+                        button.find('i').removeClass('bi-heart-fill').addClass('bi-heart');
+                        button.removeClass('btn-danger').addClass('btn-outline-danger');
+                    }
+                })
+                .fail(function () {
+                    alert('Error toggling collection. Please try again.');
+                });
+        });
+
+        if (isAuthenticated) {
+            $('.toggle-collection').each(function () {
+                var button = $(this);
+                var bookId = button.data('book-id');
+
+                $.get('@Url.Action("IsInCollection", "Collection")', { bookId: bookId }, function (data) {
+                    if (data.isInCollection) {
+                        button.find('i').removeClass('bi-heart').addClass('bi-heart-fill');
+                        button.removeClass('btn-outline-danger').addClass('btn-danger');
+                    }
+                });
+            });
+        }
+
+        $(document).on('click', '.add-to-cart', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            if (!isAuthenticated) {
+                alert('You must be logged in to do that.');
+                return;
+            }
+
+            var button = $(this);
+            var bookId = button.data('book-id');
+
+            $.ajax({
+                url: '@Url.Action("Add", "Cart")',
+                type: 'POST',
+                data: { bookId: bookId, quantity: 1 },
+                success: function (response) {
+                    if (response.success) {
+                        showTemporaryMessage(response.message);
+                    } else {
+                        alert('Could not add book to cart.');
+                    }
+                },
+                error: function () {
+                    alert('Error adding book to cart. Please try again.');
+                }
+            });
+        });
+
+        function showTemporaryMessage(message) {
+            var alertDiv = $('<div class="alert alert-success alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3" role="alert" style="z-index: 1050; min-width: 300px; max-width: 90vw;">')
+                .text(message)
+                .append('<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>');
+
+            $('body').append(alertDiv);
+
+            setTimeout(function () {
+                alertDiv.alert('close');
+            }, 3000);
+        }
+    });
+</script>
