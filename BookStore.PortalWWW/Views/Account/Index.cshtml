@@ -1,4 +1,4 @@
-﻿@model BookStore.Data.Data.Entities.User
+﻿@model BookStore.PortalWWW.Models.UserProfileViewModel
 
 @{
     ViewData["Title"] = "Your account";
@@ -10,31 +10,31 @@
     <div class="card shadow-sm">
         <div class="card-body">
             <div class="row mb-3">
-                <label class="col-sm-3 col-form-label fw-semibold">Username:</label>
+                <label class="col-sm-3 col-form-label fw-semibold">@Html.DisplayNameFor(m => m.Username):</label>
                 <div class="col-sm-9">@Model.Username</div>
             </div>
             <div class="row mb-3">
-                <label class="col-sm-3 col-form-label fw-semibold">First Name:</label>
+                <label class="col-sm-3 col-form-label fw-semibold">@Html.DisplayNameFor(m => m.FirstName):</label>
                 <div class="col-sm-9">@Model.FirstName</div>
             </div>
             <div class="row mb-3">
-                <label class="col-sm-3 col-form-label fw-semibold">Last Name:</label>
+                <label class="col-sm-3 col-form-label fw-semibold">@Html.DisplayNameFor(m => m.LastName):</label>
                 <div class="col-sm-9">@Model.LastName</div>
             </div>
             <div class="row mb-3">
-                <label class="col-sm-3 col-form-label fw-semibold">Email:</label>
+                <label class="col-sm-3 col-form-label fw-semibold">@Html.DisplayNameFor(m => m.Email):</label>
                 <div class="col-sm-9">@Model.Email</div>
             </div>
             <div class="row mb-3">
-                <label class="col-sm-3 col-form-label fw-semibold">Street:</label>
+                <label class="col-sm-3 col-form-label fw-semibold">@Html.DisplayNameFor(m => m.Street):</label>
                 <div class="col-sm-9">@Model.Street</div>
             </div>
             <div class="row mb-3">
-                <label class="col-sm-3 col-form-label fw-semibold">City:</label>
+                <label class="col-sm-3 col-form-label fw-semibold">@Html.DisplayNameFor(m => m.City):</label>
                 <div class="col-sm-9">@Model.City</div>
             </div>
             <div class="row mb-3">
-                <label class="col-sm-3 col-form-label fw-semibold">Postal Code:</label>
+                <label class="col-sm-3 col-form-label fw-semibold">@Html.DisplayNameFor(m => m.PostalCode):</label>
                 <div class="col-sm-9">@Model.PostalCode</div>
             </div>
 
@@ -53,3 +53,4 @@
         </div>
     </div>
 </div>
+

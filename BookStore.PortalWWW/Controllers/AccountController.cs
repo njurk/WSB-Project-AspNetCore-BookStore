@@ -22,12 +22,41 @@ namespace BookStore.PortalWWW.Controllers
         }
 
         [HttpGet]
+        public IActionResult Index()
+        {
+            if (!User.Identity?.IsAuthenticated ?? true)
+            {
+                return RedirectToAction("Login");
+            }
+
+            var username = User.Identity.Name;
+            var user = _context.Users.FirstOrDefault(u => u.Username == username);
+
+            if (user == null)
+            {
+                HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+                return RedirectToAction("Login");
+            }
+
+            var model = new UserProfileViewModel
+            {
+                IdUser = user.IdUser,
+                Username = user.Username,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                Street = user.Street,
+                City = user.City,
+                PostalCode = user.PostalCode,
+            };
+
+            return View(model);
+        }
+
+        [HttpGet]
         [AllowAnonymous]
         public IActionResult Login()
         {
-            if (User.Identity?.IsAuthenticated == true)
-                return RedirectToAction("Index", "Home");
-
             return View();
         }
 
@@ -46,8 +75,7 @@ namespace BookStore.PortalWWW.Controllers
                 return View(model);
             }
 
-            var hasher = new PasswordHasher<User>();
-            var result = hasher.VerifyHashedPassword(user, user.Password, model.Password);
+            var result = _passwordHasher.VerifyHashedPassword(user, user.Password, model.Password);
             if (result != PasswordVerificationResult.Success)
             {
                 ModelState.AddModelError("", "Invalid username or password.");
@@ -57,7 +85,8 @@ namespace BookStore.PortalWWW.Controllers
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, user.Username),
-                new Claim("UserId", user.IdUser.ToString())
+                new Claim(ClaimTypes.NameIdentifier, user.IdUser.ToString()),
+                new Claim(ClaimTypes.Role, user.Role ?? "Customer")
             };
 
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -66,26 +95,6 @@ namespace BookStore.PortalWWW.Controllers
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
 
             return RedirectToAction("Index", "Home");
-        }
-
-        [HttpGet]
-        public IActionResult Index()
-        {
-            if (!User.Identity?.IsAuthenticated ?? true)
-            {
-                return RedirectToAction("Login");
-            }
-
-            var username = User.Identity.Name;
-            var user = _context.Users.FirstOrDefault(u => u.Username == username);
-
-            if (user == null)
-            {
-                HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-                return RedirectToAction("Login");
-            }
-
-            return View(user);
         }
 
         [HttpGet]
@@ -131,7 +140,7 @@ namespace BookStore.PortalWWW.Controllers
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, user.Username),
-                new Claim("UserId", user.IdUser.ToString()),
+                new Claim(ClaimTypes.NameIdentifier, user.IdUser.ToString()),
                 new Claim(ClaimTypes.Role, user.Role)
             };
 
@@ -163,7 +172,7 @@ namespace BookStore.PortalWWW.Controllers
             if (user == null)
                 return NotFound();
 
-            var model = new EditProfileViewModel
+            var model = new UserProfileViewModel
             {
                 IdUser = user.IdUser,
                 Username = user.Username,
@@ -181,7 +190,7 @@ namespace BookStore.PortalWWW.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(EditProfileViewModel model)
+        public async Task<IActionResult> Edit(UserProfileViewModel model)
         {
             if (!User.Identity?.IsAuthenticated ?? true)
                 return RedirectToAction("Login");
@@ -222,11 +231,11 @@ namespace BookStore.PortalWWW.Controllers
             if (!string.Equals(User.Identity.Name, model.Username, StringComparison.OrdinalIgnoreCase))
             {
                 var claims = new List<Claim>
-        {
-            new Claim(ClaimTypes.Name, user.Username),
-            new Claim("UserId", user.IdUser.ToString()),
-            new Claim(ClaimTypes.Role, user.Role)
-        };
+                {
+                    new Claim(ClaimTypes.Name, user.Username),
+                    new Claim(ClaimTypes.NameIdentifier, user.IdUser.ToString()),
+                    new Claim(ClaimTypes.Role, user.Role)
+                };
 
                 var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 var principal = new ClaimsPrincipal(identity);

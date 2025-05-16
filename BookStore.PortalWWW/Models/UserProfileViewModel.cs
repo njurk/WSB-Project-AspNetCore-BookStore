@@ -2,7 +2,7 @@
 
 namespace BookStore.PortalWWW.Models
 {
-    public class EditProfileViewModel
+    public class UserProfileViewModel
     {
         public int IdUser { get; set; }
 
@@ -12,10 +12,12 @@ namespace BookStore.PortalWWW.Models
 
         [Required]
         [StringLength(50)]
+        [Display(Name = "First name")]
         public string FirstName { get; set; } = null!;
 
         [Required]
         [StringLength(50)]
+        [Display(Name = "Last name")]
         public string LastName { get; set; } = null!;
 
         [Required]
@@ -32,6 +34,7 @@ namespace BookStore.PortalWWW.Models
         public string City { get; set; } = null!;
 
         [Required]
+        [Display(Name = "Postal code")]
         public string PostalCode { get; set; } = null!;
 
         [DataType(DataType.Password)]

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 using BookStore.Data.Data;
 
-namespace BookStore.PortalWWW.ViewComponents
+namespace BookStore.PortalWWW.Components
 {
     public class GenresListViewComponent : ViewComponent
     {
