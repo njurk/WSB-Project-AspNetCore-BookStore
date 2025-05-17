@@ -1,10 +1,10 @@
 ﻿@model IEnumerable<BookStore.Data.Data.Entities.Collection>
 
 @{
-    ViewData["Title"] = "Saved books";
+    ViewData["Title"] = "Your collection";
 }
 
-<h2>@ViewData["Title"]</h2>
+<h2 class="my-4">@ViewData["Title"]</h2>
 
 @if (!Model.Any())
 {

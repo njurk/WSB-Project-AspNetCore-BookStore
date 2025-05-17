@@ -7,6 +7,7 @@ using BookStore.Data.Data.Entities;
 using BookStore.PortalWWW.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 
 namespace BookStore.PortalWWW.Controllers
 {
@@ -22,21 +23,15 @@ namespace BookStore.PortalWWW.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            if (!User.Identity?.IsAuthenticated ?? true)
-            {
-                return RedirectToAction("Login");
-            }
+            var username = User.Identity?.Name;
+            if (username == null)
+                return RedirectToAction("Login", "Account");
 
-            var username = User.Identity.Name;
-            var user = _context.Users.FirstOrDefault(u => u.Username == username);
-
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
             if (user == null)
-            {
-                HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-                return RedirectToAction("Login");
-            }
+                return RedirectToAction("Login", "Account");
 
             var model = new UserProfileViewModel
             {
@@ -48,11 +43,33 @@ namespace BookStore.PortalWWW.Controllers
                 Street = user.Street,
                 City = user.City,
                 PostalCode = user.PostalCode,
+                Orders = await _context.Orders
+                    .Where(o => o.IdUser == user.IdUser)
+                    .OrderByDescending(o => o.OrderDate)
+                    .Select(o => new OrderViewModel
+                    {
+                        OrderId = o.IdOrder,
+                        DatePlaced = o.OrderDate,
+                        Status = o.OrderStatus.Name
+                    })
+                    .ToListAsync(),
+                Reviews = await _context.Reviews
+                    .Where(r => r.IdUser == user.IdUser)
+                    .OrderByDescending(r => r.DateAdded)
+                    .Select(r => new EditReviewViewModel
+                    {
+                        IdReview = r.IdReview,
+                        BookId = r.IdBook,
+                        BookTitle = r.Book.Title,
+                        Rating = r.Rating,
+                        Comment = r.Comment,
+                        DateAdded = r.DateAdded
+                    })
+                    .ToListAsync()
             };
 
             return View(model);
         }
-
         [HttpGet]
         [AllowAnonymous]
         public IActionResult Login()

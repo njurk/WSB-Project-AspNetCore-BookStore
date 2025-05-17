@@ -75,7 +75,6 @@ namespace BookStore.PortalWWW.Controllers
 
             if (ReviewId.HasValue)
             {
-                // Update existing review
                 var review = await _context.Reviews.FindAsync(ReviewId.Value);
                 if (review == null || review.IdUser != userId)
                     return Forbid();
@@ -86,7 +85,6 @@ namespace BookStore.PortalWWW.Controllers
             }
             else
             {
-                // Create new review
                 var review = new Review
                 {
                     IdBook = BookId,

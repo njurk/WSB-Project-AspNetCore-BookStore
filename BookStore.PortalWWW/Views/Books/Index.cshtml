@@ -5,16 +5,6 @@
     var searchTerm = Context.Request.Query["searchTerm"].ToString();
 }
 
-@if (!string.IsNullOrEmpty(searchTerm))
-{
-    <p>Showing results for "<strong>@searchTerm</strong>"</p>
-}
-
-@if (!Model.Any())
-{
-    <p>No books found.</p>
-}
-
 <div class="container py-4">
     <div class="row">
         <div class="col-md-2 py-2">
@@ -30,7 +20,15 @@
                     <span class="ms-2">Filter</span>
                 </button>
             </div>
+            @if (!string.IsNullOrEmpty(searchTerm))
+            {
+                <p>Showing results for "<strong>@searchTerm</strong>"</p>
+            }
 
+            @if (!Model.Any())
+            {
+                <p>No books found.</p>
+            }
             <div class="d-flex flex-wrap gap-4 mb-5 justify-content-start">
                 @foreach (var book in Model)
                 {

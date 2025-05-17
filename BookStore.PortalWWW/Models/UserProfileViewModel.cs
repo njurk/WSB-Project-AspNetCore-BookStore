@@ -41,5 +41,8 @@ namespace BookStore.PortalWWW.Models
         [StringLength(100, MinimumLength = 6)]
         [Display(Name = "New Password (optional)")]
         public string? Password { get; set; }
+
+        public List<OrderViewModel> Orders { get; set; } = new();
+        public List<EditReviewViewModel> Reviews { get; set; } = new();
     }
 }

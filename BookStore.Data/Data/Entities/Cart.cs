@@ -27,7 +27,7 @@ namespace BookStore.Data.Data.Entities
         public required int Quantity { get; set; }
 
         [Required]
-        public required int UnitPrice { get; set; }
+        public required decimal UnitPrice { get; set; }
 
     }
 }

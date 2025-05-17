@@ -1,105 +1,120 @@
 ﻿@model List<BookStore.Data.Data.Entities.Cart>
 
-
 @{
-    ViewData["Title"] = "Cart";
+    ViewData["Title"] = "Your cart";
     int totalItems = Model.Sum(i => i.Quantity);
-    decimal totalPriceDecimal = Model.Sum(i => (decimal)i.Quantity * i.UnitPrice / 100m);
+    decimal totalPrice = Model.Sum(i => i.Quantity * i.UnitPrice);
 }
 
 <div class="main-content my-5">
     <div class="container">
-        <div class="alert alert-info alert-dismissible fade show" role="alert">
-            <strong>Special Offer!</strong> Get 10% off your first order! Use code: <strong>FIRST10</strong> at checkout.
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
 
         <h2 class="mt-4 mb-4">@ViewData["Title"]</h2>
         <div class="row">
             <div class="col-md-8">
-                <table class="table align-middle">
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th>Product</th>
-                            <th>Price</th>
-                            <th>Quantity</th>
-                            <th>Total</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @Html.AntiForgeryToken()
-                        @foreach (var item in Model)
-                        {
-                            decimal unitPrice = item.UnitPrice / 100m;
-                            decimal subtotal = unitPrice * item.Quantity;
-                            <tr data-cart-id="@item.IdCart">
-                                <td>
-                                    <button type="button" class="btn btn-outline-danger btn-sm btn-delete-item" data-cart-id="@item.IdCart" title="Remove item">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                </td>
-                                <td class="d-flex align-items-center gap-3">
-                                    <a asp-controller="Books" asp-action="Details" asp-route-id="@item.IdBook" class="d-flex align-items-center text-decoration-none text-reset">
-                                        <img src="@Url.Content($"~/images/{item.Book?.ImageUrl ?? "default.png"}")" alt="@item.Book?.Title" class="img-thumbnail" style="width: 60px; height: auto;" />
-                                        <span class="ms-2">@item.Book?.Title</span>
-                                    </a>
-                                </td>
-                                <td>@unitPrice.ToString("C")</td>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <button class="btn btn-outline-secondary btn-sm me-2 btn-decrease-qty" data-cart-id="@item.IdCart" title="Decrease quantity">-</button>
-                                        <input type="number" value="@item.Quantity" class="form-control form-control-sm text-center quantity-input" min="1" readonly style="width: 60px;" />
-                                        <button class="btn btn-outline-secondary btn-sm ms-2 btn-increase-qty" data-cart-id="@item.IdCart" title="Increase quantity">+</button>
-                                    </div>
-                                </td>
-                                <td>@subtotal.ToString("C")</td>
+                @if (Model != null && Model.Any())
+                {
+                    <table class="table align-middle">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Product</th>
+                                <th>Price</th>
+                                <th>Quantity</th>
+                                <th>Total</th>
                             </tr>
-                        }
-                    </tbody>
-                </table>
-                <div class="card p-4 shadow-sm rounded-3">
-                    <h4 class="card-title mb-3 fw-bold">Order Summary</h4>
-
-                    <ul class="list-unstyled mb-4">
-                        <li class="d-flex justify-content-between mb-2">
-                            <span>Total Items:</span>
-                            <span class="fw-semibold">@totalItems</span>
-                        </li>
-                        <li class="d-flex justify-content-between mb-2">
-                            <span>Subtotal:</span>
-                            <span class="fw-semibold">@totalPriceDecimal.ToString("C")</span>
-                        </li>
-                        <li class="d-flex justify-content-between mb-3">
-                            <span>Estimated Shipping:</span>
-                            <span class="text-muted">3–5 business days</span>
-                        </li>
-                    </ul>
-
-                    <div class="d-grid">
-                        <button class="btn btn-success btn-lg fw-semibold" type="button">
-                            Proceed to Checkout
-                        </button>
+                        </thead>
+                        <tbody>
+                            @Html.AntiForgeryToken()
+                            @foreach (var item in Model)
+                            {
+                                decimal unitPrice = item.UnitPrice;
+                                decimal subtotal = unitPrice * item.Quantity;
+                                <tr data-cart-id="@item.IdCart">
+                                    <td>
+                                        <button type="button" class="btn btn-outline-danger btn-sm btn-delete-item" data-cart-id="@item.IdCart" title="Remove item">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </td>
+                                    <td class="d-flex align-items-center gap-3">
+                                        <a asp-controller="Books" asp-action="Details" asp-route-id="@item.IdBook" class="d-flex align-items-center text-decoration-none text-reset">
+                                            <img src="@Url.Content($"~/images/{item.Book?.ImageUrl ?? "default.png"}")" alt="@item.Book?.Title" class="img-thumbnail" style="width: 60px; height: auto;" />
+                                            <span class="ms-2">@item.Book?.Title</span>
+                                        </a>
+                                    </td>
+                                    <td>@unitPrice.ToString("C")</td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <button class="btn btn-outline-secondary btn-sm me-2 btn-decrease-qty" data-cart-id="@item.IdCart" title="Decrease quantity">-</button>
+                                            <input type="number" value="@item.Quantity" class="form-control form-control-sm text-center quantity-input" min="1" readonly style="width: 60px;" />
+                                            <button class="btn btn-outline-secondary btn-sm ms-2 btn-increase-qty" data-cart-id="@item.IdCart" title="Increase quantity">+</button>
+                                        </div>
+                                    </td>
+                                    <td>@subtotal.ToString("C")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <div class="mt-4 text-muted">
+                        <p>You will receive an email confirmation once your payment is successfully processed.</p>
+                        <p>Free returns within 30 days of purchase.</p>
                     </div>
+                }
+                else
+                {
+                    <div class="alert">
+                        Your cart is empty.
+                    </div>
+                }
+            </div>
 
-                    <small class="text-muted mt-3 d-block">
-                        Orders placed before 2 PM local time ship the same day. Free standard shipping on orders over $50.
-                    </small>
+            @if (Model != null && Model.Any())
+            {
+                <div class="col-md-4 mb-5">
+                    <div class="mt-4">
+                        <h5>Payment Options</h5>
+                        <i class="fa-brands fa-cc-visa fa-3x me-3"></i>
+                        <i class="fab fa-cc-mastercard fa-3x me-3"></i>
+                        <i class="fab fa-paypal fa-3x me-3"></i>
+                    </div>
+                    <div class="mt-4">
+                        <p>We accept Visa, MasterCard,and PayPal.</p>
+                        <p>Please review your order carefully before proceeding to checkout.</p>
+                    </div>
+                    <div class="mb-3">
+                        <h5 for="promoCode" class="form-label">Promotion code</h5>
+                        <div class="d-flex">
+                            <input type="text" id="promoCode" name="promoCode" class="form-control" placeholder="Enter your promo code" />
+                            <button type="submit" class="btn btn-primary">Apply</button>
+                        </div>
+                    </div>
+                    <div class="card p-4 shadow-sm rounded-3">
+                        <h4 class="card-title mb-3 fw-bold">Order Summary</h4>
+
+                        <ul class="list-unstyled mb-4">
+                            <li class="d-flex justify-content-between mb-2">
+                                <span>Total Items:</span>
+                                <span class="fw-semibold">@totalItems</span>
+                            </li>
+                            <li class="d-flex justify-content-between mb-2">
+                                <span>Subtotal:</span>
+                                <span class="fw-semibold">@totalPrice.ToString("C")</span>
+                            </li>
+                            <li class="d-flex justify-content-between mb-3">
+                                <span>Estimated Shipping:</span>
+                                <span class="text-muted">2–3 business days</span>
+                            </li>
+                        </ul>
+                        <div class="d-grid">
+                            <button class="btn btn-success btn-lg fw-semibold" type="button">Checkout</button>
+                        </div>
+
+                        <small class="text-muted mt-3 d-block">
+                            Orders placed before 1 PM ship the same day. Free standard shipping on orders over $50.
+                        </small>
+                    </div>
                 </div>
-            </div>
-            <div class="col-md-4 mb-5">
-                <div class="mt-4">
-                    <h5>Payment Options</h5>
-                    <i class="fa-brands fa-cc-visa fa-3x me-3"></i>
-                    <i class="fab fa-cc-mastercard fa-3x me-3"></i>
-                    <i class="fab fa-paypal fa-3x me-3"></i>
-                </div>
-                <div class="mt-4">
-                    <h5>Promotions</h5>
-                    <p>Get 10% off your first order! Use code: FIRST10 at checkout.</p>
-                    <p>Free returns within 30 days of purchase.</p>
-                </div>
-            </div>
+            }
         </div>
     </div>
 </div>

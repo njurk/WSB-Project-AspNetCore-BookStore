@@ -62,7 +62,7 @@ namespace BookStore.PortalWWW.Controllers
                     IdUser = user.IdUser,
                     IdBook = bookId,
                     Quantity = quantity,
-                    UnitPrice = (int)(book.Price * 100)
+                    UnitPrice = book.Price
                 };
                 _context.Carts.Add(cartItem);
             }
@@ -75,11 +75,8 @@ namespace BookStore.PortalWWW.Controllers
 
             if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
             {
-                // AJAX request - return JSON success
                 return Json(new { success = true, message = "Book added to cart!" });
             }
-
-            // Normal POST - redirect
             return RedirectToAction("Index");
         }
 

@@ -12,7 +12,15 @@
 
         $(document).ajaxError(function (event, jqXHR) {
             if (jqXHR.status === 401 || jqXHR.status === 403) {
-                alert('You must be logged in to do that.');
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'You must be logged in to do that.',
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 2000,
+                    timerProgressBar: true
+                });
             }
         });
 
@@ -21,7 +29,15 @@
             e.stopPropagation();
 
             if (!isAuthenticated) {
-                alert('You must be logged in to do that.');
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'You must be logged in to do that.',
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 2000,
+                    timerProgressBar: true
+                });
                 return;
             }
 
@@ -31,15 +47,41 @@
             $.post('@Url.Action("Toggle", "Collection")', { bookId: bookId })
                 .done(function (response) {
                     if (response.added) {
-                        button.find('i').removeClass('bi-heart').addClass('bi-heart-fill');
+                        button.find('i').removeClass('bi-suit-heart').addClass('bi-suit-heart-fill');
                         button.removeClass('btn-outline-danger').addClass('btn-danger');
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Added to your collection!',
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 1200,
+                            timerProgressBar: true
+                        });
                     } else {
-                        button.find('i').removeClass('bi-heart-fill').addClass('bi-heart');
+                        button.find('i').removeClass('bi-suit-heart-fill').addClass('bi-suit-heart');
                         button.removeClass('btn-danger').addClass('btn-outline-danger');
+                        Swal.fire({
+                            icon: 'info',
+                            title: 'Removed from your collection.',
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 1200,
+                            timerProgressBar: true
+                        });
                     }
                 })
                 .fail(function () {
-                    alert('Error toggling collection. Please try again.');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error toggling collection. Please try again.',
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 1800,
+                        timerProgressBar: true
+                    });
                 });
         });
 
@@ -50,7 +92,7 @@
 
                 $.get('@Url.Action("IsInCollection", "Collection")', { bookId: bookId }, function (data) {
                     if (data.isInCollection) {
-                        button.find('i').removeClass('bi-heart').addClass('bi-heart-fill');
+                        button.find('i').removeClass('bi-suit-heart').addClass('bi-suit-heart-fill');
                         button.removeClass('btn-outline-danger').addClass('btn-danger');
                     }
                 });
@@ -62,7 +104,15 @@
             e.stopPropagation();
 
             if (!isAuthenticated) {
-                alert('You must be logged in to do that.');
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'You must be logged in to do that.',
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 2000,
+                    timerProgressBar: true
+                });
                 return;
             }
 
@@ -77,25 +127,41 @@
                     if (response.success) {
                         showTemporaryMessage(response.message);
                     } else {
-                        alert('Could not add book to cart.');
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Could not add book to cart.',
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 1800,
+                            timerProgressBar: true
+                        });
                     }
                 },
                 error: function () {
-                    alert('Error adding book to cart. Please try again.');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error adding book to cart. Please try again.',
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 1800,
+                        timerProgressBar: true
+                    });
                 }
             });
         });
 
         function showTemporaryMessage(message) {
-            var alertDiv = $('<div class="alert alert-success alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3" role="alert" style="z-index: 1050; min-width: 300px; max-width: 90vw;">')
-                .text(message)
-                .append('<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>');
-
-            $('body').append(alertDiv);
-
-            setTimeout(function () {
-                alertDiv.alert('close');
-            }, 3000);
+            Swal.fire({
+                icon: 'success',
+                title: message,
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 2000,
+                timerProgressBar: true
+            });
         }
     });
 </script>
