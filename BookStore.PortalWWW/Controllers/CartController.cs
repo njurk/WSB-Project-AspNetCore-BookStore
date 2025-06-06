@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using BookStore.Data.Data;
 using BookStore.Data.Data.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace BookStore.PortalWWW.Controllers
 {
@@ -16,26 +17,153 @@ namespace BookStore.PortalWWW.Controllers
             _context = context;
         }
 
-        // GET: /Cart/
         public async Task<IActionResult> Index()
         {
-            var username = User.Identity?.Name;
-            if (string.IsNullOrEmpty(username))
-                return Challenge();
-
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
-            if (user == null)
-                return Unauthorized();
+            int userId = GetCurrentUserId();
+            if (userId == 0) return Challenge();
 
             var cartItems = await _context.Carts
-                .Where(c => c.IdUser == user.IdUser)
+                .Where(c => c.IdUser == userId)
                 .Include(c => c.Book)
                 .ToListAsync();
 
             return View(cartItems);
         }
 
-        // POST: /Cart/Add
+        [HttpGet]
+        public async Task<IActionResult> Checkout()
+        {
+            int userId = GetCurrentUserId();
+            if (userId == 0)
+                return RedirectToAction("Login", "Account");
+
+            var user = await _context.Users.FindAsync(userId);
+            if (user == null)
+                return RedirectToAction("Login", "Account");
+
+            var cartItems = await _context.Carts
+                .Include(c => c.Book)
+                .Where(c => c.IdUser == userId)
+                .ToListAsync();
+
+            if (!cartItems.Any())
+            {
+                TempData["Message"] = "Cart is empty";
+                return RedirectToAction("Index");
+            }
+
+            ViewBag.CartItems = cartItems;
+            ViewBag.TotalItems = cartItems.Sum(i => i.Quantity);
+            ViewBag.TotalPrice = cartItems.Sum(i => i.Quantity * i.UnitPrice);
+
+            var model = new CheckoutFormModel
+            {
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                Street = user.Street,
+                City = user.City,
+                PostalCode = user.PostalCode
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Checkout(CheckoutFormModel form)
+        {
+            int userId = GetCurrentUserId();
+            if (userId == 0)
+                return RedirectToAction("Login", "Account");
+
+            if (!ModelState.IsValid)
+            {
+                var cartItems = await _context.Carts
+                    .Include(c => c.Book)
+                    .Where(c => c.IdUser == userId)
+                    .ToListAsync();
+
+                ViewBag.CartItems = cartItems;
+                ViewBag.TotalItems = cartItems.Sum(i => i.Quantity);
+                ViewBag.TotalPrice = cartItems.Sum(i => i.Quantity * i.UnitPrice);
+
+                return View(form);
+            }
+
+            var cartItemsToOrder = await _context.Carts
+                .Include(c => c.Book)
+                .Where(c => c.IdUser == userId)
+                .ToListAsync();
+
+            if (!cartItemsToOrder.Any())
+            {
+                TempData["Message"] = "Cart is empty";
+                return RedirectToAction("Index");
+            }
+
+            using var transaction = await _context.Database.BeginTransactionAsync();
+
+            try
+            {
+                var order = new Order
+                {
+                    IdUser = userId,
+                    OrderDate = DateTime.UtcNow,
+                    IdOrderStatus = 1,
+                    FirstName = form.FirstName,
+                    LastName = form.LastName,
+                    Email = form.Email,
+                    Street = form.Street,
+                    City = form.City,
+                    PostalCode = form.PostalCode
+                };
+
+                _context.Orders.Add(order);
+                await _context.SaveChangesAsync();
+
+                foreach (var cartItem in cartItemsToOrder)
+                {
+                    var orderItem = new OrderItem
+                    {
+                        IdOrder = order.IdOrder,
+                        IdBook = cartItem.IdBook,
+                        Quantity = cartItem.Quantity,
+                        UnitPrice = cartItem.UnitPrice
+                    };
+                    _context.OrderItems.Add(orderItem);
+                }
+
+                await _context.SaveChangesAsync();
+
+                _context.Carts.RemoveRange(cartItemsToOrder);
+                await _context.SaveChangesAsync();
+
+                await transaction.CommitAsync();
+
+                TempData["SuccessMessage"] = "Order placed successfully!";
+
+                return RedirectToAction("Index", "Home");
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+
+                var cartItems = await _context.Carts
+                    .Include(c => c.Book)
+                    .Where(c => c.IdUser == userId)
+                    .ToListAsync();
+
+                ViewBag.CartItems = cartItems;
+                ViewBag.TotalItems = cartItems.Sum(i => i.Quantity);
+                ViewBag.TotalPrice = cartItems.Sum(i => i.Quantity * i.UnitPrice);
+
+                ModelState.AddModelError("", "Error placing order: " + ex.Message);
+
+                return View(form);
+            }
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Add(int bookId, int quantity = 1)
@@ -73,14 +201,9 @@ namespace BookStore.PortalWWW.Controllers
 
             await _context.SaveChangesAsync();
 
-            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
-            {
-                return Json(new { success = true, message = "Book added to cart!" });
-            }
-            return RedirectToAction("Index");
+            return Json(new { success = true, message = "Book added to cart!" });
         }
 
-        // POST: /Cart/UpdateQuantity
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateQuantity(int cartId, int quantity)
@@ -95,10 +218,9 @@ namespace BookStore.PortalWWW.Controllers
             cartItem.Quantity = quantity;
             await _context.SaveChangesAsync();
 
-            return RedirectToAction("Index");
+            return Ok();
         }
 
-        // POST: /Cart/Remove
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Remove(int cartId)
@@ -110,7 +232,13 @@ namespace BookStore.PortalWWW.Controllers
             _context.Carts.Remove(cartItem);
             await _context.SaveChangesAsync();
 
-            return RedirectToAction("Index");
+            return Ok();
+        }
+
+        private int GetCurrentUserId()
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            return userIdClaim != null && int.TryParse(userIdClaim.Value, out int userId) ? userId : 0;
         }
     }
 }

@@ -56,6 +56,21 @@ namespace BookStore.PortalWWW.Controllers
             return View(book);
         }
 
+        public async Task<IActionResult> ByGenre(int genreId)
+        {
+            var booksQuery = _context.Books
+                .Include(b => b.Author)
+                .Include(b => b.BookGenres).ThenInclude(bg => bg.Genre)
+                .Where(b => b.BookGenres.Any(bg => bg.IdGenre == genreId));
+
+            var books = await booksQuery.ToListAsync();
+
+            var genre = await _context.Genres.FindAsync(genreId);
+            ViewBag.SelectedGenreName = genre?.Name;
+
+            return View("Index", books);
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]

@@ -1,4 +1,6 @@
 ﻿<script>
+    var isAuthenticated = @User.Identity.IsAuthenticated.ToString().ToLower();
+
     $(function () {
         var token = $('input[name="__RequestVerificationToken"]').val();
 
@@ -123,9 +125,20 @@
                 url: '@Url.Action("Add", "Cart")',
                 type: 'POST',
                 data: { bookId: bookId, quantity: 1 },
+                headers: {
+                    'RequestVerificationToken': token
+                },
                 success: function (response) {
                     if (response.success) {
-                        showTemporaryMessage(response.message);
+                        Swal.fire({
+                            icon: 'success',
+                            title: response.message,
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 2000,
+                            timerProgressBar: true
+                        });
                     } else {
                         Swal.fire({
                             icon: 'error',

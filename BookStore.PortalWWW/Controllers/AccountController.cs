@@ -70,6 +70,91 @@ namespace BookStore.PortalWWW.Controllers
 
             return View(model);
         }
+
+        public async Task<IActionResult> Orders()
+        {
+            int userId = GetCurrentUserId();
+            if (userId == 0) return Challenge();
+
+            var orders = await _context.Orders
+                .Include(o => o.OrderItems)
+                .Where(o => o.IdUser == userId)
+                .OrderByDescending(o => o.OrderDate)
+                .Select(o => new OrderViewModel
+                {
+                    OrderId = o.IdOrder,
+                    DatePlaced = o.OrderDate,
+                    Status = o.OrderStatus.Name,
+                    TotalItems = o.OrderItems.Sum(i => i.Quantity),
+                    TotalPrice = o.OrderItems.Sum(i => i.Quantity * i.UnitPrice)
+                })
+                .ToListAsync();
+
+            return View(orders);
+        }
+
+        public async Task<IActionResult> OrderDetails(int id)
+        {
+            var order = await _context.Orders
+                .Include(o => o.OrderStatus)
+                .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.Book)
+                .FirstOrDefaultAsync(o => o.IdOrder == id);
+
+            if (order == null) return NotFound();
+
+            var customer = await _context.Users.FindAsync(order.IdUser);
+
+            var model = new OrderDetailsViewModel
+            {
+                OrderId = order.IdOrder,
+                DatePlaced = order.OrderDate,
+                Status = order.OrderStatus.Name,
+                TotalPrice = order.OrderItems.Sum(i => i.Quantity * i.UnitPrice),
+                FirstName = customer?.FirstName,
+                LastName = customer?.LastName,
+                Email = customer?.Email,
+                Street = customer?.Street,
+                City = customer?.City,
+                PostalCode = customer?.PostalCode,
+
+                Items = order.OrderItems.Select(i => new OrderItemViewModel
+                {
+                    IdBook = i.IdBook,
+                    BookTitle = i.Book.Title,
+                    ImageUrl = i.Book.ImageUrl,
+                    Quantity = i.Quantity,
+                    UnitPrice = i.UnitPrice
+                }).ToList()
+            };
+
+            return View(model);
+        }
+
+
+        public async Task<IActionResult> Reviews()
+        {
+            int userId = GetCurrentUserId();
+            if (userId == 0) return Challenge();
+
+            var reviews = await _context.Reviews
+                .Where(r => r.IdUser == userId)
+                .Include(r => r.Book)
+                .OrderByDescending(r => r.DateAdded)
+                .Select(r => new ReviewViewModel
+                {
+                    ReviewId = r.IdReview,
+                    BookId = r.IdBook,
+                    BookTitle = r.Book != null ? r.Book.Title : "Unknown",
+                    Rating = r.Rating,
+                    Comment = r.Comment,
+                    DateAdded = r.DateAdded
+                })
+                .ToListAsync();
+
+            return View(reviews);
+        }
+
         [HttpGet]
         [AllowAnonymous]
         public IActionResult Login()
@@ -88,14 +173,14 @@ namespace BookStore.PortalWWW.Controllers
             var user = _context.Users.FirstOrDefault(u => u.Username == model.Username);
             if (user == null)
             {
-                ModelState.AddModelError("", "Invalid username or password.");
+                ModelState.AddModelError("", "Invalid username or password");
                 return View(model);
             }
 
             var result = _passwordHasher.VerifyHashedPassword(user, user.Password, model.Password);
             if (result != PasswordVerificationResult.Success)
             {
-                ModelState.AddModelError("", "Invalid username or password.");
+                ModelState.AddModelError("", "Invalid username or password");
                 return View(model);
             }
 
@@ -134,7 +219,7 @@ namespace BookStore.PortalWWW.Controllers
 
             if (_context.Users.Any(u => u.Username == model.Username))
             {
-                ModelState.AddModelError(nameof(model.Username), "Username already exists.");
+                ModelState.AddModelError(nameof(model.Username), "Username already exists");
                 return View(model);
             }
 
@@ -178,18 +263,15 @@ namespace BookStore.PortalWWW.Controllers
         }
 
         [HttpGet]
-        public IActionResult Edit()
+        public async Task<IActionResult> Edit()
         {
-            if (!User.Identity?.IsAuthenticated ?? true)
-                return RedirectToAction("Login");
+            int userId = GetCurrentUserId();
+            if (userId == 0) return Challenge();
 
-            var username = User.Identity.Name;
-            var user = _context.Users.FirstOrDefault(u => u.Username == username);
+            var user = await _context.Users.FindAsync(userId);
+            if (user == null) return NotFound();
 
-            if (user == null)
-                return NotFound();
-
-            var model = new UserProfileViewModel
+            var model = new EditProfileViewModel
             {
                 IdUser = user.IdUser,
                 Username = user.Username,
@@ -198,8 +280,7 @@ namespace BookStore.PortalWWW.Controllers
                 Email = user.Email,
                 Street = user.Street,
                 City = user.City,
-                PostalCode = user.PostalCode,
-                Password = null
+                PostalCode = user.PostalCode
             };
 
             return View(model);
@@ -207,30 +288,19 @@ namespace BookStore.PortalWWW.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(UserProfileViewModel model)
+        public async Task<IActionResult> Edit(EditProfileViewModel model)
         {
-            if (!User.Identity?.IsAuthenticated ?? true)
-                return RedirectToAction("Login");
-
             if (!ModelState.IsValid)
-                return View(model);
-
-            var user = _context.Users.FirstOrDefault(u => u.IdUser == model.IdUser);
-
-            if (user == null)
-                return NotFound();
-
-            if (!string.Equals(user.Username, model.Username, StringComparison.OrdinalIgnoreCase))
             {
-                bool usernameExists = _context.Users.Any(u => u.Username == model.Username && u.IdUser != model.IdUser);
-                if (usernameExists)
-                {
-                    ModelState.AddModelError(nameof(model.Username), "Username already exists.");
-                    return View(model);
-                }
+                return View(model);
             }
 
-            user.Username = model.Username;
+            int userId = GetCurrentUserId();
+            if (userId == 0) return Challenge();
+
+            var user = await _context.Users.FindAsync(userId);
+            if (user == null) return NotFound();
+
             user.FirstName = model.FirstName;
             user.LastName = model.LastName;
             user.Email = model.Email;
@@ -238,30 +308,27 @@ namespace BookStore.PortalWWW.Controllers
             user.City = model.City;
             user.PostalCode = model.PostalCode;
 
-            if (!string.IsNullOrWhiteSpace(model.Password))
+            if (!string.IsNullOrEmpty(model.NewPassword))
             {
-                user.Password = _passwordHasher.HashPassword(user, model.Password);
+                if (model.NewPassword.Length < 6)
+                {
+                    ModelState.AddModelError(nameof(model.NewPassword), "Password must be at least 6 characters");
+                    return View(model);
+                }
+
+                user.Password = _passwordHasher.HashPassword(user, model.NewPassword);
             }
 
             await _context.SaveChangesAsync();
 
-            if (!string.Equals(User.Identity.Name, model.Username, StringComparison.OrdinalIgnoreCase))
-            {
-                var claims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Name, user.Username),
-                    new Claim(ClaimTypes.NameIdentifier, user.IdUser.ToString()),
-                    new Claim(ClaimTypes.Role, user.Role)
-                };
+            TempData["SuccessMessage"] = "Information updated succesfully";
+            return RedirectToAction(nameof(Edit));
+        }
 
-                var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                var principal = new ClaimsPrincipal(identity);
-
-                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
-            }
-
-            TempData["SuccessMessage"] = "Account details updated.";
-            return RedirectToAction("Index");
+        private int GetCurrentUserId()
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            return userIdClaim != null && int.TryParse(userIdClaim.Value, out int userId) ? userId : 0;
         }
     }
 }

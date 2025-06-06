@@ -9,126 +9,139 @@
     var reviewError = TempData["ReviewError"] as string;
 }
 
-<div class="container my-5">
-    @Html.AntiForgeryToken()
-    <div class="row">
-        <nav class="col-md-2 pe-3 d-none d-md-block" style="position: sticky; top: 80px; height: calc(100vh - 80px); overflow-y: auto;">
+<div class="row">
+    <div class="col-md-2 py-3">
+        <div class="px-3 py-4">
             @await Component.InvokeAsync("GenresList")
-        </nav>
+        </div>
+    </div>
 
-        <div class="col-md-10">
-            <div class="row g-4">
-                <div class="col-md-5 text-center">
-                    <img src="~/images/@Model.ImageUrl" class="img-fluid rounded shadow mb-3" alt="@Model.Title" style="max-height: 420px;" />
-                </div>
-                <div class="col-md-7 d-flex flex-column justify-content-center">
-                    <h1 class="display-4">@Model.Title</h1>
-
-                    <p class="text-muted fs-5 mb-2">
-                        @(Model.Author != null ? $"{Model.Author.FirstName} {Model.Author.LastName}" : "Unknown Author")
-                    </p>
-
-                    <div class="mb-3">
-                        <span class="text-warning fs-5">
-                            @for (int i = 0; i < fullStars; i++)
-                            {
-                                <i class="bi bi-star-fill"></i>
-                            }
-                            @if (halfStar)
-                            {
-                                <i class="bi bi-star-half"></i>
-                            }
-                            @for (int i = 0; i < emptyStars; i++)
-                            {
-                                <i class="bi bi-star"></i>
-                            }
-                        </span>
-                        <span class="ms-2 fs-5 fw-semibold">@avgRating.ToString("0.0") / 5</span>
+    <div class="col-md-10">
+        <div class="container my-5">
+            @Html.AntiForgeryToken()
+            <div class="row">
+                <div class="row g-4">
+                    <div class="col-md-5 text-center">
+                        <img src="~/images/@Model.ImageUrl" class="img-fluid rounded shadow mb-3" alt="@Model.Title" style="max-height: 420px;" />
                     </div>
+                    <div class="col-md-7 d-flex flex-column justify-content-center">
+                        <h1 class="display-4">@Model.Title</h1>
 
-                    <div class="d-flex gap-3 mb-4">
-                        <button class="btn btn-warning btn-lg flex-grow-1 fw-bold add-to-cart" data-book-id="@Model.IdBook" type="button">
-                            <i class="bi bi-cart-plus me-2"></i> Add to Cart
-                        </button>
+                        <p class="text-muted fs-5 mb-2">
+                            @(Model.Author != null ? $"{Model.Author.FirstName} {Model.Author.LastName}" : "Unknown Author")
+                        </p>
 
-                        <button class="btn btn-outline-danger btn-lg toggle-collection" data-book-id="@Model.IdBook" title="Add to Collection" type="button">
-                            <i class="bi bi-suit-heart"></i>
-                        </button>
-                    </div>
-
-                    <div class="card p-3">
-                        <div class="mb-2"><i class="bi bi-arrow-counterclockwise me-2"></i> Returns within 30 days</div>
-                        <div class="mb-2"><i class="bi bi-truck me-2"></i> Estimated shipping in 2-3 business days</div>
-                        <div class="mb-2"><i class="bi bi-shop me-2"></i> Available in store</div>
-                        <div><i class="bi bi-book me-2"></i> Check free sample</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="mt-5">
-                <h4>Description</h4>
-                <div class="card card-body">@Model.Description</div>
-            </div>
-
-            <div class="mt-5">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h3>Reviews</h3>
-                    @if (User.Identity?.IsAuthenticated == true)
-                    {
-                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#reviewModal">
-                            <i class="bi bi-pencil-square me-2"></i> Add review
-                        </button>
-                    }
-                </div>
-
-                @if (Model.Reviews != null && Model.Reviews.Any())
-                {
-                    @foreach (var review in Model.Reviews.OrderByDescending(r => r.DateAdded))
-                    {
-                        <div class="mb-4 border-bottom pb-3">
-                            <div class="d-flex align-items-center mb-1">
-                                <strong>@review.User?.Username</strong>
-                                <span class="ms-2">
-                                    @for (int i = 0; i < review.Rating; i++)
-                                    {
-                                        <i class="bi bi-star-fill text-warning"></i>
-                                    }
-                                    @for (int i = review.Rating; i < 5; i++)
-                                    {
-                                        <i class="bi bi-star text-warning"></i>
-                                    }
-                                </span>
-                            </div>
-                            <p>@review.Comment</p>
-                            <small class="text-muted">@review.DateAdded.ToString("MMM dd, yyyy")</small>
-
-                            @if (User.Identity.IsAuthenticated && review.IdUser == int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "0"))
-                            {
-                                <div class="mt-2">
-                                    <button type="button" class="btn btn-sm btn-outline-primary edit-review-btn"
-                                            data-review-id="@review.IdReview"
-                                            data-rating="@review.Rating"
-                                            data-comment="@review.Comment"
-                                            data-bs-toggle="modal" data-bs-target="#reviewModal"
-                                            aria-label="Edit review" title="Edit review">
-                                        <i class="bi bi-pencil"></i>
-                                    </button>
-
-                                    <form method="post" asp-controller="Books" asp-action="DeleteReview" asp-route-reviewId="@review.IdReview" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this comment?');">
-                                        @Html.AntiForgeryToken()
-                                        <button type="submit" class="btn btn-sm btn-outline-danger" aria-label="Delete review" title="Delete review">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </form>
-                                </div>
-                            }
+                        <div class="mb-3">
+                            <span class="text-warning fs-5">
+                                @for (int i = 0; i < fullStars; i++)
+                                {
+                                    <i class="bi bi-star-fill"></i>
+                                }
+                                @if (halfStar)
+                                {
+                                    <i class="bi bi-star-half"></i>
+                                }
+                                @for (int i = 0; i < emptyStars; i++)
+                                {
+                                    <i class="bi bi-star"></i>
+                                }
+                            </span>
+                            <span class="ms-2 fs-5 fw-semibold">@avgRating.ToString("0.0") / 5</span>
                         </div>
+
+                        <div class="d-flex gap-3 mb-4">
+                            <button class="btn btn-warning btn-lg flex-grow-1 fw-bold add-to-cart" data-book-id="@Model.IdBook" type="button">
+                                <i class="bi bi-cart-plus me-2"></i> Add to Cart
+                            </button>
+
+                            <button class="btn btn-outline-danger btn-lg toggle-collection" data-book-id="@Model.IdBook" title="Add to Collection" type="button">
+                                <i class="bi bi-suit-heart"></i>
+                            </button>
+                        </div>
+
+                        <div class="mt-3">
+                            <h5>Details</h5>
+                            <div class="card card-body">
+                                <dl class="row mb-0">
+                                    <dt class="col-sm-3">Pages</dt>
+                                    <dd class="col-sm-9">@Model.NumberOfPages</dd>
+
+                                    <dt class="col-sm-3">Date published</dt>
+                                    <dd class="col-sm-9">@Model.YearPublished</dd>
+
+                                    <dt class="col-sm-3">Language</dt>
+                                    <dd class="col-sm-9">@Model.Language</dd>
+                                </dl>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-5">
+                    <h4>Description</h4>
+                    <div class="card card-body">@Model.Description</div>
+                </div>
+
+                <div class="mt-5">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h3>Reviews</h3>
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#reviewModal">
+                                <i class="bi bi-pencil-square me-2"></i> Add review
+                            </button>
+                        }
+                    </div>
+
+                    @if (Model.Reviews != null && Model.Reviews.Any())
+                    {
+                        @foreach (var review in Model.Reviews.OrderByDescending(r => r.DateAdded))
+                        {
+                            <div class="mb-4 border-bottom pb-3">
+                                <div class="d-flex align-items-center mb-1">
+                                    <strong>@review.User?.Username</strong>
+                                    <span class="ms-2">
+                                        @for (int i = 0; i < review.Rating; i++)
+                                        {
+                                            <i class="bi bi-star-fill text-warning"></i>
+                                        }
+                                        @for (int i = review.Rating; i < 5; i++)
+                                        {
+                                            <i class="bi bi-star text-warning"></i>
+                                        }
+                                    </span>
+                                </div>
+                                <p>@review.Comment</p>
+                                <small class="text-muted">@review.DateAdded.ToString("MMM dd, yyyy")</small>
+
+                                @if (User.Identity.IsAuthenticated && review.IdUser == int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "0"))
+                                {
+                                    <div class="mt-2">
+                                        <button type="button" class="btn btn-sm btn-outline-primary edit-review-btn"
+                                                data-review-id="@review.IdReview"
+                                                data-rating="@review.Rating"
+                                                data-comment="@review.Comment"
+                                                data-bs-toggle="modal" data-bs-target="#reviewModal"
+                                                aria-label="Edit review" title="Edit review">
+                                            <i class="bi bi-pencil"></i>
+                                        </button>
+
+                                        <form method="post" asp-controller="Books" asp-action="DeleteReview" asp-route-reviewId="@review.IdReview" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this comment?');">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-sm btn-outline-danger" aria-label="Delete review" title="Delete review">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                }
+                            </div>
+                        }
                     }
-                }
-                else
-                {
-                    <p class="text-muted">No reviews yet</p>
-                }
+                    else
+                    {
+                        <p class="text-muted">No reviews yet</p>
+                    }
+                </div>
             </div>
         </div>
     </div>
@@ -168,151 +181,43 @@
             </div>
 
             <div class="modal-footer">
-                <button type="submit" class="btn btn-primary">Submit Review</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn bg-primary text-white">Submit Review</button>
+                <button type="button" class="btn bg-secondary text-white" data-bs-dismiss="modal">Cancel</button>
             </div>
         </form>
     </div>
 </div>
 
 @section Scripts {
+    @await Html.PartialAsync("_BookCardScriptsPartial")
+
     <script>
-        var isAuthenticated = @User.Identity.IsAuthenticated.ToString().ToLower();
+        $(document).ready(function () {
+            $('.edit-review-btn').on('click', function () {
+                var reviewId = $(this).data('review-id');
+                var rating = $(this).data('rating');
+                var comment = $(this).data('comment');
 
-        $(function () {
-            var token = $('input[name="__RequestVerificationToken"]').val();
-            var loginUrl = '@Url.Action("Login", "Account", new { ReturnUrl = Context.Request.Path })';
-
-            $.ajaxSetup({
-                beforeSend: function (xhr, settings) {
-                    if (settings.type === 'POST') {
-                        xhr.setRequestHeader('RequestVerificationToken', token);
-                    }
-                }
+                $('#reviewModalLabel').text('Edit review');
+                $('#ReviewId').val(reviewId);
+                $('#Rating').val(rating);
+                $('#Comment').val(comment);
             });
 
-            $(document).off('click', '.toggle-collection');
-            $(document).off('click', '.add-to-cart');
+            $('button[data-bs-target="#reviewModal"]').not('.edit-review-btn').on('click', function () {
+                $('#reviewModalLabel').text('Add review');
 
-            $(document).on('click', '.toggle-collection', function (e) {
-                e.preventDefault();
-                e.stopPropagation();
-
-                if (!isAuthenticated) {
-                    window.location.href = loginUrl;
-                    return;
-                }
-
-                var button = $(this);
-                var bookId = button.data('book-id');
-
-                $.post('@Url.Action("Toggle", "Collection")', { bookId: bookId })
-                    .done(function (response) {
-                        if (response.added) {
-                            button.find('i').removeClass('bi-suit-heart').addClass('bi-suit-heart-fill');
-                            button.removeClass('btn-outline-danger').addClass('btn-danger');
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Added to your collection!',
-                                toast: true,
-                                position: 'top-end',
-                                showConfirmButton: false,
-                                timer: 1200,
-                                timerProgressBar: true
-                            });
-                        } else {
-                            button.find('i').removeClass('bi-suit-heart-fill').addClass('bi-suit-heart');
-                            button.removeClass('btn-danger').addClass('btn-outline-danger');
-                            Swal.fire({
-                                icon: 'info',
-                                title: 'Removed from your collection.',
-                                toast: true,
-                                position: 'top-end',
-                                showConfirmButton: false,
-                                timer: 1200,
-                                timerProgressBar: true
-                            });
-                        }
-                    })
-                    .fail(function () {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error toggling collection.',
-                            toast: true,
-                            position: 'top-end',
-                            showConfirmButton: false,
-                            timer: 1800,
-                            timerProgressBar: true
-                        });
-                    });
+                $('#ReviewId').val('');
+                $('#Rating').val('');
+                $('#Comment').val('');
             });
 
-            $(document).on('click', '.add-to-cart', function (e) {
-                e.preventDefault();
-                e.stopPropagation();
-
-                if (!isAuthenticated) {
-                    window.location.href = loginUrl;
-                    return;
-                }
-
-                var button = $(this);
-                var bookId = button.data('book-id');
-
-                $.ajax({
-                    url: '@Url.Action("Add", "Cart")',
-                    type: 'POST',
-                    data: { bookId: bookId, quantity: 1 },
-                    headers: { 'X-Requested-With': 'XMLHttpRequest' },
-                    success: function (response) {
-                        if (response.success) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: response.message || 'Book added to cart!',
-                                toast: true,
-                                position: 'top-end',
-                                showConfirmButton: false,
-                                timer: 1200,
-                                timerProgressBar: true
-                            });
-                        } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Could not add book to cart.',
-                                toast: true,
-                                position: 'top-end',
-                                showConfirmButton: false,
-                                timer: 1800,
-                                timerProgressBar: true
-                            });
-                        }
-                    },
-                    error: function () {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error adding book to cart. Please try again.',
-                            toast: true,
-                            position: 'top-end',
-                            showConfirmButton: false,
-                            timer: 1800,
-                            timerProgressBar: true
-                        });
-                    }
-                });
+            $('#reviewModal').on('hidden.bs.modal', function () {
+                $('#reviewModalLabel').text('Add review');
+                $('#ReviewId').val('');
+                $('#Rating').val('');
+                $('#Comment').val('');
             });
-
-            if (isAuthenticated) {
-                $('.toggle-collection').each(function () {
-                    var button = $(this);
-                    var bookId = button.data('book-id');
-                    $.get('@Url.Action("IsInCollection", "Collection")', { bookId: bookId }, function (data) {
-                        if (data.isInCollection) {
-                            button.find('i').removeClass('bi-suit-heart').addClass('bi-suit-heart-fill');
-                            button.removeClass('btn-outline-danger').addClass('btn-danger');
-                        }
-                    });
-                });
-            }
         });
     </script>
 }

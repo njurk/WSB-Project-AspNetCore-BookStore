@@ -1,0 +1,100 @@
+﻿@model BookStore.PortalWWW.Models.OrderDetailsViewModel
+
+@{
+    ViewData["Title"] = $"Order #{Model.OrderId}";
+}
+
+<div class="container my-5">
+    <a asp-action="Orders" class="btn btn-light border-2 border-dark mb-4">
+        <i class="bi bi-arrow-left me-2"></i> Back
+    </a>
+
+    <h2 class="mb-4 color-secondary fw-semibold">@ViewData["Title"]</h2>
+
+    <div class="row">
+        <div class="col-md-6">
+            <h4 class="mb-3">General details</h4>
+            <div class="card card-body mb-4">
+                <div class="row mb-2">
+                    <div class="col-4 col-md-3 fw-semibold">
+                        Status
+                    </div>
+                    <div class="col-8 col-md-9">
+                        <span class="badge bg-warning">@Model.Status</span>
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-4 col-md-3 fw-semibold">
+                        Date placed
+                    </div>
+                    <div class="col-8 col-md-9">
+                        @Model.DatePlaced.ToString("MMM dd, yyyy")
+                    </div>
+                </div>
+            </div>
+            <h4 class="mb-3">Shipping information</h4>
+            <div class="card card-body">
+                <div class="row mb-2">
+                    <div class="col-4 col-md-3 fw-semibold">
+                        Name
+                    </div>
+                    <div class="col-8 col-md-9">
+                        @Model.FirstName @Model.LastName
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-4 col-md-3 fw-semibold">
+                        Email
+                    </div>
+                    <div class="col-8 col-md-9">
+                        @Model.Email
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-4 col-md-3 fw-semibold">
+                        Address
+                    </div>
+                    <div class="col-8 col-md-9">
+                        @Model.Street, @Model.City, @Model.PostalCode
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <h4 class="mb-3">Order items</h4>
+
+            @if (Model.Items == null || !Model.Items.Any())
+            {
+                <p class="text-muted">No items in this order</p>
+            }
+            else
+            {
+                <div class="list-group">
+                    @foreach (var item in Model.Items)
+                    {
+                        <a asp-controller="Books" asp-action="Details" asp-route-id="@item.IdBook"
+                           class="list-group-item list-group-item-action d-flex align-items-center gap-3 text-decoration-none text-dark">
+                            <img src="~/images/@item.ImageUrl" alt="@item.BookTitle" style="height: 80px; width: auto; object-fit: contain;" />
+                            <div class="flex-grow-1">
+                                <h6 class="mb-1">@item.BookTitle</h6>
+                                <small class="d-block">x @item.Quantity</small>
+                            </div>
+                            <div class="text-end">
+                                <div class="fw-bold">
+                                    Unit price: @item.UnitPrice.ToString("C")
+                                </div>
+                                <div class="fw-semibold">
+                                    Subtotal: @((item.UnitPrice * item.Quantity).ToString("C"))
+                                </div>
+                            </div>
+                        </a>
+                    }
+                </div>
+                <div class="mt-4 me-3 text-end">
+                    <span class="fw-bold" style="font-size: x-large;">Total: @Model.TotalPrice.ToString("C")</span>
+                </div>
+            }
+        </div>
+    </div>
+</div>

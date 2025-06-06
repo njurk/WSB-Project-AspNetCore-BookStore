@@ -1,7 +1,8 @@
-﻿@model BookStore.PortalWWW.Models.HomeViewModel
-
-@{
+﻿@{
     ViewData["Title"] = "Home";
+
+    var featuredBooks = ViewData["FeaturedBooks"] as List<BookStore.Data.Data.Entities.Book> ?? new();
+    var popularBooksWithRatings = ViewData["PopularBooksWithRatings"] as List<BookStore.PortalWWW.Models.BookWithAvgRatingViewModel> ?? new();
 }
 
 <head>
@@ -9,60 +10,117 @@
     <link href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css" rel="stylesheet" />
 </head>
 
-<div class="container py-4">
-    <div class="row">
-        <div class="col-md-2 py-2">
-            <div class="pe-3">
-                @await Component.InvokeAsync("GenresList")
-            </div>
+<div class="row">
+    <div class="col-md-2 py-3">
+        <div class="px-3 py-4">
+            @await Component.InvokeAsync("GenresList")
         </div>
-        <div class="col-md-10 py-2">
-            <h2 class="mb-5">Featured</h2>
+    </div>
 
-            <div class="autoplay px-5">
-                @foreach (var book in Model.FeaturedBooks)
-                {
-                    <div class="carousel-book-card">
-                        <a asp-controller="Books" asp-action="Details" asp-route-id="@book.IdBook" class="text-decoration-none text-dark d-block">
-                            <img src="~/images/@book.ImageUrl" alt="@book.Title" />
-                            <h6>@book.Title</h6>
-                        </a>
-                        <p>$ @book.Price</p>
-                    </div>
-                }
+    <div class="col-md-10">
+        <div class="container my-4">
+            <div class="row">
+                    <h2 class="mb-5">Featured</h2>
+
+                    <div class="autoplay px-5">
+                        @foreach (var book in featuredBooks)
+                        {
+                            <div class="carousel-book-card text-center">
+                                <a asp-controller="Books" asp-action="Details" asp-route-id="@book.IdBook" class="text-decoration-none text-dark d-block">
+                                    <img src="~/images/@book.ImageUrl" alt="@book.Title" style="max-height: 250px; object-fit: contain; margin: 0 auto;" />
+                                    <h6 class="mt-2">@book.Title</h6>
+                                </a>
+                                <p>$ @book.Price.ToString("F2")</p>
+                            </div>
+                        }
+                </div>
             </div>
+
+            <div class="mt-5">
+                <h2 class="mb-4">Highest Rated</h2>
+                <div class="row justify-content-start g-3">
+                    @foreach (var item in popularBooksWithRatings)
+                    {
+                        var book = item.Book;
+                        var avgRating = item.AverageRating;
+                        int fullStars = (int)avgRating;
+                        bool halfStar = (avgRating - fullStars) >= 0.5;
+                        int emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
+
+                        <div class="col-6 col-md-3">
+                            <div class="card highest-rated-card h-100" style="border: none">
+                                <a asp-controller="Books" asp-action="Details" asp-route-id="@book.IdBook" class="text-decoration-none text-dark">
+                                    <img src="@Url.Content("~/images/" + book.ImageUrl)" class="card-img-top fixed-image d-block mx-auto" alt="@book.Title" />
+                                    <div class="card-body">
+                                        <h5 class="card-title">@book.Title</h5>
+                                        <p class="card-text">@book.Author?.FirstName @book.Author?.LastName</p>
+                                        <p class="card-text fw-bold">$@book.Price.ToString("F2")</p>
+                                        <div>
+                                            <span class="text-warning">
+                                                <i class="fas fa-star"></i>
+                                            </span>
+                                            <span class="ms-2">
+                                                @(avgRating > 0 ? $"{avgRating:F1}" : "Unrated")
+                                            </span>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
         </div>
     </div>
 </div>
 
 @section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        $(document).ready(function(){
-          $('.autoplay').slick({
-            slidesToShow: 3,
-            slidesToScroll: 1,
-            autoplay: true,
-            autoplaySpeed: 2000,
-            dots: true,
-            arrows: true,
-            responsive: [
-              {
-                breakpoint: 768,
-                settings: {
-                  slidesToShow: 2,
-                  slidesToScroll: 1
-                }
-              },
-              {
-                breakpoint: 480,
-                settings: {
-                  slidesToShow: 1,
-                  slidesToScroll: 1
-                }
-              }
-            ]
-          });
+        $(function () {
+            var message = '@TempData["SuccessMessage"]';
+            if (message) {
+                Swal.fire({
+                    icon: 'success',
+                    title: message,
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 2500,
+                    timerProgressBar: true
+                });
+            }
         });
-
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('.autoplay').slick({
+                slidesToShow: 3,
+                slidesToScroll: 1,
+                autoplay: true,
+                autoplaySpeed: 2000,
+                dots: true,
+                arrows: true,
+                responsive: [
+                    {
+                        breakpoint: 768,
+                        settings: {
+                            slidesToShow: 2,
+                            slidesToScroll: 1
+                        }
+                    },
+                    {
+                        breakpoint: 480,
+                        settings: {
+                            slidesToShow: 1,
+                            slidesToScroll: 1
+                        }
+                    }
+                ]
+            });
+        });
     </script>
 }

@@ -1,16 +1,19 @@
 ﻿@model IEnumerable<BookStore.Data.Data.Entities.Genre>
 
-<h4>Genres</h4>
-@if (Model?.Any() == true)
-{
-    <ul class="list-unstyled">
-        @foreach (var genre in Model)
-        {
-            <li class="genre-item"><a href="#">@genre.Name <span>›</span></a></li>
-        }
-    </ul>
-}
-else
-{
-    <p>No genres available.</p>
-}
+<h4 class="pt-4">Genres</h4>
+<br />
+<ul class="list-unstyled">
+    <li class="sidenav-item">
+        <a asp-controller="Books" asp-action="Index">
+            All <span>›</span>
+        </a>
+    </li>
+    @foreach (var genre in Model)
+    {
+        <li class="sidenav-item">
+            <a asp-controller="Books" asp-action="ByGenre" asp-route-genreId="@genre.IdGenre">
+                @genre.Name <span>›</span>
+            </a>
+        </li>
+    }
+</ul>

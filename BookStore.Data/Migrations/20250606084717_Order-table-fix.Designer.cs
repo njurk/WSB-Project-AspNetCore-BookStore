@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookStore.Data.Migrations
 {
     [DbContext(typeof(BookStoreContext))]
-    [Migration("20250514160229_Update-User-table")]
-    partial class UpdateUsertable
+    [Migration("20250606084717_Order-table-fix")]
+    partial class Ordertablefix
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -135,6 +135,12 @@ namespace BookStore.Data.Migrations
                     b.Property<int>("IdUser")
                         .HasColumnType("int");
 
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("UnitPrice")
+                        .HasColumnType("decimal(18,2)");
+
                     b.HasKey("IdCart");
 
                     b.HasIndex("IdBook");
@@ -240,14 +246,43 @@ namespace BookStore.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdOrder"));
 
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
                     b.Property<int>("IdOrderStatus")
                         .HasColumnType("int");
 
                     b.Property<int>("IdUser")
                         .HasColumnType("int");
 
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("PostalCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Street")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("IdOrder");
 
@@ -317,6 +352,9 @@ namespace BookStore.Data.Migrations
                         .IsRequired()
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
+
+                    b.Property<DateTime>("DateAdded")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("IdBook")
                         .HasColumnType("int");
@@ -399,6 +437,11 @@ namespace BookStore.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
                     b.Property<string>("Street")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -447,13 +490,13 @@ namespace BookStore.Data.Migrations
             modelBuilder.Entity("BookStore.Data.Data.Entities.Cart", b =>
                 {
                     b.HasOne("BookStore.Data.Data.Entities.Book", "Book")
-                        .WithMany()
+                        .WithMany("Carts")
                         .HasForeignKey("IdBook")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("BookStore.Data.Data.Entities.User", "User")
-                        .WithMany()
+                        .WithMany("Carts")
                         .HasForeignKey("IdUser")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -466,13 +509,13 @@ namespace BookStore.Data.Migrations
             modelBuilder.Entity("BookStore.Data.Data.Entities.Collection", b =>
                 {
                     b.HasOne("BookStore.Data.Data.Entities.Book", "Book")
-                        .WithMany()
+                        .WithMany("Collections")
                         .HasForeignKey("IdBook")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("BookStore.Data.Data.Entities.User", "User")
-                        .WithMany()
+                        .WithMany("Collections")
                         .HasForeignKey("IdUser")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -578,6 +621,10 @@ namespace BookStore.Data.Migrations
                 {
                     b.Navigation("BookGenres");
 
+                    b.Navigation("Carts");
+
+                    b.Navigation("Collections");
+
                     b.Navigation("DeliveryItems");
 
                     b.Navigation("OrderItems");
@@ -612,6 +659,10 @@ namespace BookStore.Data.Migrations
 
             modelBuilder.Entity("BookStore.Data.Data.Entities.User", b =>
                 {
+                    b.Navigation("Carts");
+
+                    b.Navigation("Collections");
+
                     b.Navigation("Orders");
 
                     b.Navigation("Reviews");

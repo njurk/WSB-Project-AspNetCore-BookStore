@@ -1,0 +1,56 @@
+﻿@model List<BookStore.PortalWWW.Models.ReviewViewModel>
+
+@{
+    ViewData["Title"] = "Your reviews";
+}
+
+<div class="container my-5">
+    <a asp-action="Index" class="btn btn-light border-2 border-dark mb-4">
+        <i class="bi bi-arrow-left me-2"></i> Back
+    </a>
+    <h2 class="mb-4 color-secondary fw-semibold">@ViewData["Title"]</h2>
+
+    @if (!Model.Any())
+    {
+        <p class="text-muted">No reviews posted</p>
+    }
+    else
+    {
+        <div class="d-flex flex-wrap gap-4 mb-5 justify-content-start">
+            @foreach (var review in Model)
+            {
+                <a href="@Url.Action("Details", "Books", new { id = review.BookId })"
+                   class="card review-card text-dark text-decoration-none shadow-sm border-0">
+                    <div class="card-body d-flex flex-column h-100">
+                        <h5 class="card-title fw-semibold">@review.BookTitle</h5>
+                        <div class="mb-2">
+                            @for (int i = 0; i < review.Rating; i++)
+                            {
+                                <i class="bi bi-star-fill text-warning"></i>
+                            }
+                            @for (int i = review.Rating; i < 5; i++)
+                            {
+                                <i class="bi bi-star text-warning"></i>
+                            }
+                        </div>
+                        <p class="card-text comment-text" title="@review.Comment">
+                            @if (review.Comment.Length > 100)
+                            {
+                                @review.Comment.Substring(0, 100)
+                            }
+                            else
+                            {
+                                @review.Comment
+                            }
+                        </p>
+                        <small class="text-muted mt-auto">@review.DateAdded.ToString("MMM dd, yyyy")</small>
+                    </div>
+                </a>
+            }
+        </div>
+    }
+</div>
+
+@section Scripts {
+    @await Html.PartialAsync("_BookCardScriptsPartial")
+}

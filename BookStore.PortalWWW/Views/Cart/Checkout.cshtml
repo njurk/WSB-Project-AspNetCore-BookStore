@@ -1,0 +1,96 @@
+﻿@model CheckoutFormModel
+
+@{
+    ViewData["Title"] = "Checkout";
+    var cartItems = ViewBag.CartItems as List<BookStore.Data.Data.Entities.Cart>;
+}
+
+<div class="container my-5 mx-5">
+    <h2 class="my-4 color-secondary">Checkout</h2>
+
+    @if (cartItems == null || !cartItems.Any())
+    {
+        <div class="alert alert-warning">Your cart is empty</div>
+    }
+    else
+    {
+        <div class="row justify-content-center">
+            <div class="col-md-5 mx-3">
+                <h4>Shipping information</h4>
+                <br/>
+                <form id="checkoutForm" asp-controller="Cart" asp-action="Checkout" method="post" novalidate>
+                    @Html.AntiForgeryToken()
+
+                    <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+                    <div class="row">
+                        <div class="mb-2 col-6">
+                            <label asp-for="FirstName" class="form-label"></label>
+                            <input asp-for="FirstName" class="form-control" />
+                            <span asp-validation-for="FirstName" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-2 col-6">
+                            <label asp-for="LastName" class="form-label"></label>
+                            <input asp-for="LastName" class="form-control" />
+                            <span asp-validation-for="LastName" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="mb-2">
+                        <label asp-for="Email" class="form-label"></label>
+                        <input asp-for="Email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-2">
+                        <label asp-for="Street" class="form-label"></label>
+                        <input asp-for="Street" class="form-control" />
+                        <span asp-validation-for="Street" class="text-danger"></span>
+                    </div>
+
+                    <div class="row">
+                        <div class="mb-2 col-6">
+                            <label asp-for="City" class="form-label"></label>
+                            <input asp-for="City" class="form-control" />
+                            <span asp-validation-for="City" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-2 col-6">
+                            <label asp-for="PostalCode" class="form-label"></label>
+                            <input asp-for="PostalCode" class="form-control" />
+                            <span asp-validation-for="PostalCode" class="text-danger"></span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="col-md-6 mx-3">
+                <h4 class="mb-4">Order summary</h4>
+                <ul class="list-group mb-1">
+                    @foreach (var item in (List<BookStore.Data.Data.Entities.Cart>)ViewBag.CartItems)
+                    {
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <p>@item.Quantity x <strong>@item.Book?.Title</strong></p>
+                            </div>
+                            <span>@((item.Quantity * item.UnitPrice).ToString("C"))</span>
+                        </li>
+                    }
+                </ul>
+                <p>Total Items: @ViewBag.TotalItems</p>
+                <p>Total Price: @ViewBag.TotalPrice.ToString("C")</p>
+                <div class="align-content-end">
+                    <button type="submit" form="checkoutForm" class="btn bg-primary text-white btn-lg mt-5 px-4">
+                        Place order
+                    </button>
+                </div>
+                
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

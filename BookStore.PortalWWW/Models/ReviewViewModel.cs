@@ -4,6 +4,8 @@ namespace BookStore.PortalWWW.Models
 {
     public class ReviewViewModel
     {
+        public int ReviewId { get; set; }
+        public int BookId { get; set; }
         public string BookTitle { get; set; }
 
         [Range(1, 5, ErrorMessage = "Rating must be between 1 and 5.")]

@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using BookStore.Data.Data;
+using BookStore.Data.Data.Entities;
 using BookStore.PortalWWW.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,27 +20,32 @@ namespace BookStore.PortalWWW.Controllers
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var featuredBooks = _context.Books
+            var featuredBooks = await _context.Books
                 .Include(b => b.Author)
                 .OrderByDescending(b => b.IdBook)
                 .Take(6)
-                .ToList();
-            var popularBooks = _context.Books
+                .ToListAsync();
+
+            var popularBooksWithRatings = await _context.Books
                 .Include(b => b.Author)
-                .OrderBy(b => b.IdBook)
-                .Take(6)
-                .ToList();
+                .Include(b => b.Reviews)
+                .Select(b => new BookWithAvgRatingViewModel
+                {
+                    Book = b,
+                    AverageRating = b.Reviews.Any() ? b.Reviews.Average(r => r.Rating) : 0
+                })
+                .OrderByDescending(b => b.AverageRating)
+                .Take(4)
+                .ToListAsync();
 
-            var model = new HomeViewModel
-            {
-                FeaturedBooks = featuredBooks,
-                PopularBooks = popularBooks
-            };
+            ViewData["FeaturedBooks"] = featuredBooks;
+            ViewData["PopularBooksWithRatings"] = popularBooksWithRatings;
 
-            return View(model);
+            return View();
         }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

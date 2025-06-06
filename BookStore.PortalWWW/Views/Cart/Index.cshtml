@@ -9,9 +9,9 @@
 <div class="main-content my-5">
     <div class="container">
 
-        <h2 class="mt-4 mb-4">@ViewData["Title"]</h2>
+        <h2 class="my-4 color-secondary">@ViewData["Title"]</h2>
         <div class="row">
-            <div class="col-md-8">
+            <div class="col-md-7 me-5">
                 @if (Model != null && Model.Any())
                 {
                     <table class="table align-middle">
@@ -55,10 +55,6 @@
                             }
                         </tbody>
                     </table>
-                    <div class="mt-4 text-muted">
-                        <p>You will receive an email confirmation once your payment is successfully processed.</p>
-                        <p>Free returns within 30 days of purchase.</p>
-                    </div>
                 }
                 else
                 {
@@ -70,48 +66,35 @@
 
             @if (Model != null && Model.Any())
             {
-                <div class="col-md-4 mb-5">
-                    <div class="mt-4">
-                        <h5>Payment Options</h5>
+                <div class="col-md-4 mb-5 mx-auto">
+                    <div>
+                        <h5>Payment options</h5>
                         <i class="fa-brands fa-cc-visa fa-3x me-3"></i>
                         <i class="fab fa-cc-mastercard fa-3x me-3"></i>
                         <i class="fab fa-paypal fa-3x me-3"></i>
                     </div>
-                    <div class="mt-4">
-                        <p>We accept Visa, MasterCard,and PayPal.</p>
-                        <p>Please review your order carefully before proceeding to checkout.</p>
+                        
+                    <div class="mt-2 text-muted">
+                        <p>Please check your order carefully before proceeding to checkout.</p>
+                        <p>You will receive an email confirmation once your payment is processed.</p>
                     </div>
-                    <div class="mb-3">
-                        <h5 for="promoCode" class="form-label">Promotion code</h5>
-                        <div class="d-flex">
-                            <input type="text" id="promoCode" name="promoCode" class="form-control" placeholder="Enter your promo code" />
-                            <button type="submit" class="btn btn-primary">Apply</button>
-                        </div>
-                    </div>
+
                     <div class="card p-4 shadow-sm rounded-3">
-                        <h4 class="card-title mb-3 fw-bold">Order Summary</h4>
+                        <h4 class="card-title mb-3 fw-bold">Summary</h4>
 
                         <ul class="list-unstyled mb-4">
                             <li class="d-flex justify-content-between mb-2">
-                                <span>Total Items:</span>
-                                <span class="fw-semibold">@totalItems</span>
+                                <span>Items:</span>
+                                <h5 class="fw-bold">@totalItems</h5>
                             </li>
                             <li class="d-flex justify-content-between mb-2">
-                                <span>Subtotal:</span>
-                                <span class="fw-semibold">@totalPrice.ToString("C")</span>
-                            </li>
-                            <li class="d-flex justify-content-between mb-3">
-                                <span>Estimated Shipping:</span>
-                                <span class="text-muted">2–3 business days</span>
+                                <span>Total:</span>
+                                <h3 class="fw-bold">@totalPrice.ToString("C")</h3>
                             </li>
                         </ul>
                         <div class="d-grid">
-                            <button class="btn btn-success btn-lg fw-semibold" type="button">Checkout</button>
+                            <a asp-controller="Cart" asp-action="Checkout" class="btn bg-primary text-white btn-lg fw-semibold">Checkout</a>
                         </div>
-
-                        <small class="text-muted mt-3 d-block">
-                            Orders placed before 1 PM ship the same day. Free standard shipping on orders over $50.
-                        </small>
                     </div>
                 </div>
             }

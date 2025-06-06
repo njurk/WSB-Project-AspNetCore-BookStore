@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookStore.Data.Migrations
 {
     [DbContext(typeof(BookStoreContext))]
-    [Migration("20250517085723_Cart-table-type-fix")]
-    partial class Carttabletypefix
+    [Migration("20250605140351_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

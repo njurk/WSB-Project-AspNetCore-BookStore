@@ -63,9 +63,9 @@ footer {
 }
 
 :root {
-    --color-primary: #4c5c52; /* dark muddy green */
-    --color-secondary: #944040; /* muted red */
-    --color-tertiary: #1a1a1a; /* dark grey */
+    --color-primary: #4c5c52; /* ciemna zieleñ */
+    --color-secondary: #944040; /* brudny czerwony */
+    --color-tertiary: #1a1a1a; /* ciemny szary */
 }
 
 .bg-primary {
@@ -133,24 +133,6 @@ footer {
     border-top-right-radius: 0.5rem;
 }
 
-.genre-item {
-    margin-bottom: 2px;
-}
-
-    .genre-item a {
-        text-decoration: none;
-        padding-block: 0.1rem;
-        color: var(--color-tertiary) !important;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        font-size: 0.9rem;
-    }
-
-    .genre-item a:hover {
-        background-color: rgba(100, 100, 100, 0.1);
-    }
-
 .carousel-book-card {
     width: 220px;
     margin: 0 auto;
@@ -194,3 +176,103 @@ footer {
     margin-right: 40px;
 }
 
+.sidenav-item {
+    margin-bottom: 0.4rem;
+}
+
+    .sidenav-item a {
+        text-decoration: none;
+        color: var(--color-tertiary) !important;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+        .sidenav-item a:hover {
+            background-color: rgba(100, 100, 100, 0.1);
+            border-radius: 0.25rem;
+        }
+
+.carousel-book-card {
+    padding: 15px;
+    max-width: 220px;
+    margin: 0 auto;
+}
+
+    .carousel-book-card img {
+        max-height: 280px;
+        width: auto;
+        object-fit: contain;
+        margin-bottom: 10px;
+    }
+
+    .carousel-book-card h6 {
+        font-size: 1.1rem;
+        font-weight: 600;
+    }
+
+    .carousel-book-card p {
+        font-size: 1rem;
+        font-weight: bold;
+        margin-top: 5px;
+    }
+
+.highest-rated-card {
+    max-width: 180px;
+    margin: 0 auto;
+}
+
+    .highest-rated-card img {
+        height: 180px;
+        width: auto;
+        object-fit: contain;
+        margin-bottom: 8px;
+    }
+
+    .highest-rated-card .card-body {
+        padding: 0.5rem 0.75rem;
+    }
+
+    .highest-rated-card .card-title {
+        font-size: 1rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .highest-rated-card .card-text {
+        font-size: 0.85rem;
+    }
+
+    .highest-rated-card .text-warning i {
+        font-size: 0.9rem;
+    }
+
+.review-card {
+    width: 18rem;
+    cursor: pointer;
+    transition: box-shadow 0.3s ease;
+}
+
+    .review-card:hover {
+        box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15);
+        text-decoration: none;
+    }
+
+.comment-text {
+    position: relative;
+    max-height: 4.5em;
+    overflow: hidden;
+    line-height: 1.5em;
+    margin-bottom: 1rem;
+}
+
+    .comment-text::after {
+        content: "";
+        text-align: right;
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 70%;
+        height: 1.5em;
+        background: linear-gradient(to right, rgba(255,255,255,0), white 80%);
+        pointer-events: none;
+    }
