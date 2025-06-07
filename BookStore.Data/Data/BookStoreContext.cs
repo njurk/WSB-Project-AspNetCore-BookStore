@@ -1,4 +1,5 @@
 ﻿using BookStore.Data.Data.Entities;
+using BookStore.Data.Data.CMS;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookStore.Data.Data
@@ -24,6 +25,8 @@ namespace BookStore.Data.Data
         public DbSet<DeliveryItem> DeliveryItems { get; set; } = default!;
         public DbSet<Review> Reviews { get; set; } = default!;
         public DbSet<OrderStatus> OrderStatuses { get; set; } = default!;
+        public DbSet<Page> Pages { get; set; } = default!;
+        public DbSet<Post> Posts { get; set; } = default!;
     }
 }
 

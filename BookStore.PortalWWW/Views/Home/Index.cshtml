@@ -30,7 +30,7 @@
                                     <img src="~/images/@book.ImageUrl" alt="@book.Title" style="max-height: 250px; object-fit: contain; margin: 0 auto;" />
                                     <h6 class="mt-2">@book.Title</h6>
                                 </a>
-                                <p>$ @book.Price.ToString("F2")</p>
+                                <p class="color-secondary fs-5">$ @book.Price.ToString("F2")</p>
                             </div>
                         }
                 </div>
@@ -54,7 +54,7 @@
                                     <div class="card-body">
                                         <h5 class="card-title">@book.Title</h5>
                                         <p class="card-text">@book.Author?.FirstName @book.Author?.LastName</p>
-                                        <p class="card-text fw-bold">$@book.Price.ToString("F2")</p>
+                                        <p class="card-text color-secondary fw-bold fs-6">$@book.Price.ToString("F2")</p>
                                         <div>
                                             <span class="text-warning">
                                                 <i class="fas fa-star"></i>

@@ -1,0 +1,41 @@
+﻿@model BookStore.Data.Data.CMS.Post
+
+@{
+    var imagePath = Url.Content($"~/images/{Model.ImageUrl ?? "default.jpg"}");
+    var fallbackImage = Url.Content("~/images/default.jpg");
+}
+
+<div class="container my-5">
+    <article class="blog-post">
+        <header class="mb-4">
+            <h1 class="display-4 fw-bold">@Model.Title</h1>
+            <div class="text-muted mb-3">
+                <small>
+                    Published on @Model.DateAdded.ToString("MMMM dd, yyyy")
+                </small>
+            </div>
+        </header>
+
+        <div class="row mb-5 justify-content-start">
+            <div class="col-md-6 me-5">
+                <section class="fw-bold" style="font-size:larger">
+                    @Html.Raw(Model.Introduction)
+                </section>
+            </div>
+            <div class="col-md-5">
+                <img src="@imagePath" alt="@Model.Title" class="img-fluid rounded shadow-sm" style="width: 450px; object-fit:contain;"
+                     onerror="this.onerror=null;this.src='@fallbackImage';" />
+            </div>
+        </div>
+
+        <section class="mb-5">
+            @Html.Raw(Model.Content)
+        </section>
+
+        <footer class="post-footer border-top pt-3">
+            <a asp-controller="Pages" asp-action="Index" asp-route-id="@Model.PageId" class="btn btn-light border-2 border-dark mb-4">
+                <i class="bi bi-arrow-left me-2"></i> Back
+            </a>
+        </footer>
+    </article>
+</div>

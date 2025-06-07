@@ -1,0 +1,8 @@
+﻿@model IEnumerable<BookStore.Data.Data.CMS.Page>
+
+@foreach (var item in Model)
+{
+    <li class="nav-item">
+        <a class="nav-link color-tertiary" asp-controller="Pages" asp-action="Index" asp-route-id="@item.IdPage">@item.PageTitle</a>
+    </li>
+}

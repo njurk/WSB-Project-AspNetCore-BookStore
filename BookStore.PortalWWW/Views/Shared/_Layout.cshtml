@@ -15,17 +15,7 @@
 
     <body class="m-0">
         <div class="col-12 p-0">
-            <nav class="navbar navbar-expand bg-secondary text-white sticky-top" style="height: 35px;">
-                <div class="container d-flex justify-content-center align-items-center" style="font-size: 0.85rem;">
-                    <span class="navbar-text text-white">
-                        Free shipping over $50 &nbsp; | &nbsp;
-                        ⭐ 100,000+ 5-star reviews &nbsp; | &nbsp;
-                        Free returns within 30 days
-                    </span>
-                </div>
-            </nav>
-
-            <nav class="navbar navbar-expand-md navbar-light bg-white sticky-top shadow-sm p-0" style="top: 35px;">
+            <nav class="navbar navbar-expand-md navbar-light bg-white sticky-top shadow-sm p-0">
                 <div class="container">
                     <a asp-controller="Home" asp-action="Index" class="navbar-brand ps-2">
                         <img src="~/logo-alpha.png" alt="BookStore" style="height: 50px;">
@@ -49,6 +39,7 @@
                             <li class="nav-item">
                                 <a class="nav-link color-tertiary" asp-controller="Books" asp-action="Index">Books</a>
                             </li>
+                            @await Component.InvokeAsync("PageLinks")
                         </ul>
 
                         @Html.Partial("_SearchBarPartial")

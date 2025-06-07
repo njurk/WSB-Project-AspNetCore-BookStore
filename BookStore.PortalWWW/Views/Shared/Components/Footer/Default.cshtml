@@ -4,9 +4,9 @@
             <div class="col-6 col-md-3 border-end text-center">
                 <h5 class="fw-semibold mb-3">Navigation</h5>
                 <ul class="list-unstyled small mb-0">
-                    <li><a href="/" class="footer-link">Home</a></li>
+                    <li class="mb-2"><a href="/" class="footer-link">Home</a></li>
                     <li><a href="/Books" class="footer-link">Books</a></li>
-                    <li><a href="/Blog" class="footer-link">Blog</a></li>
+                    @await Component.InvokeAsync("PageLinks")
                 </ul>
             </div>
 

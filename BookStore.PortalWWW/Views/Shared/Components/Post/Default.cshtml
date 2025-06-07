@@ -1,0 +1,19 @@
+﻿@model IEnumerable<BookStore.Data.Data.CMS.Post>
+
+@if (!Model.Any())
+{
+    <p class="text-muted">No posts</p>
+}
+else
+{
+    <div class="list-group">
+        @foreach (var post in Model)
+        {
+            <div class="list-group-item mb-3">
+                <a asp-controller="Pages" asp-action="Post" asp-route-id="@post.IdPost">@post.Title</a>
+                <small class="text-muted">@post.DateAdded.ToString("MMM dd, yyyy")</small>
+                <p>@Html.Raw(post.Content)</p>
+            </div>
+        }
+    </div>
+}

@@ -1,0 +1,40 @@
+﻿@model BookStore.Data.Data.CMS.Page
+
+<div class="container my-5">
+    <h2 class="mb-4 color-secondary">@Model.PageTitle</h2>
+
+    @if (Model.Posts == null || !Model.Posts.Any())
+    {
+        <p class="text-muted">No posts yet</p>
+    }
+    else
+    {
+        <div class="row row-cols-1 row-cols-md-2 g-4">
+            @foreach (var post in Model.Posts)
+            {
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">@post.Title</h5>
+                            <p class="card-subtitle mb-2 text-muted">
+                                <small>@post.DateAdded.ToString("MMMM dd, yyyy")</small>
+                            </p>
+
+                            <p class="card-text flex-grow-1">
+                                @{
+                                    var plainText = System.Text.RegularExpressions.Regex.Replace(post.Introduction ?? "", "<.*?>", "");
+                                    var excerpt = plainText.Length > 150 ? plainText.Substring(0, 150) + "..." : plainText;
+                                }
+                                @excerpt
+                            </p>
+
+                            <a asp-controller="Pages" asp-action="Post" asp-route-id="@post.IdPost" class="btn bg-secondary text-white mt-auto align-self-start">
+                                Read more
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

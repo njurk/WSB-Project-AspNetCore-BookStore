@@ -4,6 +4,7 @@ using BookStore.Data.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookStore.Data.Migrations
 {
     [DbContext(typeof(BookStoreContext))]
-    partial class BookStoreContextModelSnapshot : ModelSnapshot
+    [Migration("20250606190615_Added-CMS")]
+    partial class AddedCMS
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -46,46 +49,6 @@ namespace BookStore.Data.Migrations
                     b.HasKey("IdPage");
 
                     b.ToTable("Pages");
-                });
-
-            modelBuilder.Entity("BookStore.Data.Data.CMS.Post", b =>
-                {
-                    b.Property<int>("IdPost")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdPost"));
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("DateAdded")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("ImageUrl")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Introduction")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("PageId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Position")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.HasKey("IdPost");
-
-                    b.HasIndex("PageId");
-
-                    b.ToTable("Posts");
                 });
 
             modelBuilder.Entity("BookStore.Data.Data.Entities.Author", b =>
@@ -403,6 +366,39 @@ namespace BookStore.Data.Migrations
                     b.ToTable("OrderStatuses");
                 });
 
+            modelBuilder.Entity("BookStore.Data.Data.Entities.Post", b =>
+                {
+                    b.Property<int>("IdPost")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdPost"));
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DateAdded")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("PageId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Position")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("IdPost");
+
+                    b.HasIndex("PageId");
+
+                    b.ToTable("Posts");
+                });
+
             modelBuilder.Entity("BookStore.Data.Data.Entities.Review", b =>
                 {
                     b.Property<int>("IdReview")
@@ -518,17 +514,6 @@ namespace BookStore.Data.Migrations
                     b.HasKey("IdUser");
 
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("BookStore.Data.Data.CMS.Post", b =>
-                {
-                    b.HasOne("BookStore.Data.Data.CMS.Page", "Page")
-                        .WithMany("Posts")
-                        .HasForeignKey("PageId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Page");
                 });
 
             modelBuilder.Entity("BookStore.Data.Data.Entities.Book", b =>
@@ -665,6 +650,17 @@ namespace BookStore.Data.Migrations
                     b.Navigation("Book");
 
                     b.Navigation("Order");
+                });
+
+            modelBuilder.Entity("BookStore.Data.Data.Entities.Post", b =>
+                {
+                    b.HasOne("BookStore.Data.Data.CMS.Page", "Page")
+                        .WithMany("Posts")
+                        .HasForeignKey("PageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Page");
                 });
 
             modelBuilder.Entity("BookStore.Data.Data.Entities.Review", b =>
