@@ -1,42 +1,84 @@
 ﻿@model BookStore.Data.Data.Entities.Order
 
 @{
-    ViewData["Title"] = "Order Details";
+    ViewData["Title"] = "Order details";
 }
 
-<h1 class="mb-4 text-center">Order Details</h1>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6 bg-secondary bg-opacity-10 p-4 rounded">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="mb-0">Order #@Model.IdOrder details</h1>
+            </div>
 
-<div class="d-flex justify-content-center">
-    <div class="col-md-8 col-lg-6">
-        <div class="border p-4 rounded">
-
-            <dl class="row mb-3">
-                <dt class="col-sm-4">
+            <dl class="row mb-4">
+                <dt class="col-sm-4 fw-semibold text-muted">
                     @Html.DisplayNameFor(model => model.User)
                 </dt>
                 <dd class="col-sm-8">
-                    @Html.DisplayFor(model => model.User.Username)
+                    @Model.User.Username
                 </dd>
 
-                <dt class="col-sm-4">
-                    @Html.DisplayNameFor(model => model.OrderDate)
+                <dt class="col-sm-4 fw-semibold text-muted">
+                    Date
                 </dt>
                 <dd class="col-sm-8">
                     @Html.DisplayFor(model => model.OrderDate)
                 </dd>
 
-                <dt class="col-sm-4">
-                    @Html.DisplayNameFor(model => model.OrderStatus)
+                <dt class="col-sm-4 fw-semibold text-muted">
+                    Status
                 </dt>
                 <dd class="col-sm-8">
-                    @Html.DisplayFor(model => model.OrderStatus.Name)
+                    @Model.OrderStatus.Name
                 </dd>
             </dl>
 
-            <div class="text-center mt-4">
-                <a asp-action="Edit" asp-route-id="@Model?.IdOrder" class="btn btn-primary w-100 mb-2">Edit</a>
-                <a asp-action="Index" class="btn btn-secondary w-100">Back to List</a>
-            </div>
+            <h5 class="mb-3">Order items</h5>
+
+            @if (Model.OrderItems != null && Model.OrderItems.Any())
+            {
+                <table class="table table-borderless table-striped align-middle mb-0">
+                    <thead>
+                        <tr class="text-muted border-bottom">
+                            <th>Book title</th>
+                            <th class="text-center" style="width: 60px;">Qty</th>
+                            <th class="text-end" style="width: 120px;">Unit price</th>
+                            <th class="text-end" style="width: 120px;">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.OrderItems)
+                        {
+                            <tr>
+                                <td>@item.Book.Title</td>
+                                <td class="text-center">@item.Quantity</td>
+                                <td class="text-end">@item.UnitPrice.ToString("C")</td>
+                                <td class="text-end">@((item.Quantity * item.UnitPrice).ToString("C"))</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+                <div class="row justify-content-between align-items-center mt-4">
+                    <div class="col-auto">
+                        <a asp-action="Index" class="btn btn-secondary d-flex align-items-center gap-2 px-3 py-2" style="font-weight: 500;">
+                            <ion-icon name="arrow-back-outline" style="font-size: 1.2rem;"></ion-icon>
+                            Back
+                        </a>
+                    </div>
+                    <div class="col-auto fw-bold fs-5 text-end">
+                        Order total:
+                        <span class="ms-2">
+                            @Model.OrderItems.Sum(i => i.Quantity * i.UnitPrice).ToString("C")
+                        </span>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <p class="text-muted mt-3">No items found for this order</p>
+            }
         </div>
     </div>
 </div>

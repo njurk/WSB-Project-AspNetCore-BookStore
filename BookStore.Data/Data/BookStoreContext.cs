@@ -20,9 +20,6 @@ namespace BookStore.Data.Data
         public DbSet<OrderItem> OrderItems { get; set; } = default!;
         public DbSet<Genre> Genres { get; set; } = default!;
         public DbSet<BookGenre> BookGenres { get; set; } = default!;
-        public DbSet<Supplier> Suppliers { get; set; } = default!;
-        public DbSet<Delivery> Deliveries { get; set; } = default!;
-        public DbSet<DeliveryItem> DeliveryItems { get; set; } = default!;
         public DbSet<Review> Reviews { get; set; } = default!;
         public DbSet<OrderStatus> OrderStatuses { get; set; } = default!;
         public DbSet<Page> Pages { get; set; } = default!;

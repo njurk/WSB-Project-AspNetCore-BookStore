@@ -24,7 +24,7 @@ namespace BookStore.Intranet.Controllers
         // GET: Book
         public async Task<IActionResult> Index()
         {
-            var bookStoreContext = _context.Books.Include(b => b.Author);
+            var bookStoreContext = _context.Books.Include(b => b.Author).OrderByDescending(b => b.IdBook);
             return View(await bookStoreContext.ToListAsync());
         }
 
@@ -62,23 +62,37 @@ namespace BookStore.Intranet.Controllers
             return View();
         }
 
-        // POST: Book/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdBook,Title,Description,Price,NumberOfPages,YearPublished,Language,Quantity,ISBN,IdAuthor,ImageUrl")] Book book)
+        public async Task<IActionResult> Create(Book book, IFormFile ImageFile)
         {
             if (ModelState.IsValid)
             {
+                if (ImageFile != null && ImageFile.Length > 0)
+                {
+                    var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images");
+                    Directory.CreateDirectory(uploadsFolder);
+
+                    var fileName = Path.GetFileName(ImageFile.FileName);
+                    var filePath = Path.Combine(uploadsFolder, fileName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await ImageFile.CopyToAsync(stream);
+                    }
+
+                    book.ImageUrl = fileName;
+                }
+
                 _context.Add(book);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdAuthor"] = new SelectList(_context.Authors, "IdAuthor", "FirstName", book.IdAuthor);
+
+            ViewBag.IdAuthor = new SelectList(_context.Authors, "Id", "Name", book.IdAuthor);
             return View(book);
         }
-
+        
         // GET: Book/Edit/5
         public IActionResult Edit(int id)
         {

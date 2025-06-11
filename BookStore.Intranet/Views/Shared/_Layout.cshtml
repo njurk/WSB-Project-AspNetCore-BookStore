@@ -6,14 +6,16 @@
     <title>BookStore - @ViewData["Title"]</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/lib/font-awesome/css/all.min.css" />
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 
 <body>
     <nav class="sidebar" id="sidebar">
-        <div class="sidebar-header">
+        <div class="sidebar-header border-bottom">
             <a>
-                <img src="~/logo-alpha.png" alt="BookStore" style="height: 45px;">
+                <img src="~/logo-alpha.png" alt="BookStore" style="height: 40px;">
             </a>
         </div>
         <ul class="nav flex-column">
@@ -23,6 +25,17 @@
                 </a>
             </li>
             <hr />
+            <li class="nav-item text-uppercase fw-bold fs-6 text-muted">Content</li>
+            <li class="nav-item">
+                <a class="nav-link" asp-controller="Page" asp-action="Index">
+                    <i class="fa-solid fa-newspaper"></i> Pages
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" asp-controller="Post" asp-action="Index">
+                    <i class="fa-solid fa-square-plus"></i> Posts
+                </a>
+            <hr/>
             <li class="nav-item text-uppercase fw-bold fs-6 text-muted">Catalog</li>
             <li class="nav-item">
                 <a class="nav-link" asp-controller="Book" asp-action="Index">
@@ -41,13 +54,13 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link" asp-controller="BookGenre" asp-action="Index">
-                    <i class="fas fa-layer-group me-2"></i> Book Genres
+                    <i class="fas fa-layer-group me-2"></i> Book genres
                 </a>
             </li>
 
             <hr />
 
-            <li class="nav-item text-uppercase fw-bold fs-6 text-muted">Orders & Deliveries</li>
+            <li class="nav-item text-uppercase fw-bold fs-6 text-muted">Orders</li>
             <li class="nav-item">
                 <a class="nav-link" asp-controller="Order" asp-action="Index">
                     <i class="fas fa-shopping-cart me-2"></i> Orders
@@ -55,33 +68,16 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link" asp-controller="OrderItem" asp-action="Index">
-                    <i class="fas fa-list me-2"></i> Order Items
+                    <i class="fas fa-list me-2"></i> Order items
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" asp-controller="OrderStatus" asp-action="Index">
-                    <i class="fas fa-clipboard-check me-2"></i> Order Statuses
+                    <i class="fas fa-clipboard-check me-2"></i> Order statuses
                 </a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" asp-controller="Delivery" asp-action="Index">
-                    <i class="fas fa-truck me-2"></i> Deliveries
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" asp-controller="DeliveryItem" asp-action="Index">
-                    <i class="fas fa-boxes me-2"></i> Delivery Items
-                </a>
-            </li>
-
             <hr />
-
-            <li class="nav-item text-uppercase fw-bold fs-6 text-muted">Management</li>
-            <li class="nav-item">
-                <a class="nav-link" asp-controller="Supplier" asp-action="Index">
-                    <i class="fas fa-warehouse me-2"></i> Suppliers
-                </a>
-            </li>
+            <li class="nav-item text-uppercase fw-bold fs-6 text-muted">User management</li>
             <li class="nav-item">
                 <a class="nav-link" asp-controller="Review" asp-action="Index">
                     <i class="fas fa-star me-2"></i> Reviews

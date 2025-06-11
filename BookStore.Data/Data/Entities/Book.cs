@@ -21,12 +21,12 @@ namespace BookStore.Data.Data.Entities
 
         [Required(ErrorMessage = "Number of pages is required.")]
         [Range(1, int.MaxValue)]
-        [DisplayName("Number of Pages")]
+        [DisplayName("Pages")]
         public required int NumberOfPages { get; set; }
 
         [Required(ErrorMessage = "Year published is required.")]
         [Range(1, 9999, ErrorMessage = "Year published must be between 1 and 9999.")]
-        [DisplayName("Year Published")]
+        [DisplayName("Year")]
         public required int YearPublished { get; set; }
 
         [Required(ErrorMessage = "Language is required.")]
@@ -34,6 +34,7 @@ namespace BookStore.Data.Data.Entities
 
         [Required(ErrorMessage = "Quantity of at least 0 is required.")]
         [Range(0, int.MaxValue)]
+        [DisplayName("Qty")]
         public required int Quantity { get; set; }
 
         [Required(ErrorMessage = "ISBN is required.")]
@@ -51,7 +52,6 @@ namespace BookStore.Data.Data.Entities
         public string ImageUrl { get; set; } = string.Empty;
         public ICollection<BookGenre> BookGenres { get; set; } = new List<BookGenre>();
         public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
-        public ICollection<DeliveryItem> DeliveryItems { get; set; } = new List<DeliveryItem>();
         public ICollection<Review> Reviews { get; set; } = new List<Review>();
         public ICollection<Collection> Collections { get; set; } = new List<Collection>();
         public ICollection<Cart> Carts { get; set; } = new List<Cart>();

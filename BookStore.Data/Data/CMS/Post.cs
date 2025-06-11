@@ -21,6 +21,8 @@ namespace BookStore.Data.Data.CMS
         [Required]
         public required string Content { get; set; }
 
+        [DisplayName("Image")]
+
         public string? ImageUrl { get; set; }
 
         [Required]
@@ -31,6 +33,7 @@ namespace BookStore.Data.Data.CMS
         public int Position { get; set; }
 
         [Required]
+        [DisplayName("Page")]
         public int PageId { get; set; }
 
         public Page? Page { get; set; }

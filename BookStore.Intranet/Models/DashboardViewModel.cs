@@ -5,7 +5,6 @@
         public int TotalBooks { get; set; }
         public int TotalOrders { get; set; }
         public decimal TotalRevenue { get; set; }
-        public int TotalDeliveries { get; set; }
 
         public List<string> ChartLabels { get; set; }
         public List<decimal> ChartData { get; set; }

@@ -1,0 +1,112 @@
+﻿@model BookStore.Data.Data.CMS.Post
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10 bg-secondary bg-opacity-10 p-4 rounded">
+            <h1 class="mb-4">New post</h1>
+            <form asp-action="Create" id="createForm" enctype="multipart/form-data">
+                <div class="row">
+                    <div class="col-md-8">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="Title" class="form-label"></label>
+                            <input asp-for="Title" class="form-control" />
+                            <span asp-validation-for="Title" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="Introduction" class="form-label"></label>
+                            <textarea asp-for="Introduction" class="form-control" rows="3"></textarea>
+                            <span asp-validation-for="Introduction" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="Content" class="form-label"></label>
+                            <textarea asp-for="Content" class="form-control" rows="5"></textarea>
+                            <span asp-validation-for="Content" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group mb-3">
+                            <label asp-for="DateAdded" class="form-label"></label>
+                            <input asp-for="DateAdded" class="form-control" />
+                            <span asp-validation-for="DateAdded" class="text-danger"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 form-group mb-3">
+                                <label asp-for="Position" class="form-label"></label>
+                                <input asp-for="Position" class="form-control" />
+                                <span asp-validation-for="Position" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6 form-group mb-3">
+                                <label asp-for="PageId" class="form-label"></label>
+                                <select asp-for="PageId" class="form-control" asp-items="ViewBag.PageId"></select>
+                                <span asp-validation-for="PageId" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label class="form-label">Image</label>
+                            <input type="file" class="form-control" accept="image/*" name="ImageFile" onchange="previewImage(this)">
+                            <div class="mt-3 d-none" id="image-preview-container">
+                                <img id="image-preview" class="img-fluid rounded mb-2" style="max-height: 200px;" />
+                                <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeImage()">Remove image</button>
+                            </div>
+                            <input type="hidden" asp-for="ImageUrl" id="ImageUrl" />
+                            <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <div class="d-flex justify-content-between mt-4">
+                <a asp-action="Index" class="btn btn-outline-secondary">
+                    <ion-icon name="arrow-back-outline" class="me-1"></ion-icon> Back
+                </a>
+                <button type="submit" class="btn btn-secondary" form="createForm">Create</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+
+    <script>
+        function previewImage(input) {
+            const file = input.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const img = document.getElementById('image-preview');
+                    const container = document.getElementById('image-preview-container');
+                    img.src = e.target.result;
+                    container.classList.remove('d-none');
+
+                    document.getElementById('ImageUrl').value = file.name;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function removeImage() {
+            const input = document.querySelector('input[name="ImageFile"]');
+            const preview = document.getElementById('image-preview');
+            const container = document.getElementById('image-preview-container');
+
+            input.value = '';
+            preview.src = '';
+            container.classList.add('d-none');
+
+            document.getElementById('ImageUrl').value = '';
+        }
+    </script>
+}

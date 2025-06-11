@@ -47,15 +47,10 @@ namespace BookStore.Intranet.Controllers
                     TotalPrice = o.OrderItems.Sum(oi => oi.Quantity * oi.UnitPrice)
                 }).ToList();
 
-            var totalDeliveries = _context.Deliveries
-                .Where(d => d.DeliveryDate >= firstDayOfMonth)
-                .Count();
-
             var model = new DashboardViewModel
             {
                 TotalBooks = _context.Books.Sum(b => b.Quantity),
                 TotalOrders = _context.Orders.Count(o => o.OrderDate >= firstDayOfMonth),
-                TotalDeliveries = totalDeliveries,
                 RecentOrders = recentOrders
             };
 

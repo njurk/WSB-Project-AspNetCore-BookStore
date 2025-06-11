@@ -39,7 +39,10 @@ namespace BookStore.Intranet.Controllers
             var order = await _context.Orders
                 .Include(o => o.OrderStatus)
                 .Include(o => o.User)
+                .Include(o => o.OrderItems)
+                    .ThenInclude(oi => oi.Book)
                 .FirstOrDefaultAsync(m => m.IdOrder == id);
+
             if (order == null)
             {
                 return NotFound();

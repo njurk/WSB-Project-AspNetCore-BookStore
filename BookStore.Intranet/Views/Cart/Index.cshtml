@@ -1,53 +1,57 @@
 ﻿@model IEnumerable<BookStore.Data.Data.Entities.Cart>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Cart";
 }
 
-<h1>Index</h1>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-11 bg-secondary bg-opacity-10 p-4 rounded">
+            <div class="row align-items-center mb-4">
+                <div class="col">
+                    <h1 class="mb-0">Cart</h1>
+                </div>
+                <div class="col-auto">
+                    <a asp-action="Create" class="btn btn-secondary d-flex align-items-center gap-2 px-3 py-2" style="font-weight: 500;">
+                        <ion-icon name="add-circle-outline" style="font-size: 1.4rem;"></ion-icon>
+                        Add
+                    </a>
+                </div>
+            </div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.User)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Book)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Quantity)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.UnitPrice)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.User.City)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Book.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Quantity)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UnitPrice)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.IdCart">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.IdCart">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.IdCart">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+            <table class="table table-borderless table-striped align-middle mb-0">
+                <thead>
+                    <tr class="text-muted border-bottom">
+                        <th>@Html.DisplayNameFor(model => model.User.Username)</th>
+                        <th>Full name</th>
+                        <th>@Html.DisplayNameFor(model => model.Book.Title)</th>
+                        <th>@Html.DisplayNameFor(model => model.Quantity)</th>
+                        <th class="text-end" style="width: 120px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.User.Username</td>
+                            <td>@(item.User.FirstName + " " + item.User.LastName)</td>
+                            <td>@item.Book.Title</td>
+                            <td>@item.Quantity</td>
+                            <td class="text-end" style="min-width:130px;">
+                                <a asp-action="Edit" asp-route-id="@item.IdCart" class="icon-btn" aria-label="Edit">
+                                    <ion-icon name="create-outline" style="font-size:1.2rem;"></ion-icon>
+                                </a>
+                                <a asp-action="Details" asp-route-id="@item.IdCart" class="icon-btn" aria-label="Details">
+                                    <ion-icon name="information-circle-outline" style="font-size:1.2rem;"></ion-icon>
+                                </a>
+                                <a asp-action="Delete" asp-route-id="@item.IdCart" class="icon-btn text-danger" aria-label="Delete">
+                                    <ion-icon name="trash-outline" style="font-size:1.2rem;"></ion-icon>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

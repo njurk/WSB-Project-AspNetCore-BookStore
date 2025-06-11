@@ -1,0 +1,118 @@
+﻿@model IEnumerable<BookStore.Data.Data.CMS.Post>
+
+@{
+    ViewData["Title"] = "Posts";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-11 bg-secondary bg-opacity-10 p-4 rounded">
+            <div class="row align-items-center mb-4">
+                <div class="col">
+                    <h1 class="mb-0">Posts</h1>
+                </div>
+                <div class="col-auto">
+                    <a asp-action="Create" class="btn btn-secondary d-flex align-items-center gap-2 px-3 py-2" style="font-weight: 500;">
+                        <ion-icon name="add-circle-outline" style="font-size: 1.4rem;"></ion-icon>
+                        Add
+                    </a>
+                </div>
+            </div>
+
+            <table class="table table-borderless table-striped align-middle mb-0">
+                <thead>
+                    <tr class="text-muted border-bottom">
+                        <th>@Html.DisplayNameFor(m => m.First().Title)</th>
+                        <th>@Html.DisplayNameFor(m => m.First().Introduction)</th>
+                        <th>@Html.DisplayNameFor(m => m.First().Content)</th>
+                        <th>@Html.DisplayNameFor(m => m.First().ImageUrl)</th>
+                        <th>@Html.DisplayNameFor(m => m.First().DateAdded)</th>
+                        <th>@Html.DisplayNameFor(m => m.First().Position)</th>
+                        <th>@Html.DisplayNameFor(m => m.First().Page.LinkTitle)</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr id="post-row-@item.IdPost">
+                            <td>@Html.DisplayFor(m => item.Title)</td>
+                            <td>
+                                <div class="text-fade">
+                                    @item.Introduction
+                                </div>
+                            </td>
+                            <td>
+                                <div class="text-fade">
+                                    @item.Content
+                                </div>
+                            </td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(item.ImageUrl))
+                                {
+                                    <img src="@Url.Content($"~/images/{item.ImageUrl}")" alt="Post image" style="max-height: 60px; max-width: 60px; object-fit: cover;" />
+                                }
+                            </td>
+                            <td>@item.DateAdded.ToString("yyyy-MM-dd")</td>
+                            <td>@Html.DisplayFor(m => item.Position)</td>
+                            <td>@Html.DisplayFor(m => item.Page.LinkTitle)</td>
+                            <td class="text-end" style="min-width:130px;">
+                                <a asp-action="Edit" asp-route-id="@item.IdPost" class="icon-btn" aria-label="Edit">
+                                    <ion-icon name="create-outline" style="font-size:1.2rem;"></ion-icon>
+                                </a>
+                                <a asp-action="Details" asp-route-id="@item.IdPost" class="icon-btn" aria-label="Details">
+                                    <ion-icon name="information-circle-outline" style="font-size:1.2rem;"></ion-icon>
+                                </a>
+                                <button class="icon-btn text-danger btn-delete-post" aria-label="Delete" data-id="@item.IdPost" type="button">
+                                    <ion-icon name="trash-outline" style="font-size:1.2rem;"></ion-icon>
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
+            const headers = {
+                'RequestVerificationToken': token,
+                'Content-Type': 'application/x-www-form-urlencoded'
+            };
+
+            document.querySelectorAll('.btn-delete-post').forEach(button => {
+                button.addEventListener('click', function () {
+                    const postId = this.getAttribute('data-id');
+                    if (!confirm('Are you sure to delete this post?')) {
+                        return;
+                    }
+
+                    fetch('@Url.Action("DeleteConfirmed", "Post")', {
+                        method: 'POST',
+                        headers: headers,
+                        body: new URLSearchParams({ id: postId })
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            const row = document.getElementById(`post-row-${postId}`);
+                            if (row) {
+                                row.remove();
+                            }
+                        } else if (response.status === 404) {
+                            alert('Post not found');
+                        } else {
+                            alert('Error');
+                        }
+                    })
+                    .catch(() => {
+                        alert('Error');
+                    });
+                });
+            });
+        });
+    </script>
+}

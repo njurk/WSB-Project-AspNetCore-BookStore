@@ -14,7 +14,7 @@ namespace BookStore.Data.Data.Entities
 
         [Required(ErrorMessage = "Name is required.")]
         [StringLength(50, ErrorMessage = "Status name cannot be longer than 50 characters.")]
-        [Display(Name = "Status Name")]
+        [Display(Name = "Status name")]
         public required string Name { get; set; }
 
         public ICollection<Order> Orders { get; set; } = new List<Order>();

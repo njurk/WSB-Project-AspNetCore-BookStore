@@ -1,0 +1,51 @@
+﻿@model BookStore.Data.Data.CMS.Post
+
+@{
+    ViewData["Title"] = "Post details";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 bg-secondary bg-opacity-10 p-4 rounded">
+            <h1 class="mb-4">Post details</h1>
+
+            <dl class="row">
+                <dt class="col-sm-3 text-muted fw-semibold">@Html.DisplayNameFor(m => m.Title)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(m => m.Title)</dd>
+
+                <dt class="col-sm-3 text-muted fw-semibold">@Html.DisplayNameFor(m => m.Introduction)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(m => m.Introduction)</dd>
+
+                <dt class="col-sm-3 text-muted fw-semibold">@Html.DisplayNameFor(m => m.Content)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(m => m.Content)</dd>
+
+                <dt class="col-sm-3 text-muted fw-semibold">@Html.DisplayNameFor(m => m.ImageUrl)</dt>
+                <dd class="col-sm-9">
+                    @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                    {
+                        <img src="@Url.Content($"~/images/{Model.ImageUrl}")" alt="Post image" style="max-height: 120px; max-width: 120px; object-fit: cover; border-radius: 6px;" />
+                    }
+                    else
+                    {
+                        <span class="text-muted">No image available</span>
+                    }
+                </dd>
+
+                <dt class="col-sm-3 text-muted fw-semibold">@Html.DisplayNameFor(m => m.DateAdded)</dt>
+                <dd class="col-sm-9">@Model.DateAdded.ToString("yyyy-MM-dd")</dd>
+
+                <dt class="col-sm-3 text-muted fw-semibold">@Html.DisplayNameFor(m => m.Position)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(m => m.Position)</dd>
+
+                <dt class="col-sm-3 text-muted fw-semibold">Page</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(m => m.Page.LinkTitle)</dd>
+            </dl>
+
+            <div class="mt-4">
+                <a asp-action="Index" class="btn btn-outline-secondary d-flex align-items-center gap-2 px-3 py-2" style="font-weight: 500; width: fit-content;">
+                    <ion-icon name="arrow-back-outline" style="font-size: 1.4rem;"></ion-icon> Back
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
