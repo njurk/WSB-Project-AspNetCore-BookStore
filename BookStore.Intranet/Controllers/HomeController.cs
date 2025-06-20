@@ -13,7 +13,7 @@ namespace BookStore.Intranet.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly BookStoreContext _context;
-        private OrderService _orderService;
+        private readonly OrderService _orderService;
 
         public HomeController(ILogger<HomeController> logger, BookStoreContext context, OrderService orderService)
         {
@@ -22,21 +22,18 @@ namespace BookStore.Intranet.Controllers
             _orderService = orderService;
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
-
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             var now = DateTime.Now;
             var firstDayOfMonth = new DateTime(now.Year, now.Month, 1);
 
-            var recentOrders = _context.Orders
+            var ordersThisMonth = await _context.Orders
+                .Where(o => o.OrderDate >= firstDayOfMonth)
                 .Include(o => o.OrderStatus)
                 .Include(o => o.OrderItems)
-                .Where(o => o.OrderDate >= firstDayOfMonth)
+                .ToListAsync();
+
+            var recentOrders = ordersThisMonth
                 .OrderByDescending(o => o.OrderDate)
                 .Take(5)
                 .Select(o => new OrderViewModel
@@ -47,17 +44,36 @@ namespace BookStore.Intranet.Controllers
                     TotalPrice = o.OrderItems.Sum(oi => oi.Quantity * oi.UnitPrice)
                 }).ToList();
 
+            var dailyRevenue = Enumerable.Range(1, DateTime.DaysInMonth(now.Year, now.Month))
+                .Select(day =>
+                {
+                    var date = new DateTime(now.Year, now.Month, day);
+                    var total = ordersThisMonth
+                        .Where(o => o.OrderDate.Day == day)
+                        .SelectMany(o => o.OrderItems)
+                        .Sum(oi => oi.Quantity * oi.UnitPrice);
+                    return new { Day = day.ToString(), Revenue = total };
+                })
+                .ToList();
+
             var model = new DashboardViewModel
             {
-                TotalBooks = _context.Books.Sum(b => b.Quantity),
-                TotalOrders = _context.Orders.Count(o => o.OrderDate >= firstDayOfMonth),
-                RecentOrders = recentOrders
+                TotalBooks = await _context.Books.SumAsync(b => b.Quantity),
+                TotalOrders = ordersThisMonth.Count,
+                RecentOrders = recentOrders,
+                ChartLabels = dailyRevenue.Select(d => d.Day).ToList(),
+                ChartData = dailyRevenue.Select(d => d.Revenue).ToList()
             };
 
             model.CalculateTotalRevenue();
 
             return View(model);
+        }
 
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error()
+        {
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }

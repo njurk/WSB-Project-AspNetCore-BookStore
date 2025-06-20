@@ -103,12 +103,24 @@ namespace BookStore.Intranet.Controllers
         public async Task<IActionResult> Edit(int id, [Bind("IdUser,Username,FirstName,LastName,Email,Password,Street,City,PostalCode,Role")] User user)
         {
             if (id != user.IdUser)
-            {
                 return NotFound();
-            }
+
+            var existingUser = await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.IdUser == id);
+            if (existingUser == null)
+                return NotFound();
 
             if (ModelState.IsValid)
             {
+                if (string.IsNullOrWhiteSpace(user.Password))
+                {
+                    user.Password = existingUser.Password;
+                }
+                else
+                {
+                    var passwordHasher = new PasswordHasher<User>();
+                    user.Password = passwordHasher.HashPassword(user, user.Password);
+                }
+
                 try
                 {
                     _context.Update(user);
@@ -117,16 +129,12 @@ namespace BookStore.Intranet.Controllers
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!UserExists(user.IdUser))
-                    {
                         return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    throw;
                 }
                 return RedirectToAction(nameof(Index));
             }
+
             return View(user);
         }
 
@@ -149,7 +157,7 @@ namespace BookStore.Intranet.Controllers
         }
 
         // POST: User/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {

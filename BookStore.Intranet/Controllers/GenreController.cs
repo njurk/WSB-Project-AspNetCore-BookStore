@@ -22,10 +22,23 @@ namespace BookStore.Intranet.Controllers
         }
 
         // GET: Genre
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder)
         {
-            return View(await _context.Genres.ToListAsync());
+            ViewBag.SortOrder = sortOrder;
+
+            var genres = _context.Genres.AsQueryable();
+
+            genres = sortOrder switch
+            {
+                "name_asc" => genres.OrderBy(g => g.Name),
+                "id_desc" => genres.OrderByDescending(g => g.IdGenre),
+                "id_asc" => genres.OrderBy(g => g.IdGenre),
+                _ => genres.OrderBy(g => g.Name)
+            };
+
+            return View(await genres.ToListAsync());
         }
+
 
         // GET: Genre/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -137,7 +150,7 @@ namespace BookStore.Intranet.Controllers
         }
 
         // POST: Genre/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {

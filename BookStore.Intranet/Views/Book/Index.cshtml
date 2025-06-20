@@ -1,11 +1,12 @@
-﻿@model IEnumerable<BookStore.Data.Data.Entities.Book>
+﻿@using Azure.Core
+@model IEnumerable<BookStore.Data.Data.Entities.Book>
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+
 <meta name="csrf-token" content="@Antiforgery.GetAndStoreTokens(Context).RequestToken" />
 
 @{
     ViewData["Title"] = "Books";
-    ViewData["ItemName"] = "this book";
-    ViewData["Controller"] = "Book";
+    var searchQuery = ViewData["SearchQuery"] as string;
 }
 
 <div class="container mt-5">
@@ -22,6 +23,47 @@
                     </a>
                 </div>
             </div>
+
+            <form method="get" class="mb-4">
+                <div class="row align-items-end gx-3">
+                    <div class="col-md-6">
+                        <div class="d-flex">
+                            @await Html.PartialAsync("_SearchBarPartial")
+
+                            @if (!string.IsNullOrWhiteSpace(searchQuery))
+                            {
+                                if (!Model.Any())
+                                {
+                                    <p class="mt-2 text-muted ms-3">No results for "<strong>@searchQuery</strong>"</p>
+                                }
+                                else
+                                {
+                                    <p class="mt-2 text-muted ms-3">Search results for "<strong>@searchQuery</strong>"</p>
+                                }
+                            }
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center">
+                            <label for="sortOrder" class="form-label me-2 mb-0">Sort by</label>
+                            <select name="sortOrder" class="form-select w-auto" onchange="this.form.submit()">
+                                <option value="newest" selected="@(ViewData["SortOrder"]?.ToString() == null || ViewData["SortOrder"]?.ToString() == "newest")">Time added (newest)</option>
+                                <option value="oldest" selected="@(ViewData["SortOrder"]?.ToString() == "oldest")">Time added (oldest)</option>
+                                <option value="title" selected="@(ViewData["SortOrder"]?.ToString() == "title")">Title (A–Z)</option>
+                                <option value="quantity_asc" selected="@(ViewData["SortOrder"]?.ToString() == "quantity_asc")">Quantity (lowest)</option>
+                                <option value="quantity_desc" selected="@(ViewData["SortOrder"]?.ToString() == "quantity_desc")">Quantity (highest)</option>
+                                <option value="price_asc" selected="@(ViewData["SortOrder"]?.ToString() == "price_asc")">Price (lowest)</option>
+                                <option value="price_desc" selected="@(ViewData["SortOrder"]?.ToString() == "price_desc")">Price (highest)</option>
+                                <option value="year_asc" selected="@(ViewData["SortOrder"]?.ToString() == "year_asc")">Year (oldest)</option>
+                                <option value="year_desc" selected="@(ViewData["SortOrder"]?.ToString() == "year_desc")">Year (newest)</option>
+                                <option value="pages_asc" selected="@(ViewData["SortOrder"]?.ToString() == "pages_asc")">Pages (lowest)</option>
+                                <option value="pages_desc" selected="@(ViewData["SortOrder"]?.ToString() == "pages_desc")">Pages (highest)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </form>
 
             <table class="table table-borderless table-striped align-middle mb-0">
                 <thead>
@@ -44,9 +86,7 @@
                     {
                         <tr data-id="@item.IdBook">
                             <td>@item.Title</td>
-                            <td>
-                                <div class="text-fade">@item.Description</div>
-                            </td>
+                            <td><div class="text-fade">@item.Description</div></td>
                             <td>@item.Price</td>
                             <td>@item.NumberOfPages</td>
                             <td>@item.YearPublished</td>
@@ -78,8 +118,62 @@
                     }
                 </tbody>
             </table>
+
+            <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Confirm Deletion</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Are you sure to delete @ViewData["ItemName"]?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
-@await Html.PartialAsync("_DeleteModalPartial")
+@section Scripts {
+    <script>
+        let deleteId = null;
+        const deleteModal = document.getElementById('deleteModal');
+        deleteModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            deleteId = button.getAttribute('data-id');
+        });
+
+        document.getElementById('confirmDeleteBtn').addEventListener('click', function () {
+            if (!deleteId) return;
+
+            const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+            fetch(`/Book/DeleteConfirmed/${deleteId}`, {
+                method: 'POST',
+                headers: {
+                    'RequestVerificationToken': token
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    const row = document.querySelector(`tr[data-id='${deleteId}']`);
+                    if (row) row.remove();
+                    const modal = bootstrap.Modal.getInstance(deleteModal);
+                    modal.hide();
+                } else {
+                    alert("Error");
+                }
+            })
+            .catch(() => {
+                alert("Error");
+            });
+        });
+    </script>
+
+}

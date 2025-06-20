@@ -6,37 +6,28 @@
 
 <div class="container mt-5">
     <div class="row justify-content-center">
-        <div class="col-md-7 bg-secondary bg-opacity-10 p-4 rounded">
+        <div class="col-md-5 bg-secondary bg-opacity-10 p-4 rounded">
             <h1 class="mb-4">Edit cart item</h1>
 
             <form asp-action="Edit" id="editCartForm">
                 <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
                 <input type="hidden" asp-for="IdCart" />
+                <div class="form-group mb-3">
+                    <label asp-for="IdUser" class="form-label"></label>
+                    <select asp-for="IdUser" class="form-select" asp-items="ViewBag.IdUser"></select>
+                    <span asp-validation-for="IdUser" class="text-danger small"></span>
+                </div>
 
-                <div class="row g-3">
-                    <div class="col-md-6 form-group mb-3">
-                        <label asp-for="IdUser" class="form-label"></label>
-                        <select asp-for="IdUser" class="form-select" asp-items="ViewBag.IdUser"></select>
-                        <span asp-validation-for="IdUser" class="text-danger small"></span>
-                    </div>
+                <div class="form-group mb-3">
+                    <label asp-for="IdBook" class="form-label"></label>
+                    <select asp-for="IdBook" class="form-select" asp-items="ViewBag.IdBook"></select>
+                    <span asp-validation-for="IdBook" class="text-danger small"></span>
+                </div>
 
-                    <div class="col-md-6 form-group mb-3">
-                        <label asp-for="IdBook" class="form-label"></label>
-                        <select asp-for="IdBook" class="form-select" asp-items="ViewBag.IdBook"></select>
-                        <span asp-validation-for="IdBook" class="text-danger small"></span>
-                    </div>
-
-                    <div class="col-md-6 form-group mb-3">
-                        <label asp-for="Quantity" class="form-label"></label>
-                        <input asp-for="Quantity" class="form-control" />
-                        <span asp-validation-for="Quantity" class="text-danger small"></span>
-                    </div>
-
-                    <div class="col-md-6 form-group mb-3">
-                        <label asp-for="UnitPrice" class="form-label"></label>
-                        <input asp-for="UnitPrice" class="form-control" />
-                        <span asp-validation-for="UnitPrice" class="text-danger small"></span>
-                    </div>
+                <div class="form-group mb-3">
+                    <label asp-for="Quantity" class="form-label"></label>
+                    <input asp-for="Quantity" class="form-control" />
+                    <span asp-validation-for="Quantity" class="text-danger small"></span>
                 </div>
             </form>
 

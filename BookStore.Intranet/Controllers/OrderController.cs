@@ -22,10 +22,24 @@ namespace BookStore.Intranet.Controllers
         }
 
         // GET: Order
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder)
         {
-            var bookStoreContext = _context.Orders.Include(o => o.OrderStatus).Include(o => o.User);
-            return View(await bookStoreContext.ToListAsync());
+            var orders = _context.Orders
+                .Include(o => o.OrderStatus)
+                .Include(o => o.OrderItems)
+                .Include(o => o.User)
+                .AsQueryable();
+
+            orders = sortOrder switch
+            {
+                "date_asc" => orders.OrderBy(o => o.OrderDate),
+                "date_desc" or null => orders.OrderByDescending(o => o.OrderDate),
+                "status" => orders.OrderBy(o => o.IdOrderStatus),
+                _ => orders.OrderByDescending(o => o.OrderDate)
+            };
+
+            ViewBag.SortOrder = sortOrder;
+            return View(await orders.ToListAsync());
         }
 
         // GET: Order/Details/5
@@ -98,18 +112,29 @@ namespace BookStore.Intranet.Controllers
                 return View(order);
             }
 
-            var bookPrices = await _context.Books
+            var bookList = await _context.Books
                 .Where(b => orderItems.Select(i => i.IdBook).Contains(b.IdBook))
-                .ToDictionaryAsync(b => b.IdBook, b => b.Price);
+                .ToDictionaryAsync(b => b.IdBook);
 
             order.OrderItems = new List<OrderItem>();
 
             foreach (var item in orderItems)
             {
-                if (!bookPrices.TryGetValue(item.IdBook, out var price))
+                if (!bookList.TryGetValue(item.IdBook, out var book))
                     continue;
 
-                item.UnitPrice = price;
+                if (book.Quantity < item.Quantity)
+                {
+                    ModelState.AddModelError("", $"Not enough quantity for book: {book.Title}");
+                    ViewData["IdOrderStatus"] = new SelectList(_context.OrderStatuses, "Id", "Name", order.IdOrderStatus);
+                    ViewData["IdUser"] = new SelectList(_context.Users, "IdUser", "Username", order.IdUser);
+                    ViewBag.Books = _context.Books.Select(b => new SelectListItem { Value = b.IdBook.ToString(), Text = b.Title }).ToList();
+                    return View(order);
+                }
+
+                book.Quantity -= item.Quantity;
+
+                item.UnitPrice = book.Price;
                 order.OrderItems.Add(item);
             }
 
@@ -262,7 +287,7 @@ namespace BookStore.Intranet.Controllers
         }
 
         // POST: Order/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {

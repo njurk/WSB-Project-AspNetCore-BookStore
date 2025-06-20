@@ -22,11 +22,26 @@ namespace BookStore.Intranet.Controllers
         }
 
         // GET: Review
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder)
         {
-            var bookStoreContext = _context.Reviews.Include(r => r.Book).Include(r => r.User);
-            return View(await bookStoreContext.ToListAsync());
+            ViewBag.SortOrder = sortOrder;
+
+            var reviews = _context.Reviews
+                .Include(r => r.Book)
+                .Include(r => r.User)
+                .AsQueryable();
+
+            reviews = sortOrder switch
+            {
+                "rating_desc" => reviews.OrderByDescending(r => r.Rating),
+                "rating_asc" => reviews.OrderBy(r => r.Rating),
+                "date_asc" => reviews.OrderBy(r => r.DateAdded),
+                _ => reviews.OrderByDescending(r => r.DateAdded)
+            };
+
+            return View(await reviews.ToListAsync());
         }
+
 
         // GET: Review/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -150,7 +165,7 @@ namespace BookStore.Intranet.Controllers
         }
 
         // POST: Review/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {

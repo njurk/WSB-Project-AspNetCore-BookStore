@@ -4,8 +4,6 @@
 
 @{
     ViewData["Title"] = "Authors";
-    ViewData["ItemName"] = "this author";
-    ViewData["Controller"] = "Author";
 }
 
 <div class="container mt-5">
@@ -58,8 +56,62 @@
                     }
                 </tbody>
             </table>
+
+            <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Confirm Deletion</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Are you sure to delete @ViewData["ItemName"]?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>
 
-@await Html.PartialAsync("_DeleteModalPartial")
+@section Scripts {
+    <script>
+        let deleteId = null;
+        const deleteModal = document.getElementById('deleteModal');
+        deleteModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            deleteId = button.getAttribute('data-id');
+        });
+
+        document.getElementById('confirmDeleteBtn').addEventListener('click', function () {
+            if (!deleteId) return;
+
+            const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+            fetch(`/Author/DeleteConfirmed/${deleteId}`, {
+                method: 'POST',
+                headers: {
+                    'RequestVerificationToken': token
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    const row = document.querySelector(`tr[data-id='${deleteId}']`);
+                    if (row) row.remove();
+                    const modal = bootstrap.Modal.getInstance(deleteModal);
+                    modal.hide();
+                } else {
+                    alert("Error");
+                }
+            })
+            .catch(() => {
+                alert("Error");
+            });
+        });
+    </script>
+}

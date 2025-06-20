@@ -1,6 +1,13 @@
-﻿<form class="d-flex w-auto">
-    <input class="form-control me-2 border-dark" type="search" placeholder="Search..." aria-label="Search" style="height: 30px; width: 400px;">
-    <button class="btn btn-outline-dark d-flex align-items-center justify-content-center" type="submit" style="height: 30px; padding: 0 8px; margin-inline-end: 30px">
+﻿<form id="searchForm" class="d-flex align-items-center w-auto" method="get">
+    <input class="form-control me-2 border-dark"
+           type="search"
+           name="query"
+           placeholder="Search..."
+           aria-label="Search"
+           style="height: 30px;">
+    <button class="btn btn-outline-dark"
+            type="submit"
+            style="height: 30px; padding: 0 8px;">
         <i class="fas fa-search"></i>
     </button>
 </form>

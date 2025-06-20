@@ -23,10 +23,44 @@ namespace BookStore.Intranet.Controllers
         }
 
         // GET: Book
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string query, string sortOrder)
         {
-            var bookStoreContext = _context.Books.Include(b => b.Author).OrderByDescending(b => b.IdBook);
-            return View(await bookStoreContext.ToListAsync());
+            ViewData["SearchQuery"] = query;
+            ViewData["SortOrder"] = sortOrder;
+
+            var booksQuery = _context.Books.Include(b => b.Author).AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(query))
+            {
+                var tokens = query.Trim().ToLower().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                foreach (var token in tokens)
+                {
+                    booksQuery = booksQuery.Where(b =>
+                        b.Title.ToLower().Contains(token) ||
+                        b.Author.FirstName.ToLower().Contains(token) ||
+                        b.Author.LastName.ToLower().Contains(token) ||
+                        b.ISBN.ToLower().Contains(token)
+                    );
+                }
+            }
+
+            booksQuery = sortOrder switch
+            {
+                "title" => booksQuery.OrderBy(b => b.Title),
+                "oldest" => booksQuery.OrderBy(b => b.IdBook),
+                "quantity_asc" => booksQuery.OrderBy(b => b.Quantity),
+                "quantity_desc" => booksQuery.OrderByDescending(b => b.Quantity),
+                "price_asc" => booksQuery.OrderBy(b => b.Price),
+                "price_desc" => booksQuery.OrderByDescending(b => b.Price),
+                "year_asc" => booksQuery.OrderBy(b => b.YearPublished),
+                "year_desc" => booksQuery.OrderByDescending(b => b.YearPublished),
+                "pages_asc" => booksQuery.OrderBy(b => b.NumberOfPages),
+                "pages_desc" => booksQuery.OrderByDescending(b => b.NumberOfPages),
+                _ => booksQuery.OrderByDescending(b => b.IdBook)
+            };
+
+            var model = await booksQuery.ToListAsync();
+            return View(model);
         }
 
         // GET: Book/Details/5

@@ -1,8 +1,11 @@
 ﻿@model IEnumerable<BookStore.Data.Data.Entities.OrderStatus>
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
 
 @{
     ViewData["Title"] = "Order statuses";
 }
+
+<meta name="csrf-token" content="@Antiforgery.GetAndStoreTokens(Context).RequestToken" />
 
 <div class="container mt-5">
     <div class="row justify-content-center">
@@ -29,7 +32,7 @@
                 <tbody>
                     @foreach (var item in Model)
                     {
-                        <tr>
+                        <tr data-id="@item.Id">
                             <td>@item.Name</td>
                             <td class="text-end" style="min-width:130px;">
                                 <a asp-action="Edit" asp-route-id="@item.Id" class="icon-btn" aria-label="Edit">
@@ -38,14 +41,70 @@
                                 <a asp-action="Details" asp-route-id="@item.Id" class="icon-btn" aria-label="Details">
                                     <ion-icon name="information-circle-outline" style="font-size:1.2rem;"></ion-icon>
                                 </a>
-                                <a asp-action="Delete" asp-route-id="@item.Id" class="icon-btn text-danger" aria-label="Delete">
+                                <button type="button" class="icon-btn text-danger btn-delete" data-bs-toggle="modal" data-bs-target="#deleteModal" data-id="@item.Id" aria-label="Delete" style="background:none; border:none; padding:0;">
                                     <ion-icon name="trash-outline" style="font-size:1.2rem;"></ion-icon>
-                                </a>
+                                </button>
                             </td>
                         </tr>
                     }
                 </tbody>
             </table>
+
+            <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Confirm Deletion</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Are you sure to delete this order status?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        let deleteId = null;
+        const deleteModal = document.getElementById('deleteModal');
+        deleteModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            deleteId = button.getAttribute('data-id');
+        });
+
+        document.getElementById('confirmDeleteBtn').addEventListener('click', function () {
+            if (!deleteId) return;
+
+            const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+            fetch(`/OrderStatus/DeleteConfirmed/${deleteId}`, {
+                method: 'POST',
+                headers: {
+                    'RequestVerificationToken': token
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    const row = document.querySelector(`tr[data-id='${deleteId}']`);
+                    if (row) row.remove();
+                    const modal = bootstrap.Modal.getInstance(deleteModal);
+                    modal.hide();
+                } else {
+                    alert("Error");
+                }
+            })
+            .catch(() => {
+                alert("Error");
+            });
+        });
+    </script>
+}

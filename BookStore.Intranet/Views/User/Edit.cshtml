@@ -9,7 +9,7 @@
         <div class="col-md-7 bg-secondary bg-opacity-10 p-4 rounded">
             <h1 class="mb-4">Edit user</h1>
 
-            <form asp-action="Edit" id="editUserForm">
+            <form asp-action="Edit" method="post" id="editUserForm">
                 <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
                 <input type="hidden" asp-for="IdUser" />
 
@@ -22,7 +22,7 @@
 
                     <div class="col-md-6 form-group mb-3">
                         <label asp-for="Password" class="form-label"></label>
-                        <input asp-for="Password" type="password" class="form-control" />
+                        <input asp-for="Password" type="password" class="form-control" data-val="false" autocomplete="new-password" />
                         <span asp-validation-for="Password" class="text-danger small"></span>
                     </div>
 
