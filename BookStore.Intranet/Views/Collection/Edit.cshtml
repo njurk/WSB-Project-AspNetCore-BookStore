@@ -1,39 +1,45 @@
 ﻿@model BookStore.Data.Data.Entities.Collection
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Edit Collection";
 }
 
-<h1>Edit</h1>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5 bg-secondary bg-opacity-10 p-4 rounded">
 
-<h4>Collection</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="IdCollection" />
-            <div class="form-group">
-                <label asp-for="IdUser" class="control-label"></label>
-                <select asp-for="IdUser" class="form-control" asp-items="ViewBag.IdUser"></select>
-                <span asp-validation-for="IdUser" class="text-danger"></span>
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="mb-0">Edit collection</h1>
             </div>
-            <div class="form-group">
-                <label asp-for="IdBook" class="control-label"></label>
-                <select asp-for="IdBook" class="form-control" asp-items="ViewBag.IdBook"></select>
-                <span asp-validation-for="IdBook" class="text-danger"></span>
+
+            <form asp-action="Edit" method="post" id="editForm">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                <input type="hidden" asp-for="IdCollection" />
+
+                <div class="mb-3">
+                    <label asp-for="IdUser" class="form-label fw-semibold text-muted">User</label>
+                    <select asp-for="IdUser" class="form-select" asp-items="ViewBag.IdUser"></select>
+                    <span asp-validation-for="IdUser" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="IdBook" class="form-label fw-semibold text-muted">Book</label>
+                    <select asp-for="IdBook" class="form-select" asp-items="ViewBag.IdBook"></select>
+                    <span asp-validation-for="IdBook" class="text-danger small"></span>
+                </div>
+            </form>
+
+            <div class="d-flex justify-content-between mt-4">
+                <a asp-action="Index" class="btn btn-outline-secondary">
+                    <ion-icon name="arrow-back-outline" class="me-1"></ion-icon> Back
+                </a>
+                <button type="submit" class="btn btn-secondary" form="editForm">Save</button>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @await Html.PartialAsync("_ValidationScriptsPartial")
 }

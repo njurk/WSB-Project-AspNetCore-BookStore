@@ -22,6 +22,9 @@ namespace BookStore.PortalWWW.Controllers
 
         public async Task<IActionResult> Index()
         {
+            var texts = await _context.StaticTexts
+                .ToDictionaryAsync(t => t.Key, t => t.Value);
+
             var featuredBooks = await _context.Books
                 .Include(b => b.Author)
                 .OrderByDescending(b => b.IdBook)
@@ -40,6 +43,7 @@ namespace BookStore.PortalWWW.Controllers
                 .Take(4)
                 .ToListAsync();
 
+            ViewData["Texts"] = texts;
             ViewData["FeaturedBooks"] = featuredBooks;
             ViewData["PopularBooksWithRatings"] = popularBooksWithRatings;
 

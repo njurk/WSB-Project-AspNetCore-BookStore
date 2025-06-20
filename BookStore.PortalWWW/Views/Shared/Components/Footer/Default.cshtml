@@ -1,8 +1,10 @@
-﻿<footer class="footer">
+﻿@model Dictionary<string, string>
+
+<footer class="footer">
     <div class="container-sm">
         <div class="row gy-3">
             <div class="col-6 col-md-3 border-end text-center">
-                <h5 class="fw-semibold mb-3">Navigation</h5>
+                <h5 class="fw-semibold mb-3">@Model["Footer_column1_header"]</h5>
                 <ul class="list-unstyled small mb-0">
                     <li class="mb-2"><a href="/" class="footer-link">Home</a></li>
                     <li><a href="/Books" class="footer-link">Books</a></li>
@@ -11,17 +13,17 @@
             </div>
 
             <div class="col-6 col-md-3 border-end text-center">
-                <h5 class="fw-semibold mb-3">Support</h5>
-                <ul class="list-unstyled small mb-0">
-                    <li><a href="/terms" class="footer-link">Terms of Service</a></li>
-                    <li><a href="/privacy" class="footer-link">Privacy Policy</a></li>
-                    <li><a href="/contact" class="footer-link">Contact &amp; FAQ</a></li>
-                </ul>
+                <h5 class="fw-semibold mb-3">@Model["Footer_column2_header"]</h5>
+                <a href="#">@Model["Footer_column2_text1"]</a>
+                <br/>
+                <a href="#">@Model["Footer_column2_text2"]</a>
+                <br />
+                <p>@Model["Footer_column2_text3"]</p>
             </div>
 
             <div class="col-12 col-md-6 text-center">
-                <h5 class="fw-semibold mb-3">Newsletter</h5>
-                <p class="small text-muted mb-3">Subscribe for weekly news, tips, and exclusive offers.</p>
+                <h5 class="fw-semibold mb-3">@Model["Footer_column3_header"]</h5>
+                <p class="small text-muted mb-3">@Model["Footer_column3_text1"]</p>
                 <form class="d-flex mb-3 justify-content-center newsletter-form">
                     <input type="email" class="form-control form-control-sm me-2" placeholder="Your email" aria-label="Email" required>
                     <button class="btn btn-dark btn-sm" type="submit">Subscribe</button>

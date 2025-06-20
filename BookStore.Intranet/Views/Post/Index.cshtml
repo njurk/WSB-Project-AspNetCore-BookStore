@@ -1,8 +1,10 @@
 ﻿@model IEnumerable<BookStore.Data.Data.CMS.Post>
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
 
 @{
     ViewData["Title"] = "Posts";
 }
+<meta name="csrf-token" content="@Antiforgery.GetAndStoreTokens(Context).RequestToken" />
 
 <div class="container mt-5">
     <div class="row justify-content-center">
@@ -35,18 +37,10 @@
                 <tbody>
                     @foreach (var item in Model)
                     {
-                        <tr id="post-row-@item.IdPost">
+                        <tr data-id="@item.IdPost">
                             <td>@Html.DisplayFor(m => item.Title)</td>
-                            <td>
-                                <div class="text-fade">
-                                    @item.Introduction
-                                </div>
-                            </td>
-                            <td>
-                                <div class="text-fade">
-                                    @item.Content
-                                </div>
-                            </td>
+                            <td><div class="text-fade">@item.Introduction</div></td>
+                            <td><div class="text-fade">@item.Content</div></td>
                             <td>
                                 @if (!string.IsNullOrEmpty(item.ImageUrl))
                                 {
@@ -63,7 +57,7 @@
                                 <a asp-action="Details" asp-route-id="@item.IdPost" class="icon-btn" aria-label="Details">
                                     <ion-icon name="information-circle-outline" style="font-size:1.2rem;"></ion-icon>
                                 </a>
-                                <button class="icon-btn text-danger btn-delete-post" aria-label="Delete" data-id="@item.IdPost" type="button">
+                                <button type="button" class="icon-btn text-danger btn-delete" data-bs-toggle="modal" data-bs-target="#deleteModal" data-id="@item.IdPost" aria-label="Delete" style="background:none; border:none; padding:0;">
                                     <ion-icon name="trash-outline" style="font-size:1.2rem;"></ion-icon>
                                 </button>
                             </td>
@@ -71,47 +65,61 @@
                     }
                 </tbody>
             </table>
+
+            <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Confirm Deletion</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Are you sure to delete this post?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>
 
 @section Scripts {
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
-            const headers = {
-                'RequestVerificationToken': token,
-                'Content-Type': 'application/x-www-form-urlencoded'
-            };
+        let deleteId = null;
+        const deleteModal = document.getElementById('deleteModal');
+        deleteModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            deleteId = button.getAttribute('data-id');
+        });
 
-            document.querySelectorAll('.btn-delete-post').forEach(button => {
-                button.addEventListener('click', function () {
-                    const postId = this.getAttribute('data-id');
-                    if (!confirm('Are you sure to delete this post?')) {
-                        return;
-                    }
+        document.getElementById('confirmDeleteBtn').addEventListener('click', function () {
+            if (!deleteId) return;
 
-                    fetch('@Url.Action("DeleteConfirmed", "Post")', {
-                        method: 'POST',
-                        headers: headers,
-                        body: new URLSearchParams({ id: postId })
-                    })
-                    .then(response => {
-                        if (response.ok) {
-                            const row = document.getElementById(`post-row-${postId}`);
-                            if (row) {
-                                row.remove();
-                            }
-                        } else if (response.status === 404) {
-                            alert('Post not found');
-                        } else {
-                            alert('Error');
-                        }
-                    })
-                    .catch(() => {
-                        alert('Error');
-                    });
-                });
+            const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+            fetch(`/Post/DeleteConfirmed/${deleteId}`, {
+                method: 'POST',
+                headers: {
+                    'RequestVerificationToken': token
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    const row = document.querySelector(`tr[data-id='${deleteId}']`);
+                    if (row) row.remove();
+                    const modal = bootstrap.Modal.getInstance(deleteModal);
+                    modal.hide();
+                } else {
+                    alert("Error");
+                }
+            })
+            .catch(() => {
+                alert("Error");
             });
         });
     </script>

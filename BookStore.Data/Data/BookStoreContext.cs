@@ -24,6 +24,8 @@ namespace BookStore.Data.Data
         public DbSet<OrderStatus> OrderStatuses { get; set; } = default!;
         public DbSet<Page> Pages { get; set; } = default!;
         public DbSet<Post> Posts { get; set; } = default!;
+        public DbSet<StaticText> StaticTexts { get; set; }
+
     }
 }
 

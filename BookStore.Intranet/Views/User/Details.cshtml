@@ -1,76 +1,103 @@
 ﻿@model BookStore.Data.Data.Entities.User
 
 @{
-    ViewData["Title"] = "User Details";
+    ViewData["Title"] = "Details";
 }
 
-<h1 class="mb-4 text-center">User Details</h1>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6 bg-secondary bg-opacity-10 p-4 rounded">
+            <h1 class="mb-4">User details</h1>
 
-<div class="d-flex justify-content-center">
-    <div class="col-md-8 col-lg-6">
-        <div class="border p-4 rounded">
+            <div class="row">
+                <dl class="col-md-6">
+                    <dt class="text-muted fw-semibold">@Html.DisplayNameFor(m => m.Username)</dt>
+                    <dd>@Html.DisplayFor(m => m.Username)</dd>
 
-            <dl class="row mb-3">
-                <dt class="col-sm-4">
-                    @Html.DisplayNameFor(model => model.Username)
-                </dt>
-                <dd class="col-sm-8">
-                    @Html.DisplayFor(model => model.Username)
-                </dd>
+                    <dt class="text-muted fw-semibold">@Html.DisplayNameFor(m => m.FirstName)</dt>
+                    <dd>@Html.DisplayFor(m => m.FirstName)</dd>
 
-                <dt class="col-sm-4">
-                    @Html.DisplayNameFor(model => model.FirstName)
-                </dt>
-                <dd class="col-sm-8">
-                    @Html.DisplayFor(model => model.FirstName)
-                </dd>
+                    <dt class="text-muted fw-semibold">@Html.DisplayNameFor(m => m.LastName)</dt>
+                    <dd>@Html.DisplayFor(m => m.LastName)</dd>
 
-                <dt class="col-sm-4">
-                    @Html.DisplayNameFor(model => model.LastName)
-                </dt>
-                <dd class="col-sm-8">
-                    @Html.DisplayFor(model => model.LastName)
-                </dd>
+                    <dt class="text-muted fw-semibold">@Html.DisplayNameFor(m => m.Email)</dt>
+                    <dd>@Html.DisplayFor(m => m.Email)</dd>
+                </dl>
 
-                <dt class="col-sm-4">
-                    @Html.DisplayNameFor(model => model.Email)
-                </dt>
-                <dd class="col-sm-8">
-                    @Html.DisplayFor(model => model.Email)
-                </dd>
+                <dl class="col-md-6">
+                    <dt class="text-muted fw-semibold">@Html.DisplayNameFor(m => m.Street)</dt>
+                    <dd>@Html.DisplayFor(m => m.Street)</dd>
 
-                <dt class="col-sm-4">
-                    @Html.DisplayNameFor(model => model.Password) hash
-                </dt>
-                <dd class="col-sm-8">
-                    @Html.DisplayFor(model => model.Password)
-                </dd>
+                    <dt class="text-muted fw-semibold">@Html.DisplayNameFor(m => m.City)</dt>
+                    <dd>@Html.DisplayFor(m => m.City)</dd>
 
-                <dt class="col-sm-4">
-                    @Html.DisplayNameFor(model => model.Street)
-                </dt>
-                <dd class="col-sm-8">
-                    @Html.DisplayFor(model => model.Street)
-                </dd>
+                    <dt class="text-muted fw-semibold">@Html.DisplayNameFor(m => m.PostalCode)</dt>
+                    <dd>@Html.DisplayFor(m => m.PostalCode)</dd>
+                </dl>
+            </div>
 
-                <dt class="col-sm-4">
-                    @Html.DisplayNameFor(model => model.City)
-                </dt>
-                <dd class="col-sm-8">
-                    @Html.DisplayFor(model => model.City)
-                </dd>
+            <div class="mt-2">
+                <button class="btn btn-outline-secondary w-100 text-start" type="button" data-bs-toggle="collapse" data-bs-target="#userCart" aria-expanded="false" aria-controls="userCart" style="font-weight: 500;">
+                    <ion-icon name="cart-outline" style="font-size: 1.3rem; vertical-align: middle;"></ion-icon>
+                    Cart
+                </button>
 
-                <dt class="col-sm-4">
-                    @Html.DisplayNameFor(model => model.PostalCode)
-                </dt>
-                <dd class="col-sm-8">
-                    @Html.DisplayFor(model => model.PostalCode)
-                </dd>
-            </dl>
+                <div class="collapse mt-3" id="userCart">
+                    <div class="card card-body bg-light">
+                        @if (Model.Carts != null && Model.Carts.Any())
+                        {
+                            <ul class="list-group list-group-flush">
+                                @foreach (var item in Model.Carts)
+                                {
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <span>@item.Book.Title</span>
+                                        <span class="badge bg-secondary rounded-pill">@item.Quantity</span>
+                                    </li>
+                                }
+                            </ul>
+                        }
+                        else
+                        {
+                            <p class="text-muted mb-0">This user's cart is empty</p>
+                        }
+                    </div>
+                </div>
+            </div>
 
-            <div class="text-center mt-4">
-                <a asp-action="Edit" asp-route-id="@Model?.IdUser" class="btn btn-primary w-100 mb-2">Edit</a>
-                <a asp-action="Index" class="btn btn-secondary w-100">Back to List</a>
+            <div class="mt-2">
+                <button class="btn btn-outline-secondary w-100 text-start" type="button" data-bs-toggle="collapse" data-bs-target="#userCollections" aria-expanded="false" aria-controls="userCollections" style="font-weight: 500;">
+                    <ion-icon name="bookmark-outline" style="font-size: 1.3rem; vertical-align: middle;"></ion-icon>
+                    Collection
+                </button>
+
+                <div class="collapse mt-3" id="userCollections">
+                    <div class="card card-body bg-light">
+                        @if (@Model.Collections != null && @Model.Collections.Any())
+                        {
+                            <ul class="list-group list-group-flush">
+                                @foreach (var collectionItem in @Model.Collections)
+                                {
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <span>@collectionItem.Book.Title</span>
+                                    </li>
+                                }
+                            </ul>
+                        }
+                        else
+                        {
+                            <p class="text-muted mb-0">This user's collection is empty</p>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex gap-2 mt-4">
+                <a asp-action="Edit" asp-route-id="@Model?.IdUser" class="btn btn-secondary d-flex align-items-center gap-2 px-3 py-2" style="font-weight: 500;">
+                    <ion-icon name="create-outline" style="font-size: 1.4rem;"></ion-icon> Edit
+                </a>
+                <a asp-action="Index" class="btn btn-outline-secondary d-flex align-items-center gap-2 px-3 py-2" style="font-weight: 500;">
+                    <ion-icon name="arrow-back-outline" style="font-size: 1.4rem;"></ion-icon> Back
+                </a>
             </div>
         </div>
     </div>

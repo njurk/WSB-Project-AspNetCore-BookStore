@@ -1,55 +1,42 @@
 ﻿@model BookStore.Data.Data.Entities.Review
 
 @{
-    ViewData["Title"] = "Review Details";
+    ViewData["Title"] = "Details";
 }
 
-<h1 class="mb-4 text-center">Review Details</h1>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-8 bg-secondary bg-opacity-10 p-4 rounded">
+            <h1 class="mb-4">Review details</h1>
 
-<div class="d-flex justify-content-center">
-    <div class="col-md-8 col-lg-6">
-        <div class="border p-4 rounded">
+            <div class="row">
+                <dl class="col-md-4">
+                    <dt class="text-muted fw-semibold">@Html.DisplayNameFor(m => m.User)</dt>
+                    <dd>@Html.DisplayFor(m => m.User.Username)</dd>
 
-            <dl class="row mb-3">
-                <dt class="col-sm-4">
-                    @Html.DisplayNameFor(model => model.User)
-                </dt>
-                <dd class="col-sm-8">
-                    @Html.DisplayFor(model => model.User.Username)
-                </dd>
+                    <dt class="text-muted fw-semibold">@Html.DisplayNameFor(m => m.Book)</dt>
+                    <dd>@Html.DisplayFor(m => m.Book.Title)</dd>
 
-                <dt class="col-sm-4">
-                    @Html.DisplayNameFor(model => model.Book)
-                </dt>
-                <dd class="col-sm-8">
-                    @Html.DisplayFor(model => model.Book.Title)
-                </dd>
+                    <dt class="text-muted fw-semibold">@Html.DisplayNameFor(m => m.Rating)</dt>
+                    <dd>@Html.DisplayFor(m => m.Rating)</dd>
 
-                <dt class="col-sm-4">
-                    @Html.DisplayNameFor(model => model.Rating)
-                </dt>
-                <dd class="col-sm-8">
-                    @Html.DisplayFor(model => model.Rating)
-                </dd>
+                    <dt class="text-muted fw-semibold">@Html.DisplayNameFor(m => m.DateAdded)</dt>
+                    <dd>@Html.DisplayFor(m => m.DateAdded)</dd>
+                </dl>
 
-                <dt class="col-sm-4">
-                    @Html.DisplayNameFor(model => model.Comment)
-                </dt>
-                <dd class="col-sm-8">
-                    @Html.DisplayFor(model => model.Comment)
-                </dd>
+                <dl class="col-md-8">
+                    <dt class="text-muted fw-semibold">@Html.DisplayNameFor(m => m.Comment)</dt>
+                    <dd style="white-space: pre-wrap;">@Html.DisplayFor(m => m.Comment)</dd>
+                </dl>
+            </div>
 
-                <dt class="col-sm-4">
-                    @Html.DisplayNameFor(model => model.DateAdded)
-                </dt>
-                <dd class="col-sm-8">
-                    @Html.DisplayFor(model => model.DateAdded)
-                </dd>
-            </dl>
-
-            <div class="text-center mt-4">
-                <a asp-action="Edit" asp-route-id="@Model?.IdReview" class="btn btn-primary w-100 mb-2">Edit</a>
-                <a asp-action="Index" class="btn btn-secondary w-100">Back to List</a>
+            <div class="d-flex gap-2 mt-4">
+                <a asp-action="Edit" asp-route-id="@Model?.IdReview" class="btn btn-secondary d-flex align-items-center gap-2 px-3 py-2" style="font-weight: 500;">
+                    <ion-icon name="create-outline" style="font-size: 1.4rem;"></ion-icon> Edit
+                </a>
+                <a asp-action="Index" class="btn btn-outline-secondary d-flex align-items-center gap-2 px-3 py-2" style="font-weight: 500;">
+                    <ion-icon name="arrow-back-outline" style="font-size: 1.4rem;"></ion-icon> Back
+                </a>
             </div>
         </div>
     </div>

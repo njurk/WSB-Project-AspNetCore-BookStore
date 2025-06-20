@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -15,11 +16,13 @@ namespace BookStore.Data.Data.Entities
 
         [Required]
         [ForeignKey("User")]
+        [DisplayName("User")]
         public required int IdUser { get; set; }
         public User? User { get; set; }
 
         [Required]
         [ForeignKey("Book")]
+        [DisplayName("Book")]
         public required int IdBook { get; set; }
         public Book? Book { get; set; }
 

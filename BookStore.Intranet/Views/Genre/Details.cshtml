@@ -1,27 +1,26 @@
 ﻿@model BookStore.Data.Data.Entities.Genre
 
 @{
-    ViewData["Title"] = "Genre Details";
+    ViewData["Title"] = "Details";
 }
 
-<h1 class="mb-4 text-center">Genre Details</h1>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6 bg-secondary bg-opacity-10 p-4 rounded">
+            <h1 class="mb-4">Genre details</h1>
 
-<div class="d-flex justify-content-center">
-    <div class="col-md-8 col-lg-6">
-        <div class="border p-4 rounded">
-
-            <dl class="row mb-3">
-                <dt class="col-sm-4">
-                    @Html.DisplayNameFor(model => model.Name)
-                </dt>
-                <dd class="col-sm-8">
-                    @Html.DisplayFor(model => model.Name)
-                </dd>
+            <dl class="row">
+                <dt class="col-sm-4 text-muted fw-semibold">@Html.DisplayNameFor(m => m.Name)</dt>
+                <dd class="col-sm-8">@Html.DisplayFor(m => m.Name)</dd>
             </dl>
 
-            <div class="text-center mt-4">
-                <a asp-action="Edit" asp-route-id="@Model?.IdGenre" class="btn btn-primary w-100 mb-2">Edit</a>
-                <a asp-action="Index" class="btn btn-secondary w-100">Back to List</a>
+            <div class="d-flex gap-2 mt-4">
+                <a asp-action="Edit" asp-route-id="@Model?.IdGenre" class="btn btn-secondary d-flex align-items-center gap-2 px-3 py-2" style="font-weight: 500;">
+                    <ion-icon name="create-outline" style="font-size: 1.4rem;"></ion-icon> Edit
+                </a>
+                <a asp-action="Index" class="btn btn-outline-secondary d-flex align-items-center gap-2 px-3 py-2" style="font-weight: 500;">
+                    <ion-icon name="arrow-back-outline" style="font-size: 1.4rem;"></ion-icon> Back
+                </a>
             </div>
         </div>
     </div>

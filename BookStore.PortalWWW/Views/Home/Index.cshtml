@@ -1,6 +1,7 @@
 ﻿@{
     ViewData["Title"] = "Home";
 
+    var texts = ViewData["Texts"] as Dictionary<string, string>;
     var featuredBooks = ViewData["FeaturedBooks"] as List<BookStore.Data.Data.Entities.Book> ?? new();
     var popularBooksWithRatings = ViewData["PopularBooksWithRatings"] as List<BookStore.PortalWWW.Models.BookWithAvgRatingViewModel> ?? new();
 }
@@ -20,7 +21,7 @@
     <div class="col-md-10">
         <div class="container my-4">
             <div class="row">
-                    <h2 class="mb-5">Featured</h2>
+                <h2 class="mb-5">@texts["Home_section1_header"]</h2>
 
                     <div class="autoplay px-5">
                         @foreach (var book in featuredBooks)
@@ -37,7 +38,7 @@
             </div>
 
             <div class="mt-5">
-                <h2 class="mb-4">Highest Rated</h2>
+                <h2 class="mb-4">@texts["Home_section2_header"]</h2>
                 <div class="row justify-content-start g-3">
                     @foreach (var item in popularBooksWithRatings)
                     {

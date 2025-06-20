@@ -40,7 +40,12 @@ namespace BookStore.Intranet.Controllers
             }
 
             var user = await _context.Users
+                .Include(u => u.Carts) 
+                    .ThenInclude(ci => ci.Book)
+                .Include(u => u.Collections)
+                    .ThenInclude(uc => uc.Book)
                 .FirstOrDefaultAsync(m => m.IdUser == id);
+
             if (user == null)
             {
                 return NotFound();

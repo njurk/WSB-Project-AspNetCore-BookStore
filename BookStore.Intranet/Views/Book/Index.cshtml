@@ -1,7 +1,11 @@
 ﻿@model IEnumerable<BookStore.Data.Data.Entities.Book>
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+<meta name="csrf-token" content="@Antiforgery.GetAndStoreTokens(Context).RequestToken" />
 
 @{
     ViewData["Title"] = "Books";
+    ViewData["ItemName"] = "this book";
+    ViewData["Controller"] = "Book";
 }
 
 <div class="container mt-5">
@@ -38,7 +42,7 @@
                 <tbody>
                     @foreach (var item in Model)
                     {
-                        <tr>
+                        <tr data-id="@item.IdBook">
                             <td>@item.Title</td>
                             <td>
                                 <div class="text-fade">@item.Description</div>
@@ -60,9 +64,15 @@
                                 <a asp-action="Details" asp-route-id="@item.IdBook" class="icon-btn" aria-label="Details">
                                     <ion-icon name="information-circle-outline" style="font-size:1.2rem;"></ion-icon>
                                 </a>
-                                <a asp-action="Delete" asp-route-id="@item.IdBook" class="icon-btn text-danger" aria-label="Delete">
+                                <button type="button"
+                                        class="icon-btn text-danger btn-delete"
+                                        aria-label="Delete"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#deleteModal"
+                                        data-id="@item.IdBook"
+                                        style="background:none; border:none; padding:0;">
                                     <ion-icon name="trash-outline" style="font-size:1.2rem;"></ion-icon>
-                                </a>
+                                </button>
                             </td>
                         </tr>
                     }
@@ -71,3 +81,5 @@
         </div>
     </div>
 </div>
+
+@await Html.PartialAsync("_DeleteModalPartial")

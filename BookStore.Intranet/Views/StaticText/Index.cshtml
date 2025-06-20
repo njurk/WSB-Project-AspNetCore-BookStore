@@ -1,0 +1,48 @@
+﻿@model IEnumerable<BookStore.Data.Data.CMS.StaticText>
+
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+
+@{
+    ViewData["Title"] = "Static texts";
+}
+
+<meta name="csrf-token" content="@Antiforgery.GetAndStoreTokens(Context).RequestToken" />
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-11 bg-secondary bg-opacity-10 p-4 rounded">
+            <div class="row align-items-center mb-4">
+                <div class="col">
+                    <h1 class="mb-0">Static texts</h1>
+                </div>
+            </div>
+
+            <table class="table table-borderless table-striped align-middle mb-0">
+                <thead>
+                    <tr class="text-muted border-bottom">
+                        <th>@Html.DisplayNameFor(m => m.First().Key)</th>
+                        <th>@Html.DisplayNameFor(m => m.First().Value)</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr data-id="@item.Id">
+                            <td>@Html.DisplayFor(m => item.Key)</td>
+                            <td>@Html.DisplayFor(m => item.Value)</td>
+                            <td class="text-end" style="min-width:130px;">
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="icon-btn" aria-label="Edit">
+                                    <ion-icon name="create-outline" style="font-size:1.2rem;"></ion-icon>
+                                </a>
+                                <a asp-action="Details" asp-route-id="@item.Id" class="icon-btn" aria-label="Details">
+                                    <ion-icon name="information-circle-outline" style="font-size:1.2rem;"></ion-icon>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

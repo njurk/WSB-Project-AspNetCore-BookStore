@@ -61,10 +61,19 @@ namespace BookStore.Intranet.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdCart,IdUser,IdBook,Quantity,UnitPrice")] Cart cart)
+        public async Task<IActionResult> Create([Bind("IdCart,IdUser,IdBook,Quantity")] Cart cart)
         {
             if (ModelState.IsValid)
             {
+                var book = await _context.Books.FindAsync(cart.IdBook);
+                if (book == null)
+                {
+                    ModelState.AddModelError("IdBook", "Selected book does not exist.");
+                    ViewData["IdBook"] = new SelectList(_context.Books, "IdBook", "Title", cart.IdBook);
+                    ViewData["IdUser"] = new SelectList(_context.Users, "IdUser", "Username", cart.IdUser);
+                    return View(cart);
+                }
+                cart.UnitPrice = book.Price;
                 _context.Add(cart);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -73,6 +82,7 @@ namespace BookStore.Intranet.Controllers
             ViewData["IdUser"] = new SelectList(_context.Users, "IdUser", "Username", cart.IdUser);
             return View(cart);
         }
+
 
         // GET: Cart/Edit/5
         public async Task<IActionResult> Edit(int? id)

@@ -6,33 +6,59 @@
 
 <div class="container mt-5">
     <div class="row justify-content-center">
-        <div class="col-md-8 col-lg-6 bg-secondary bg-opacity-10 p-4 rounded">
+        <div class="col-md-8 col-lg-8 bg-secondary bg-opacity-10 p-4 rounded">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h1 class="mb-0">Order #@Model.IdOrder details</h1>
             </div>
 
-            <dl class="row mb-4">
-                <dt class="col-sm-4 fw-semibold text-muted">
-                    @Html.DisplayNameFor(model => model.User)
-                </dt>
-                <dd class="col-sm-8">
-                    @Model.User.Username
-                </dd>
+            <div class="row">
+                <div class="col-md-6">
+                    <dl class="row mb-4">
+                        <dt class="col-sm-4 fw-semibold text-muted">
+                            @Html.DisplayNameFor(model => model.User)
+                        </dt>
+                        <dd class="col-sm-8">
+                            @Model.User.Username
+                        </dd>
 
-                <dt class="col-sm-4 fw-semibold text-muted">
-                    Date
-                </dt>
-                <dd class="col-sm-8">
-                    @Html.DisplayFor(model => model.OrderDate)
-                </dd>
+                        <dt class="col-sm-4 fw-semibold text-muted">
+                            Date
+                        </dt>
+                        <dd class="col-sm-8">
+                            @Html.DisplayFor(model => model.OrderDate)
+                        </dd>
 
-                <dt class="col-sm-4 fw-semibold text-muted">
-                    Status
-                </dt>
-                <dd class="col-sm-8">
-                    @Model.OrderStatus.Name
-                </dd>
-            </dl>
+                        <dt class="col-sm-4 fw-semibold text-muted">
+                            Status
+                        </dt>
+                        <dd class="col-sm-8">
+                            @Model.OrderStatus.Name
+                        </dd>
+                    </dl>
+                </div>
+
+                <div class="col-md-6">
+                    <dl class="row mb-4">
+                        <dt class="col-sm-4 fw-semibold text-muted">First name</dt>
+                        <dd class="col-sm-8">@Model.FirstName</dd>
+
+                        <dt class="col-sm-4 fw-semibold text-muted">Last name</dt>
+                        <dd class="col-sm-8">@Model.LastName</dd>
+
+                        <dt class="col-sm-4 fw-semibold text-muted">Email</dt>
+                        <dd class="col-sm-8">@Model.Email</dd>
+
+                        <dt class="col-sm-4 fw-semibold text-muted">Street</dt>
+                        <dd class="col-sm-8">@Model.Street</dd>
+
+                        <dt class="col-sm-4 fw-semibold text-muted">City</dt>
+                        <dd class="col-sm-8">@Model.City</dd>
+
+                        <dt class="col-sm-4 fw-semibold text-muted">Postal code</dt>
+                        <dd class="col-sm-8">@Model.PostalCode</dd>
+                    </dl>
+                </div>
+            </div>
 
             <h5 class="mb-3">Order items</h5>
 
@@ -61,7 +87,10 @@
                 </table>
 
                 <div class="row justify-content-between align-items-center mt-4">
-                    <div class="col-auto">
+                    <div class="col-auto d-flex gap-2">
+                        <a asp-action="Edit" asp-route-id="@Model?.IdOrder" class="btn btn-secondary d-flex align-items-center gap-2 px-3 py-2" style="font-weight: 500;">
+                            <ion-icon name="create-outline" style="font-size: 1.4rem;"></ion-icon> Edit
+                        </a>
                         <a asp-action="Index" class="btn btn-secondary d-flex align-items-center gap-2 px-3 py-2" style="font-weight: 500;">
                             <ion-icon name="arrow-back-outline" style="font-size: 1.2rem;"></ion-icon>
                             Back

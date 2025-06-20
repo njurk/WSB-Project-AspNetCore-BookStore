@@ -1,24 +1,24 @@
-﻿@model BookStore.Data.Data.Entities.Author
+﻿@model BookStore.Data.Data.CMS.StaticText
 
 @{
-    ViewData["Title"] = "Author";
+    ViewData["Title"] = "Static text details";
 }
 
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-8 bg-secondary bg-opacity-10 p-4 rounded">
-            <h1 class="mb-4">Author details</h1>
+            <h1 class="mb-4">Static text details</h1>
 
             <dl class="row">
-                <dt class="col-sm-3 text-muted fw-semibold">@Html.DisplayNameFor(m => m.FirstName)</dt>
-                <dd class="col-sm-9">@Html.DisplayFor(m => m.FirstName)</dd>
+                <dt class="col-sm-3 text-muted fw-semibold">@Html.DisplayNameFor(m => m.Key)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(m => m.Key)</dd>
 
-                <dt class="col-sm-3 text-muted fw-semibold">@Html.DisplayNameFor(m => m.LastName)</dt>
-                <dd class="col-sm-9">@Html.DisplayFor(m => m.LastName)</dd>
+                <dt class="col-sm-3 text-muted fw-semibold">@Html.DisplayNameFor(m => m.Value)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(m => m.Value)</dd>
             </dl>
 
             <div class="mt-4 d-flex gap-2">
-                <a asp-action="Edit" asp-route-id="@Model?.IdAuthor" class="btn btn-secondary d-flex align-items-center gap-2 px-3 py-2" style="font-weight: 500;">
+                <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-secondary d-flex align-items-center gap-2 px-3 py-2" style="font-weight: 500;">
                     <ion-icon name="create-outline" style="font-size: 1.4rem;"></ion-icon> Edit
                 </a>
                 <a asp-action="Index" class="btn btn-outline-secondary d-flex align-items-center gap-2 px-3 py-2" style="font-weight: 500;">

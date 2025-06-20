@@ -4,32 +4,35 @@
     ViewData["Title"] = "Edit";
 }
 
-<h1 class="text-center mb-4">Edit Genre</h1>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4 bg-secondary bg-opacity-10 p-4 rounded">
 
-<div class="d-flex justify-content-center">
-    <div class="col-md-6 col-lg-4">
-        <div class="border p-4 rounded">
-            <form asp-action="Edit">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="mb-0">Edit genre</h1>
+            </div>
+
+            <form asp-action="Edit" method="post" id="editForm">
                 <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
                 <input type="hidden" asp-for="IdGenre" />
 
-                <div class="form-group mb-3">
-                    <label asp-for="Name" class="control-label">Genre Name</label>
+                <div class="mb-3">
+                    <label asp-for="Name" class="form-label fw-semibold text-muted"></label>
                     <input asp-for="Name" class="form-control" />
-                    <span asp-validation-for="Name" class="text-danger"></span>
-                </div>
-
-                <div class="form-group text-center">
-                    <input type="submit" value="Save" class="btn btn-primary w-100 mb-2" />
-                    <a asp-action="Index" class="btn btn-secondary w-100">Back to List</a>
+                    <span asp-validation-for="Name" class="text-danger small"></span>
                 </div>
             </form>
+
+            <div class="d-flex justify-content-between mt-4">
+                <a asp-action="Index" class="btn btn-outline-secondary">
+                    <ion-icon name="arrow-back-outline" class="me-1"></ion-icon> Back
+                </a>
+                <button type="submit" class="btn btn-secondary" form="editForm">Save</button>
+            </div>
         </div>
     </div>
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    @await Html.PartialAsync("_ValidationScriptsPartial")
 }

@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using BookStore.Data.Data;
 using BookStore.Data.Data.Entities;
 using Microsoft.AspNetCore.Authorization;
+using BookStore.Intranet.Models;
 
 namespace BookStore.Intranet.Controllers
 {
@@ -39,15 +40,29 @@ namespace BookStore.Intranet.Controllers
             var book = await _context.Books
                 .Include(b => b.Author)
                 .FirstOrDefaultAsync(m => m.IdBook == id);
+
             if (book == null)
             {
                 return NotFound();
             }
 
-            return View(book);
+            var genres = await _context.BookGenres
+                .Where(bg => bg.IdBook == id)
+                .Include(bg => bg.Genre)
+                .Select(bg => bg.Genre!.Name)
+                .ToListAsync();
+
+            var viewModel = new BookDetailsViewModel
+            {
+                Book = book,
+                Genres = genres
+            };
+
+            return View(viewModel);
         }
 
         // GET: Book/Create
+        [HttpGet]
         public IActionResult Create()
         {
             var authors = _context.Authors
@@ -58,13 +73,14 @@ namespace BookStore.Intranet.Controllers
                 })
                 .ToList();
 
+            ViewBag.GenreList = new MultiSelectList(_context.Genres, "IdGenre", "Name");
             ViewBag.IdAuthor = new SelectList(authors, "Id", "FullName");
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Book book, IFormFile ImageFile)
+        public async Task<IActionResult> Create(Book book, List<int> selectedGenres, IFormFile ImageFile)
         {
             if (ModelState.IsValid)
             {
@@ -86,21 +102,22 @@ namespace BookStore.Intranet.Controllers
 
                 _context.Add(book);
                 await _context.SaveChangesAsync();
+
+                if (selectedGenres != null && selectedGenres.Any())
+                {
+                    foreach (var genreId in selectedGenres)
+                    {
+                        _context.BookGenres.Add(new BookGenre
+                        {
+                            IdBook = book.IdBook,
+                            IdGenre = genreId
+                        });
+                    }
+
+                    await _context.SaveChangesAsync();
+                }
+
                 return RedirectToAction(nameof(Index));
-            }
-
-            ViewBag.IdAuthor = new SelectList(_context.Authors, "Id", "Name", book.IdAuthor);
-            return View(book);
-        }
-        
-        // GET: Book/Edit/5
-        public IActionResult Edit(int id)
-        {
-            var book = _context.Books.Include(b => b.Author).FirstOrDefault(b => b.IdBook == id);
-
-            if (book == null)
-            {
-                return NotFound();
             }
 
             var authors = _context.Authors
@@ -112,44 +129,83 @@ namespace BookStore.Intranet.Controllers
                 .ToList();
 
             ViewBag.IdAuthor = new SelectList(authors, "Id", "FullName", book.IdAuthor);
+
+            var genres = _context.Genres?.ToList() ?? new List<Genre>();
+            selectedGenres = selectedGenres ?? new List<int>();
+
+            ViewBag.GenreList = new MultiSelectList(genres, "IdGenre", "Name", selectedGenres);
+
             return View(book);
         }
 
+        // GET: Book/Edit/5
+        [HttpGet]
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null) return NotFound();
+
+            var book = await _context.Books.FindAsync(id);
+            if (book == null) return NotFound();
+
+            var selectedGenres = await _context.BookGenres
+                .Where(bg => bg.IdBook == id)
+                .Select(bg => bg.IdGenre)
+                .ToListAsync();
+
+            await PopulateSelectLists(book.IdAuthor, selectedGenres);
+            return View(book);
+        }
 
         // POST: Book/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+        [HttpPost("Book/Edit/{id}")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdBook,Title,Description,Price,NumberOfPages,YearPublished,Language,Quantity,ISBN,IdAuthor,ImageUrl")] Book book)
+        public async Task<IActionResult> Edit(int id, Book book, List<int> selectedGenres, IFormFile? ImageFile)
         {
-            if (id != book.IdBook)
+            if (id != book.IdBook) return NotFound();
+
+            if (!ModelState.IsValid)
             {
-                return NotFound();
+                await PopulateSelectLists(book.IdAuthor, selectedGenres);
+                return View(book);
             }
 
-            if (ModelState.IsValid)
+            if (ImageFile != null && ImageFile.Length > 0)
             {
-                try
+                var fileName = Path.GetFileName(ImageFile.FileName);
+                var uploadsPath = Path.Combine("wwwroot/images", fileName);
+                Directory.CreateDirectory(Path.GetDirectoryName(uploadsPath)!);
+                using var stream = new FileStream(uploadsPath, FileMode.Create);
+                await ImageFile.CopyToAsync(stream);
+                book.ImageUrl = fileName;
+            }
+
+            try
+            {
+                _context.Update(book);
+                var existingGenres = _context.BookGenres.Where(bg => bg.IdBook == id);
+                _context.BookGenres.RemoveRange(existingGenres);
+
+                if (selectedGenres != null)
                 {
-                    _context.Update(book);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!BookExists(book.IdBook))
+                    var newGenres = selectedGenres.Select(genreId => new BookGenre
                     {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                        IdBook = book.IdBook,
+                        IdGenre = genreId
+                    });
+
+                    _context.BookGenres.AddRange(newGenres);
                 }
+
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdAuthor"] = new SelectList(_context.Authors, "IdAuthor", "FirstName", book.IdAuthor);
-            return View(book);
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!BookExists(book.IdBook)) return NotFound();
+                throw;
+            }
         }
 
         // GET: Book/Delete/5
@@ -176,23 +232,36 @@ namespace BookStore.Intranet.Controllers
         }
 
         // POST: Book/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost("Book/DeleteConfirmed/{id}")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var book = await _context.Books.FindAsync(id);
-            if (book != null)
-            {
-                _context.Books.Remove(book);
-            }
+            if (book == null) return NotFound();
 
+            _context.Books.Remove(book);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            return Ok();
         }
 
         private bool BookExists(int id)
         {
             return _context.Books.Any(e => e.IdBook == id);
+        }
+        private async Task PopulateSelectLists(int? selectedAuthorId = null, List<int>? selectedGenres = null)
+        {
+            ViewBag.IdAuthor = new SelectList(
+                await _context.Authors
+                    .Select(a => new { a.IdAuthor, FullName = a.FirstName + " " + a.LastName })
+                    .ToListAsync(),
+                "IdAuthor", "FullName", selectedAuthorId
+            );
+
+            ViewBag.GenreList = new MultiSelectList(
+                await _context.Genres.ToListAsync(),
+                "IdGenre", "Name", selectedGenres
+            );
         }
     }
 }

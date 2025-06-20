@@ -41,7 +41,10 @@
                 <dd class="col-sm-9">@Html.DisplayFor(m => m.Page.LinkTitle)</dd>
             </dl>
 
-            <div class="mt-4">
+            <div class="mt-4 d-flex gap-2">
+                <a asp-action="Edit" asp-route-id="@Model?.IdPost" class="btn btn-secondary d-flex align-items-center gap-2 px-3 py-2" style="font-weight: 500;">
+                    <ion-icon name="create-outline" style="font-size: 1.4rem;"></ion-icon> Edit
+                </a>
                 <a asp-action="Index" class="btn btn-outline-secondary d-flex align-items-center gap-2 px-3 py-2" style="font-weight: 500; width: fit-content;">
                     <ion-icon name="arrow-back-outline" style="font-size: 1.4rem;"></ion-icon> Back
                 </a>

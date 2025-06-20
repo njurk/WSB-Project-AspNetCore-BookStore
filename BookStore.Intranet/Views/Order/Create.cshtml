@@ -2,44 +2,175 @@
 
 @{
     ViewData["Title"] = "Add";
+    var books = ViewBag.Books as List<SelectListItem>;
 }
 
-<h1 class="mb-4 text-center">Add order</h1>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-11 bg-secondary bg-opacity-10 p-4 rounded">
+            <h1 class="mb-4">New order</h1>
 
-<div class="d-flex justify-content-center">
-    <div class="col-md-6 col-lg-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+            <form asp-action="Create" method="post" id="createForm">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-            <div class="mb-3">
-                <label asp-for="IdUser" class="form-label"></label>
-                <select asp-for="IdUser" class="form-control" asp-items="ViewBag.IdUser"></select>
-                <span asp-validation-for="IdUser" class="text-danger small"></span>
-            </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label asp-for="FirstName" class="form-label"></label>
+                                <input asp-for="FirstName" class="form-control" />
+                                <span asp-validation-for="FirstName" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="LastName" class="form-label"></label>
+                                <input asp-for="LastName" class="form-control" />
+                                <span asp-validation-for="LastName" class="text-danger small"></span>
+                            </div>
 
-            <div class="mb-3">
-                <label asp-for="OrderDate" class="form-label"></label>
-                <input asp-for="OrderDate" class="form-control" />
-                <span asp-validation-for="OrderDate" class="text-danger small"></span>
-            </div>
+                            <div class="col-md-12">
+                                <label asp-for="Email" class="form-label"></label>
+                                <input asp-for="Email" class="form-control" />
+                                <span asp-validation-for="Email" class="text-danger small"></span>
+                            </div>
 
-            <div class="mb-3">
-                <label asp-for="IdOrderStatus" class="form-label"></label>
-                <select asp-for="IdOrderStatus" class="form-control" asp-items="ViewBag.IdOrderStatus"></select>
-                <span asp-validation-for="IdOrderStatus" class="text-danger small"></span>
-            </div>
+                            <div class="col-md-12">
+                                <label asp-for="Street" class="form-label"></label>
+                                <input asp-for="Street" class="form-control" />
+                                <span asp-validation-for="Street" class="text-danger small"></span>
+                            </div>
 
-            <button type="submit" class="btn btn-primary w-100">Add</button>
-        </form>
+                            <div class="col-md-6">
+                                <label asp-for="City" class="form-label"></label>
+                                <input asp-for="City" class="form-control" />
+                                <span asp-validation-for="City" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="PostalCode" class="form-label"></label>
+                                <input asp-for="PostalCode" class="form-control" />
+                                <span asp-validation-for="PostalCode" class="text-danger small"></span>
+                            </div>
 
-        <div class="mt-3 text-center">
-            <a asp-action="Index" class="text-decoration-none">← Back to List</a>
+                            <div class="col-md-12">
+                                <label asp-for="IdUser" class="form-label"></label>
+                                <select asp-for="IdUser" class="form-control" asp-items="ViewBag.IdUser"></select>
+                                <span asp-validation-for="IdUser" class="text-danger small"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label asp-for="OrderDate" class="form-label"></label>
+                                <input asp-for="OrderDate" class="form-control" />
+                                <span asp-validation-for="OrderDate" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="IdOrderStatus" class="form-label"></label>
+                                <select asp-for="IdOrderStatus" class="form-control" asp-items="ViewBag.IdOrderStatus"></select>
+                                <span asp-validation-for="IdOrderStatus" class="text-danger small"></span>
+                            </div>
+                        </div>
+                        <h5 class="my-3">Order items</h5>
+                        <div id="orderItems">
+                            <div class="order-item row g-2 mb-3">
+                                <div class="col-8">
+                                    <select name="orderItems[0].IdBook" class="form-select">
+                                        @foreach (var book in books)
+                                        {
+                                            <option value="@book.Value">@book.Text</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-3">
+                                    <input name="orderItems[0].Quantity" type="number" min="1" class="form-control" placeholder="Quantity" />
+                                </div>
+                                <div class="col-1 d-flex align-items-center">
+                                    <button type="button" class="btn btn-outline-danger btn-sm remove-item">
+                                        <ion-icon name="close-outline"></ion-icon>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="button" class="btn btn-outline-secondary mb-3" id="addItem">
+                            <ion-icon name="add-outline"></ion-icon> Add item
+                        </button>
+
+                        <template id="orderItemTemplate">
+                            <div class="order-item row g-2 mb-3">
+                                <div class="col-8">
+                                    <select class="form-select" name="orderItems[__index__].IdBook">
+                                        @foreach (var book in books)
+                                        {
+                                            <option value="@book.Value">@book.Text</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-3">
+                                    <input type="number" min="1" class="form-control" placeholder="Quantity" name="orderItems[__index__].Quantity" />
+                                </div>
+                                <div class="col-1 d-flex align-items-center">
+                                    <button type="button" class="btn btn-outline-danger btn-sm remove-item">
+                                        <ion-icon name="close-outline"></ion-icon>
+                                    </button>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between mt-4">
+                    <a asp-action="Index" class="btn btn-outline-secondary">
+                        <ion-icon name="arrow-back-outline" class="me-1"></ion-icon> Back
+                    </a>
+                    <button type="submit" class="btn btn-secondary" form="createForm">Add</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+    <script>
+        let itemIndex = 1;
+        const userAddresses = @Html.Raw(ViewBag.UserAddressesJson ?? "[]");
+        const userSelect = document.querySelector('[name="IdUser"]');
+
+        function fillAddressFields(userId) {
+            const selected = userAddresses.find(u => u.IdUser == userId);
+            if (!selected) return;
+
+            document.querySelector('[name="FirstName"]').value = selected.FirstName;
+            document.querySelector('[name="LastName"]').value = selected.LastName;
+            document.querySelector('[name="Email"]').value = selected.Email;
+            document.querySelector('[name="Street"]').value = selected.Street;
+            document.querySelector('[name="City"]').value = selected.City;
+            document.querySelector('[name="PostalCode"]').value = selected.PostalCode;
+        }
+
+        userSelect.addEventListener('change', function () {
+            fillAddressFields(this.value);
+        });
+
+        if (userSelect.value) {
+            fillAddressFields(userSelect.value);
+        }
+
+        document.getElementById('addItem').addEventListener('click', function () {
+            const container = document.getElementById('orderItems');
+            const template = document.getElementById('orderItemTemplate').innerHTML;
+            const rendered = template.replace(/__index__/g, itemIndex);
+            container.insertAdjacentHTML('beforeend', rendered);
+            itemIndex++;
+        });
+
+        document.getElementById('orderItems').addEventListener('click', function (e) {
+            if (e.target.closest('.remove-item')) {
+                const row = e.target.closest('.order-item');
+                if (row) row.remove();
+            }
+        });
+    </script>
 }

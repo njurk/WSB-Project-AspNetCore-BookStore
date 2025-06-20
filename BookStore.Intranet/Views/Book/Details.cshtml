@@ -1,90 +1,82 @@
-﻿@model BookStore.Data.Data.Entities.Book
+﻿@model BookStore.Intranet.Models.BookDetailsViewModel
 
 @{
-    ViewData["Title"] = "Book Details";
+    ViewData["Title"] = "Book details";
 }
 
-<h1 class="mb-4 text-center">Book Details</h1>
+<h1 class="mb-4 text-center">Book details</h1>
 
 <div class="d-flex justify-content-center">
-    <div class="col-md-8 col-lg-6">
-        <div class="border p-4 rounded">
+    <div class="col-md-10 col-lg-8">
+        <div class="card shadow-sm p-4 bg-light rounded">
+            <div class="row">
+                <div class="col-md-5 text-center mb-3 mb-md-0">
+                    @if (!string.IsNullOrEmpty(Model.Book.ImageUrl))
+                    {
+                        <img src="~/images/@Model.Book.ImageUrl" class="img-fluid rounded shadow-sm" alt="Book image" />
+                    }
+                    else
+                    {
+                        <span class="text-muted">No image available</span>
+                    }
+                </div>
 
-            <dl class="row mb-3">
-                <dt class="col-sm-4">
-                    @Html.DisplayNameFor(model => model.Title)
-                </dt>
-                <dd class="col-sm-8">
-                    @Html.DisplayFor(model => model.Title)
-                </dd>
+                <div class="col-md-7">
+                    <dl class="row mb-3">
+                        <dt class="col-sm-4">Title</dt>
+                        <dd class="col-sm-8">@Model.Book.Title</dd>
 
-                <dt class="col-sm-4">
-                    @Html.DisplayNameFor(model => model.Description)
-                </dt>
-                <dd class="col-sm-8">
-                    @Html.DisplayFor(model => model.Description)
-                </dd>
+                        <dt class="col-sm-4">Description</dt>
+                        <dd class="col-sm-8">@Model.Book.Description</dd>
 
-                <dt class="col-sm-4">
-                    @Html.DisplayNameFor(model => model.Price)
-                </dt>
-                <dd class="col-sm-8">
-                    @Html.DisplayFor(model => model.Price)
-                </dd>
+                        <dt class="col-sm-4">Price</dt>
+                        <dd class="col-sm-8">@Model.Book.Price.ToString("C")</dd>
 
-                <dt class="col-sm-4">
-                    @Html.DisplayNameFor(model => model.NumberOfPages)
-                </dt>
-                <dd class="col-sm-8">
-                    @Html.DisplayFor(model => model.NumberOfPages)
-                </dd>
+                        <dt class="col-sm-4">Pages</dt>
+                        <dd class="col-sm-8">@Model.Book.NumberOfPages</dd>
 
-                <dt class="col-sm-4">
-                    @Html.DisplayNameFor(model => model.YearPublished)
-                </dt>
-                <dd class="col-sm-8">
-                    @Html.DisplayFor(model => model.YearPublished)
-                </dd>
+                        <dt class="col-sm-4">Year</dt>
+                        <dd class="col-sm-8">@Model.Book.YearPublished</dd>
 
-                <dt class="col-sm-4">
-                    @Html.DisplayNameFor(model => model.Language)
-                </dt>
-                <dd class="col-sm-8">
-                    @Html.DisplayFor(model => model.Language)
-                </dd>
+                        <dt class="col-sm-4">Language</dt>
+                        <dd class="col-sm-8">@Model.Book.Language</dd>
 
-                <dt class="col-sm-4">
-                    @Html.DisplayNameFor(model => model.Quantity)
-                </dt>
-                <dd class="col-sm-8">
-                    @Html.DisplayFor(model => model.Quantity)
-                </dd>
+                        <dt class="col-sm-4">Quantity</dt>
+                        <dd class="col-sm-8">@Model.Book.Quantity</dd>
 
-                <dt class="col-sm-4">
-                    @Html.DisplayNameFor(model => model.ISBN)
-                </dt>
-                <dd class="col-sm-8">
-                    @Html.DisplayFor(model => model.ISBN)
-                </dd>
+                        <dt class="col-sm-4">ISBN</dt>
+                        <dd class="col-sm-8">@Model.Book.ISBN</dd>
 
-                <dt class="col-sm-4">
-                    @Html.DisplayNameFor(model => model.Author)
-                </dt>
-                <dd class="col-sm-8">
-                    @Html.DisplayFor(model => model.Author.FirstName) @Html.DisplayFor(model => model.Author.LastName)
-                </dd>
+                        <dt class="col-sm-4">Author</dt>
+                        <dd class="col-sm-8">@Model.Book.Author?.FirstName @Model.Book.Author?.LastName</dd>
 
-                <dt class="col-sm-4">
-                    @Html.DisplayNameFor(model => model.ImageUrl)
-                </dt>
-                <dd class="col-sm-8">
-                    @Html.DisplayFor(model => model.ImageUrl)
-                </dd>
-            </dl>
+                        <dt class="col-sm-4">Genres</dt>
+                        <dd class="col-sm-8">
+                            @if (Model.Genres.Any())
+                            {
+                                <ul class="list-unstyled mb-0">
+                                    @foreach (var genre in Model.Genres)
+                                    {
+                                        <li class="badge bg-secondary me-1">@genre</li>
+                                    }
+                                </ul>
+                            }
+                            else
+                            {
+                                <span class="text-muted">No genres assigned</span>
+                            }
+                        </dd>
+                    </dl>
+                </div>
+            </div>
 
-            <div class="text-center mt-4">
-                <a asp-action="Edit" asp-route-id="@Model?.IdBook" class="btn btn-primary w-100 mb-2">Edit</a>
-                <a asp-action="Index" class="btn btn-secondary w-100">Back to List</a>
+            <div class="mt-4 d-flex gap-2">
+                <a asp-action="Edit" asp-route-id="@Model?.Book.IdBook" class="btn btn-secondary d-flex align-items-center gap-2 px-3 py-2" style="font-weight: 500;">
+                    <ion-icon name="create-outline" style="font-size: 1.4rem;"></ion-icon> Edit
+                </a>
+                <a asp-action="Index" class="btn btn-outline-secondary d-flex align-items-center gap-2 px-3 py-2" style="font-weight: 500;">
+                    <ion-icon name="arrow-back-outline" style="font-size: 1.4rem;"></ion-icon> Back
+                </a>
             </div>
         </div>
     </div>

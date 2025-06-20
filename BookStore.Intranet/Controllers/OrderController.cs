@@ -52,46 +52,118 @@ namespace BookStore.Intranet.Controllers
         }
 
         // GET: Order/Create
+        [HttpGet]
         public IActionResult Create()
         {
+            var users = _context.Users.ToList();
+
             ViewData["IdOrderStatus"] = new SelectList(_context.OrderStatuses, "Id", "Name");
-            ViewData["IdUser"] = new SelectList(_context.Users, "IdUser", "Username");
+            ViewData["IdUser"] = new SelectList(users, "IdUser", "Username");
+            ViewBag.Books = _context.Books.Select(b => new SelectListItem
+            {
+                Value = b.IdBook.ToString(),
+                Text = b.Title
+            }).ToList();
+
+            var userAddresses = users.Select(u => new {
+                u.IdUser,
+                u.FirstName,
+                u.LastName,
+                u.Email,
+                u.Street,
+                u.City,
+                u.PostalCode
+            }).ToList();
+
+            ViewBag.UserAddressesJson = System.Text.Json.JsonSerializer.Serialize(userAddresses);
+
             return View();
         }
+
 
         // POST: Order/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdOrder,IdUser,OrderDate,IdOrderStatus")] Order order)
+        public async Task<IActionResult> Create(Order order, List<OrderItem> orderItems)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid || orderItems == null || orderItems.Count == 0)
             {
-                _context.Add(order);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                ModelState.AddModelError("", "At least 1 order item is required");
+                ViewData["IdOrderStatus"] = new SelectList(_context.OrderStatuses, "Id", "Name", order.IdOrderStatus);
+                ViewData["IdUser"] = new SelectList(_context.Users, "IdUser", "Username", order.IdUser);
+                ViewBag.Books = _context.Books.Select(b => new SelectListItem { Value = b.IdBook.ToString(), Text = b.Title }).ToList();
+
+                return View(order);
             }
-            ViewData["IdOrderStatus"] = new SelectList(_context.OrderStatuses, "Id", "Name", order.IdOrderStatus);
-            ViewData["IdUser"] = new SelectList(_context.Users, "IdUser", "City", order.IdUser);
-            return View(order);
+
+            var bookPrices = await _context.Books
+                .Where(b => orderItems.Select(i => i.IdBook).Contains(b.IdBook))
+                .ToDictionaryAsync(b => b.IdBook, b => b.Price);
+
+            order.OrderItems = new List<OrderItem>();
+
+            foreach (var item in orderItems)
+            {
+                if (!bookPrices.TryGetValue(item.IdBook, out var price))
+                    continue;
+
+                item.UnitPrice = price;
+                order.OrderItems.Add(item);
+            }
+
+            _context.Orders.Add(order);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Order/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
-            var order = await _context.Orders.FindAsync(id);
+            var order = await _context.Orders
+                .Include(o => o.OrderItems)
+                .Include(o => o.User)
+                .FirstOrDefaultAsync(o => o.IdOrder == id);
+
             if (order == null)
-            {
                 return NotFound();
-            }
+
+            var users = _context.Users.ToList();
+
             ViewData["IdOrderStatus"] = new SelectList(_context.OrderStatuses, "Id", "Name", order.IdOrderStatus);
             ViewData["IdUser"] = new SelectList(_context.Users, "IdUser", "Username", order.IdUser);
+
+            ViewBag.Books = _context.Books.Select(b => new SelectListItem
+            {
+                Value = b.IdBook.ToString(),
+                Text = b.Title
+            }).ToList();
+
+            ViewBag.Address = order.User != null ? new
+            {
+                order.User.FirstName,
+                order.User.LastName,
+                order.User.Email,
+                order.User.Street,
+                order.User.City,
+                order.User.PostalCode
+            } : null;
+
+            ViewBag.UserAddressesJson = System.Text.Json.JsonSerializer.Serialize(users.Select(u => new {
+                u.IdUser,
+                u.FirstName,
+                u.LastName,
+                u.Email,
+                u.Street,
+                u.City,
+                u.PostalCode
+            }));
+
             return View(order);
         }
 
@@ -100,37 +172,74 @@ namespace BookStore.Intranet.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdOrder,IdUser,OrderDate,IdOrderStatus")] Order order)
+        public async Task<IActionResult> Edit(int id, Order order, List<OrderItem> orderItems)
         {
             if (id != order.IdOrder)
-            {
                 return NotFound();
+
+            if (!ModelState.IsValid || orderItems == null || !orderItems.Any())
+            {
+                ModelState.AddModelError("", "At least 1 order item is required");
+
+                ViewData["IdOrderStatus"] = new SelectList(_context.OrderStatuses, "Id", "Name", order.IdOrderStatus);
+                ViewData["IdUser"] = new SelectList(_context.Users, "IdUser", "Username", order.IdUser);
+                ViewBag.Books = _context.Books.Select(b => new SelectListItem
+                {
+                    Value = b.IdBook.ToString(),
+                    Text = b.Title
+                }).ToList();
+
+                return View(order);
             }
 
-            if (ModelState.IsValid)
+            try
             {
-                try
+                var existingOrder = await _context.Orders.FindAsync(order.IdOrder);
+                if (existingOrder == null)
+                    return NotFound();
+
+                existingOrder.OrderDate = order.OrderDate;
+                existingOrder.IdUser = order.IdUser;
+                existingOrder.IdOrderStatus = order.IdOrderStatus;
+                existingOrder.FirstName = order.FirstName;
+                existingOrder.LastName = order.LastName;
+                existingOrder.Email = order.Email;
+                existingOrder.Street = order.Street;
+                existingOrder.City = order.City;
+                existingOrder.PostalCode = order.PostalCode;
+
+                var existingItems = _context.OrderItems.Where(oi => oi.IdOrder == id);
+                _context.OrderItems.RemoveRange(existingItems);
+
+                var bookPrices = await _context.Books
+                    .Where(b => orderItems.Select(i => i.IdBook).Contains(b.IdBook))
+                    .ToDictionaryAsync(b => b.IdBook, b => b.Price);
+
+                foreach (var item in orderItems)
                 {
-                    _context.Update(order);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!OrderExists(order.IdOrder))
+                    if (!bookPrices.TryGetValue(item.IdBook, out var price))
+                        continue;
+
+                    _context.OrderItems.Add(new OrderItem
                     {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                        IdOrder = id,
+                        IdBook = item.IdBook,
+                        Quantity = item.Quantity,
+                        UnitPrice = price
+                    });
                 }
+
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdOrderStatus"] = new SelectList(_context.OrderStatuses, "Id", "Name", order.IdOrderStatus);
-            ViewData["IdUser"] = new SelectList(_context.Users, "IdUser", "City", order.IdUser);
-            return View(order);
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!OrderExists(order.IdOrder))
+                    return NotFound();
+                throw;
+            }
         }
+
 
         // GET: Order/Delete/5
         public async Task<IActionResult> Delete(int? id)

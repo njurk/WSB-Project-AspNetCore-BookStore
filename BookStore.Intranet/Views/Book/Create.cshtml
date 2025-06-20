@@ -21,7 +21,7 @@
 
                         <div class="mb-3">
                             <label asp-for="Description" class="form-label"></label>
-                            <input asp-for="Description" class="form-control" />
+                            <textarea asp-for="Description" class="form-control"></textarea>
                             <span asp-validation-for="Description" class="text-danger small"></span>
                         </div>
 
@@ -41,6 +41,13 @@
                             <label asp-for="YearPublished" class="form-label"></label>
                             <input asp-for="YearPublished" class="form-control" />
                             <span asp-validation-for="YearPublished" class="text-danger small"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Genres</label>
+                            <select name="selectedGenres" class="form-control" multiple size="5"
+                                    asp-items="ViewBag.GenreList">
+                            </select>
+                            <div class="form-text">Select multiple by holding Ctrl</div>
                         </div>
                     </div>
 

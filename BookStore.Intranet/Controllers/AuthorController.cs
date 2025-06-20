@@ -137,18 +137,15 @@ namespace BookStore.Intranet.Controllers
         }
 
         // POST: Author/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public IActionResult DeleteConfirmed(int id)
         {
-            var author = await _context.Authors.FindAsync(id);
-            if (author != null)
-            {
-                _context.Authors.Remove(author);
-            }
-
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            var author = _context.Authors.Find(id);
+            if (author == null) return NotFound();
+            _context.Authors.Remove(author);
+            _context.SaveChanges();
+            return Ok();
         }
 
         private bool AuthorExists(int id)

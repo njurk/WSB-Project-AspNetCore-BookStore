@@ -4,74 +4,76 @@
     ViewData["Title"] = "Edit";
 }
 
-<h1 class="text-center mb-4">Edit User</h1>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-7 bg-secondary bg-opacity-10 p-4 rounded">
+            <h1 class="mb-4">Edit user</h1>
 
-<div class="d-flex justify-content-center">
-    <div class="col-md-6 col-lg-4">
-        <div class="border p-4 rounded">
-            <form asp-action="Edit">
+            <form asp-action="Edit" id="editUserForm">
                 <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
                 <input type="hidden" asp-for="IdUser" />
 
-                <div class="form-group mb-3">
-                    <label asp-for="Username" class="control-label">Username</label>
-                    <input asp-for="Username" class="form-control" />
-                    <span asp-validation-for="Username" class="text-danger"></span>
-                </div>
+                <div class="row g-3">
+                    <div class="col-md-6 form-group mb-3">
+                        <label asp-for="Username" class="form-label"></label>
+                        <input asp-for="Username" class="form-control" />
+                        <span asp-validation-for="Username" class="text-danger small"></span>
+                    </div>
 
-                <div class="form-group mb-3">
-                    <label asp-for="FirstName" class="control-label">First Name</label>
-                    <input asp-for="FirstName" class="form-control" />
-                    <span asp-validation-for="FirstName" class="text-danger"></span>
-                </div>
+                    <div class="col-md-6 form-group mb-3">
+                        <label asp-for="Password" class="form-label"></label>
+                        <input asp-for="Password" type="password" class="form-control" />
+                        <span asp-validation-for="Password" class="text-danger small"></span>
+                    </div>
 
-                <div class="form-group mb-3">
-                    <label asp-for="LastName" class="control-label">Last Name</label>
-                    <input asp-for="LastName" class="form-control" />
-                    <span asp-validation-for="LastName" class="text-danger"></span>
-                </div>
+                    <div class="col-md-6 form-group mb-3">
+                        <label asp-for="FirstName" class="form-label"></label>
+                        <input asp-for="FirstName" class="form-control" />
+                        <span asp-validation-for="FirstName" class="text-danger small"></span>
+                    </div>
 
-                <div class="form-group mb-3">
-                    <label asp-for="Email" class="control-label">Email</label>
-                    <input asp-for="Email" class="form-control" />
-                    <span asp-validation-for="Email" class="text-danger"></span>
-                </div>
+                    <div class="col-md-6 form-group mb-3">
+                        <label asp-for="LastName" class="form-label"></label>
+                        <input asp-for="LastName" class="form-control" />
+                        <span asp-validation-for="LastName" class="text-danger small"></span>
+                    </div>
 
-                <div class="form-group mb-3">
-                    <label asp-for="Password" class="control-label">Password</label>
-                    <input asp-for="Password" class="form-control" />
-                    <span asp-validation-for="Password" class="text-danger"></span>
-                </div>
+                    <div class="col-md-6 form-group mb-3">
+                        <label asp-for="Email" class="form-label"></label>
+                        <input asp-for="Email" type="email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger small"></span>
+                    </div>
 
-                <div class="form-group mb-3">
-                    <label asp-for="Street" class="control-label">Street</label>
-                    <input asp-for="Street" class="form-control" />
-                    <span asp-validation-for="Street" class="text-danger"></span>
-                </div>
+                    <div class="col-md-6 form-group mb-3">
+                        <label asp-for="Street" class="form-label"></label>
+                        <input asp-for="Street" class="form-control" />
+                        <span asp-validation-for="Street" class="text-danger small"></span>
+                    </div>
 
-                <div class="form-group mb-3">
-                    <label asp-for="City" class="control-label">City</label>
-                    <input asp-for="City" class="form-control" />
-                    <span asp-validation-for="City" class="text-danger"></span>
-                </div>
+                    <div class="col-md-6 form-group mb-3">
+                        <label asp-for="City" class="form-label"></label>
+                        <input asp-for="City" class="form-control" />
+                        <span asp-validation-for="City" class="text-danger small"></span>
+                    </div>
 
-                <div class="form-group mb-3">
-                    <label asp-for="PostalCode" class="control-label">Postal Code</label>
-                    <input asp-for="PostalCode" class="form-control" />
-                    <span asp-validation-for="PostalCode" class="text-danger"></span>
-                </div>
-
-                <div class="form-group text-center">
-                    <input type="submit" value="Save" class="btn btn-primary w-100 mb-2" />
-                    <a asp-action="Index" class="btn btn-secondary w-100">Back to List</a>
+                    <div class="col-md-6 form-group mb-3">
+                        <label asp-for="PostalCode" class="form-label"></label>
+                        <input asp-for="PostalCode" class="form-control" />
+                        <span asp-validation-for="PostalCode" class="text-danger small"></span>
+                    </div>
                 </div>
             </form>
+
+            <div class="d-flex justify-content-between mt-4">
+                <a asp-action="Index" class="btn btn-outline-secondary">
+                    <ion-icon name="arrow-back-outline" class="me-1"></ion-icon> Back
+                </a>
+                <button type="submit" class="btn btn-secondary" form="editUserForm">Save</button>
+            </div>
         </div>
     </div>
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    @await Html.PartialAsync("_ValidationScriptsPartial")
 }
